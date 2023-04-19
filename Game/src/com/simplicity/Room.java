@@ -59,12 +59,6 @@ public class Room {
         this.bottom = room;
     }
 
-    public void placeObject(Furniture objek)
-    {
-        int itemID = objek.getID();
-        
-    }
-
     public String getRoomName()
     {
         return this.roomName;
@@ -165,6 +159,68 @@ public class Room {
             }
         }
         return flag;
+    }
+
+    public void placeObject (Point placement, int rotation, Furniture object)
+    {
+        if (!checkFilled(placement, rotation, object))
+        {
+            int x,y;
+            if (rotation == 0 || rotation == 2)
+            {
+                x = object.getLengthX();
+                y = object.getLengthY();
+                if (rotation == 0)
+                {
+                    for (int i=placement.getY();i<placement.getY()+y;i++)
+                        {
+                            for (int j=placement.getX();j<placement.getX()+x;j++)
+                            {
+                                space[i][j] = object.getObjectID();
+                            }
+                        }
+                    }
+                }
+                else if (rotation == 2)
+                {
+                    for (int i=placement.getY();i<placement.getY()+y;i++)
+                    {
+                        for (int j=placement.getX()+x-1;j>=placement.getY();j--)
+                        {
+                            space[i][j] = object.getObjectID();
+                        }
+                    }   
+                }
+            else if (rotation == 1 || rotation == 3)
+            {
+                x = object.getLengthY();
+                y = object.getLengthX();
+                if (rotation == 1)
+                {
+                    for (int i=placement.getY();i<placement.getY()+y;i++)
+                    {
+                        for (int j=placement.getX();j<placement.getX()+x;j++)
+                        {
+                            space[i][j] = object.getObjectID;
+                        }
+                    }
+                }
+                else if (rotation == 3)
+                {
+                    for (int i=placement.getY()+y-1;i>=placement.getY();i--)
+                    {
+                        for (int j=placement.getX();j<placement.getX()+x;j++)
+                        {
+                            space[i][j] = object.getObjectID();
+                        }
+                    }   
+                }
+            }
+        }
+        else
+        {
+            System.out.println("You cannot place an object there!");
+        }
     }
 
     public Boolean checkValid(Room room, String string)
