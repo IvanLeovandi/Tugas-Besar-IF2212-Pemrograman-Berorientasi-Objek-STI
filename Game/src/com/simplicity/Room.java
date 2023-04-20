@@ -1,40 +1,41 @@
 package com.simplicity;
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class Room {
-    private String roomName;
-    private ArrayList<Furniture> objectList;
-    private Room left,right,top,bottom;
-    private int[][] space;
+    public int roomNumber;
+    public ArrayList<Furniture> objectList;
+    public Room left,right,top,bottom;
+    public int[][] space;
+    public Point locationInHouse;
 
 
-    public Room(String roomName)
+    public Room(int roomNumber,Point locationInHouse)
     {   
-        this.roomName = roomName;
+        this.roomNumber = roomNumber;
         left = null;
         right = null;
         top = null;
         bottom = null;
+        this.locationInHouse = locationInHouse;
         space = new int[6][6];
     }
 
-    public Room getLeft(Room room)
+    public Room getLeft()
     {
         return this.left;
     }
     
-    public Room getRight(Room room)
+    public Room getRight()
     {
         return this.right;
     }
 
-    public Room getTop (Room room)
+    public Room getTop ()
     {
         return this.top;
     }
 
-    public Room getBottom (Room room)
+    public Room getBottom ()
     {
         return this.bottom;
     }
@@ -59,9 +60,14 @@ public class Room {
         this.bottom = room;
     }
 
-    public String getRoomName()
+    public int getroomNumber()
     {
-        return this.roomName;
+        return this.roomNumber;
+    }
+
+    public Point getLocationInHouse()
+    {
+        return this.locationInHouse;
     }
 
     public Boolean checkFilled(Point placement, int rotation, Furniture object)
@@ -201,7 +207,7 @@ public class Room {
                     {
                         for (int j=placement.getX();j<placement.getX()+x;j++)
                         {
-                            space[i][j] = object.getObjectID;
+                            space    [i][j] = object.getObjectID;
                         }
                     }
                 }
@@ -223,7 +229,7 @@ public class Room {
         }
     }
 
-    public Boolean checkValid(Room room, String string)
+    public Boolean checkValid(String string)
     {
         if (string.equals("left"))
         {
