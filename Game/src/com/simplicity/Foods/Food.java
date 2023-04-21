@@ -4,6 +4,7 @@ import com.simplicity.Interfaces.Edible;
 
 public abstract class Food implements Edible {
     private String type;
+    private String name;
     private int satietyPoint;
 
     public Food(String type, int satietyPoint) {
@@ -13,6 +14,10 @@ public abstract class Food implements Edible {
 
     public int getSatietyPoint() {
         return satietyPoint;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public String getType() {
