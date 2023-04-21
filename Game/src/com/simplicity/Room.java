@@ -1,4 +1,5 @@
 package com.simplicity;
+import com.simplicity.Furniture.*;
 import java.util.ArrayList;
 
 public class Room {
@@ -17,6 +18,7 @@ public class Room {
         top = null;
         bottom = null;
         this.locationInHouse = locationInHouse;
+        objectList = new ArrayList<Furniture>();
         space = new int[6][6];
     }
 
@@ -76,8 +78,8 @@ public class Room {
         Boolean flag = false;
         if (rotation == 0 || rotation == 2)
         {
-            x = object.getLengthX();
-            y = object.getLengthY();
+            x = object.getSize().getX();
+            y = object.getSize().getY();
             if (rotation == 0)
             {
                 if (placement.getX()+x > 6 || placement.getY()+y > 6)
@@ -121,8 +123,8 @@ public class Room {
         }
         else if (rotation == 1 || rotation == 3)
         {
-            x = object.getLengthY();
-            y = object.getLengthX();
+            x = object.getSize().getX();
+            y = object.getSize().getY();
             if (rotation == 1)
             {
                 if (placement.getX()+x > 6 || placement.getY()+y > 6)
@@ -171,43 +173,45 @@ public class Room {
     {
         if (!checkFilled(placement, rotation, object))
         {
+            objectList.add(object);
             int x,y;
             if (rotation == 0 || rotation == 2)
             {
-                x = object.getLengthX();
-                y = object.getLengthY();
+                x = object.getSize().getX();
+                y = object.getSize().getY();
                 if (rotation == 0)
                 {
                     for (int i=placement.getY();i<placement.getY()+y;i++)
                         {
                             for (int j=placement.getX();j<placement.getX()+x;j++)
                             {
-                                space[i][j] = object.getObjectID();
+                                space[i][j] = object.getId();
                             }
                         }
                     }
-                }
+                
                 else if (rotation == 2)
                 {
                     for (int i=placement.getY();i<placement.getY()+y;i++)
                     {
                         for (int j=placement.getX()+x-1;j>=placement.getY();j--)
                         {
-                            space[i][j] = object.getObjectID();
+                            space[i][j] = object.getId();
                         }
                     }   
                 }
+            }
             else if (rotation == 1 || rotation == 3)
             {
-                x = object.getLengthY();
-                y = object.getLengthX();
+                x = object.getSize().getX();
+                y = object.getSize().getY();
                 if (rotation == 1)
                 {
                     for (int i=placement.getY();i<placement.getY()+y;i++)
                     {
                         for (int j=placement.getX();j<placement.getX()+x;j++)
                         {
-                            space    [i][j] = object.getObjectID;
+                            space    [i][j] = object.getId();
                         }
                     }
                 }
@@ -217,7 +221,7 @@ public class Room {
                     {
                         for (int j=placement.getX();j<placement.getX()+x;j++)
                         {
-                            space[i][j] = object.getObjectID();
+                            space[i][j] = object.getId();
                         }
                     }   
                 }
@@ -228,6 +232,22 @@ public class Room {
             System.out.println("You cannot place an object there!");
         }
     }
+
+    // ges ini removeObject gada di aksi di tubesnya sih gausah gw bikin lah ya ribet yalorddd
+    // public void removeObject(Point placement)
+    // {
+    //     if (space[placement.getY()][placement.getX()] != 0)
+    //     {
+    //        for (Furniture furniture: objectList)
+    //         {
+    //             if (furniture.getId() == space[placement.getY()][placement.getX()])
+    //             {
+    //                 objectList.remove(furniture);
+    //                 break;
+    //             }
+    //         }
+    //     }
+    // }
 
     public Boolean checkValid(String string)
     {
