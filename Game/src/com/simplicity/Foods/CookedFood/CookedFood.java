@@ -6,4 +6,8 @@ public abstract class CookedFood extends Food {
     public CookedFood(String type, int satietyPoint) {
         super(type, satietyPoint);
     }
+
+    public boolean isEnoughIngredient(){
+        return true;
+    }//ngecek ingredient 
 }
