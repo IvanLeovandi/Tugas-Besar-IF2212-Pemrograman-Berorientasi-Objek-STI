@@ -2,11 +2,11 @@ package com.simplicity.Furniture;
 
 import com.simplicity.*;
 
-public class Toilet extends Furniture {
+public class GasStove extends Furniture {
     private boolean isUsed;
 
-    public Toilet(){
-        super("Toilet", new Point(1,1), 50, 4);
+    public GasStove(){
+        super("Kompor Gas", new Point(2,1), 100, 5);
         isUsed = false;
     }
 
@@ -14,5 +14,5 @@ public class Toilet extends Furniture {
         return isUsed;
     }
 
-    // method defecate
+    // method cook
 }
