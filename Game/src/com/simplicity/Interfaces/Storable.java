@@ -1,5 +1,5 @@
 package com.simplicity.Interfaces;
 
-public interface Placeable {
+public interface Storable {
 
 }
