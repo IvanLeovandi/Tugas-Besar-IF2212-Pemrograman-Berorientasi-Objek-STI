@@ -1,13 +1,13 @@
 package com.simplicity.Foods;
 
+import com.simplicity.GameObject;
 import com.simplicity.Interfaces.Edible;
 
-public abstract class Food implements Edible {
-    private String type;
+public class Food extends GameObject implements Edible {
     private int satietyPoint;
 
     public Food(String type, int satietyPoint) {
-        this.type = type;
+        super(type);
         this.satietyPoint = satietyPoint;
     }
 
@@ -15,18 +15,7 @@ public abstract class Food implements Edible {
         return satietyPoint;
     }
 
-    public String getType() {
-        return type;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        return getType().equals(((Food)o).getType());
+    public void setSatietyPoint(int satietyPoint) {
+        this.satietyPoint = satietyPoint;
     }
 }

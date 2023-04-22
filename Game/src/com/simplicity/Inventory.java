@@ -1,23 +1,11 @@
 package com.simplicity;
 
-import java.util.List;
+import java.util.*;
+
+import com.simplicity.Interfaces.Storable;
 
 public class Inventory {
-    private List slots;
+    private Map<Storable, Integer> items = new HashMap<Storable, Integer>();
 
-    private class Slot<E> {
-        private int count;
 
-        public int getCount() {
-            return count;
-        }
-
-        public void setCount(int count) {
-            this.count = count;
-        }
-    }
-
-    public void take() {
-
-    }
 }

@@ -2,13 +2,10 @@ package com.simplicity;
 
 import java.util.*;
 
-import com.simplicity.Actions.Action;
-import com.simplicity.Actions.Work;
-import com.simplicity.Foods.CookedFood.CookedFood;
-import com.simplicity.Foods.Ingredients.Ingredient;
+import com.simplicity.Foods.Ingredient;
 import com.simplicity.Interfaces.Edible;
-import com.simplicity.Interfaces.Placeable;
 import com.simplicity.Interfaces.Purchasable;
+import com.simplicity.Interfaces.WorldObject;
 
 public class Sim {
     private String name;
@@ -19,14 +16,36 @@ public class Sim {
     private int mood;
     private int health;
     private int status;
-    private Action currentAction;
 
-    private void act(Action action) {
-        this.currentAction = action;
-    };
+    public String getName() {
+        return name;
+    }
+
+    public String getJob() {
+        return job;
+    }
+
+    public int getBalance() {
+        return balance;
+    }
+
+    public int getHunger() {
+        return hunger;
+    }
+
+    public int getMood() {
+        return mood;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getStatus() {
+        return status;
+    }
 
     public void work(int durMilli) {
-        act(new Work());
     }
 
     public void workout(int durMilli) {
@@ -39,10 +58,6 @@ public class Sim {
 
     public void eat(Edible food) {
 
-    }
-
-    public CookedFood cook(List<Ingredient> Ingredients) {
-        return new CookedFood();
     }
 
     public void visit() {
@@ -69,7 +84,7 @@ public class Sim {
 
     }
 
-    public void place(Placeable o) {
+    public void place(WorldObject o) {
 
     }
 
