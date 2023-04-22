@@ -8,9 +8,9 @@ public class Room {
     public Room left,right,top,bottom;
     public int[][] space;
     public Point locationInHouse;
+    private String name;
 
-
-    public Room(int roomNumber,Point locationInHouse)
+    public Room(int roomNumber,Point locationInHouse, String name)
     {   
         this.roomNumber = roomNumber;
         left = null;
@@ -20,6 +20,17 @@ public class Room {
         this.locationInHouse = locationInHouse;
         objectList = new ArrayList<Furniture>();
         space = new int[6][6];
+        this.name = name;
+    }
+
+    public void setName(String name)
+    {   
+        this.name = name;
+    }
+
+    public String getName()
+    {
+        return this.name;
     }
 
     public Room getLeft()
