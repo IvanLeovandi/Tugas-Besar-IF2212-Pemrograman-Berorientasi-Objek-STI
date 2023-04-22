@@ -1,31 +1,41 @@
 package com.simplicity;
 
 public class Point {
-    public int x,y;
-    public Point(int x, int y)
-    {
+    private int x;
+    private int y;
+
+    public Point(int x, int y) {
+        setPoint(x, y);
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setPoint(int x, int y) {
         this.x = x;
         this.y = y;
     }
-    
-    public void setX (int x)
-    {
-        this.x = x;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || !getClass().isAssignableFrom(o.getClass())) {
+            return false;
+        }
+        return getX() == ((Point)o).getX() && getY() == ((Point)o).getY();
     }
 
-    public void setY (int y)
-    {
-        this.y = y;
+    public String toString() {
+        return  "Point{" +
+                "x= " + x +
+                ", y= " + y +
+                "}";
     }
-
-    public int getX ()
-    {
-        return this.x;
-    }
-
-    public int getY ()
-    {
-        return this.y;
-    }
-
 }

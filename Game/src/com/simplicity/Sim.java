@@ -1,14 +1,8 @@
 package com.simplicity;
 
-import java.util.*;
-
-import com.simplicity.Actions.Action;
-import com.simplicity.Actions.Work;
-import com.simplicity.Foods.CookedFood.CookedFood;
-import com.simplicity.Foods.Ingredients.Ingredient;
 import com.simplicity.Interfaces.Edible;
-import com.simplicity.Interfaces.Placeable;
 import com.simplicity.Interfaces.Purchasable;
+import com.simplicity.Interfaces.WorldObject;
 
 public class Sim {
     private String name;
@@ -107,7 +101,7 @@ public class Sim {
         else {
             setSatiety(i);
         }
-        
+
     }
 
     public void changeMood(int x) {
@@ -141,7 +135,7 @@ public class Sim {
     public void work(int duration){
         int satietyDecrease = (-10)*(duration/30);
         int moodDecrease = (-10)*(duration/30);
-        
+
         changeSatiety(satietyDecrease);
         changeMood(moodDecrease);
 
@@ -154,10 +148,10 @@ public class Sim {
         int satietyIncrease = (-5)*(duration/20);
         int moodDecrease = 10*(duration/20);
         int healthIncrease = 5*(duration/20);
-        
+
         changeSatiety(satietyIncrease);
         changeMood(moodDecrease);
-        changeHealth(healthIncrease); 
+        changeHealth(healthIncrease);
     }
 
     public void sleep(int duration) {
@@ -178,7 +172,7 @@ public class Sim {
     //     //Menunggu implementasi inventory
     // }
 
-    public void visit() {   
+    public void visit() {
         //Menunggu implementasi world
     }
 
@@ -193,7 +187,7 @@ public class Sim {
     }
 
     public void upgradeHouse(House house) {
-        
+
     }
 
     public void buy(Purchasable item) {
@@ -208,7 +202,7 @@ public class Sim {
 
     }
 
-    public void place(Placeable o) {
+    public void place(WorldObject o) {
 
     }
 
