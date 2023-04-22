@@ -171,83 +171,100 @@ public class Room {
 
     public void placeObject (Point placement, int rotation, Furniture object)
     {
-        if (!checkFilled(placement, rotation, object))
+        if (!objectList.contains(object))
         {
-            objectList.add(object);
-            int x,y;
-            if (rotation == 0 || rotation == 2)
+            if (!checkFilled(placement, rotation, object))
             {
-                x = object.getSize().getX();
-                y = object.getSize().getY();
-                if (rotation == 0)
+                objectList.add(object);
+                int x,y;
+                if (rotation == 0 || rotation == 2)
                 {
-                    for (int i=placement.getY();i<placement.getY()+y;i++)
+                    x = object.getSize().getX();
+                    y = object.getSize().getY();
+                    if (rotation == 0)
+                    {
+                        for (int i=placement.getY();i<placement.getY()+y;i++)
+                            {
+                                for (int j=placement.getX();j<placement.getX()+x;j++)
+                                {
+                                    space[i][j] = object.getId();
+                                }
+                            }
+                        }
+                    
+                    else if (rotation == 2)
+                    {
+                        for (int i=placement.getY();i<placement.getY()+y;i++)
+                        {
+                            for (int j=placement.getX()+x-1;j>=placement.getY();j--)
+                            {
+                                space[i][j] = object.getId();
+                            }
+                        }   
+                    }
+                }
+                else if (rotation == 1 || rotation == 3)
+                {
+                    x = object.getSize().getX();
+                    y = object.getSize().getY();
+                    if (rotation == 1)
+                    {
+                        for (int i=placement.getY();i<placement.getY()+y;i++)
+                        {
+                            for (int j=placement.getX();j<placement.getX()+x;j++)
+                            {
+                                space    [i][j] = object.getId();
+                            }
+                        }
+                    }
+                    else if (rotation == 3)
+                    {
+                        for (int i=placement.getY()+y-1;i>=placement.getY();i--)
                         {
                             for (int j=placement.getX();j<placement.getX()+x;j++)
                             {
                                 space[i][j] = object.getId();
                             }
-                        }
+                        }   
                     }
-                
-                else if (rotation == 2)
-                {
-                    for (int i=placement.getY();i<placement.getY()+y;i++)
-                    {
-                        for (int j=placement.getX()+x-1;j>=placement.getY();j--)
-                        {
-                            space[i][j] = object.getId();
-                        }
-                    }   
                 }
             }
-            else if (rotation == 1 || rotation == 3)
+            else
             {
-                x = object.getSize().getX();
-                y = object.getSize().getY();
-                if (rotation == 1)
-                {
-                    for (int i=placement.getY();i<placement.getY()+y;i++)
-                    {
-                        for (int j=placement.getX();j<placement.getX()+x;j++)
-                        {
-                            space    [i][j] = object.getId();
-                        }
-                    }
-                }
-                else if (rotation == 3)
-                {
-                    for (int i=placement.getY()+y-1;i>=placement.getY();i--)
-                    {
-                        for (int j=placement.getX();j<placement.getX()+x;j++)
-                        {
-                            space[i][j] = object.getId();
-                        }
-                    }   
-                }
+                System.out.printf("There is not enough space for you to place a %s\n",object.getName());
             }
         }
         else
         {
-            System.out.println("You cannot place an object there!");
+            System.out.printf("This room already has a %s\n",object.getName());
         }
     }
-
-    // ges ini removeObject gada di aksi di tubesnya sih gausah gw bikin lah ya ribet yalorddd
-    // public void removeObject(Point placement)
-    // {
-    //     if (space[placement.getY()][placement.getX()] != 0)
-    //     {
-    //        for (Furniture furniture: objectList)
-    //         {
-    //             if (furniture.getId() == space[placement.getY()][placement.getX()])
-    //             {
-    //                 objectList.remove(furniture);
-    //                 break;
-    //             }
-    //         }
-    //     }
-    // }
+    
+    public void removeObject(Point placement)
+    {
+        if (space[placement.getY()][placement.getX()] != 0)
+        {
+            int removedObjectId = space[placement.getY()][placement.getX()];
+            for (Furniture furniture: objectList)
+            {
+                if (furniture.getId() == removedObjectId)
+                {
+                    objectList.remove(furniture);
+                    break;
+                }
+            }
+            for (int i=0; i<6 ; i++)
+            {
+                for (int j=0; j<6; j++)
+                {
+                    if (space[i][j] == removedObjectId)
+                    {
+                        space[i][j] = 0;
+                    }
+                }
+            }
+        }
+    }
 
     public Boolean checkValid(String string)
     {
