@@ -31,4 +31,11 @@ public class Point {
         }
         return getX() == ((Point)o).getX() && getY() == ((Point)o).getY();
     }
+
+    public String toString() {
+        return  "Point{" +
+                "x= " + x +
+                ", y= " + y +
+                "}";
+    }
 }
