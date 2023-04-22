@@ -11,7 +11,7 @@ public class House {
         this.location = location;
         this.numberofRoom = 1;
         this.roomList = new ArrayList<Room>();
-        roomList.add(new Room(numberofRoom,new Point(0,0)));
+        roomList.add(new Room(numberofRoom,new Point(0,0),"Starting Room"));
     }
 
     public ArrayList<Room> getRoomList()
@@ -23,7 +23,7 @@ public class House {
         System.out.println("These are the rooms available in this house: ");
         for (Room room :roomList)
         {
-            System.out.printf("Room %d\n",room.getroomNumber());
+            System.out.println(room.getroomNumber() + ". " + room.getName());
         }
     }
     
@@ -108,7 +108,7 @@ public class House {
         return flag;
     }
 
-    public void upgradeRoom(Room room, String direction)
+    public void upgradeRoom(Room room, String direction, String name)
     {
         int x = room.getLocationInHouse().getX();
         int y = room.getLocationInHouse().getY();
@@ -117,7 +117,7 @@ public class House {
         {
             if (direction.equals("right"))
             {
-                Room tempRoom = new Room(this.getNumberofRoom(),new Point(x+1,y));
+                Room tempRoom = new Room(this.getNumberofRoom(),new Point(x+1,y),name);
                 tempRoom.setLeft(room);
                 room.setRight(tempRoom);
                 roomList.add(tempRoom);
@@ -125,7 +125,7 @@ public class House {
 
             else if (direction.equals("left"))
             {
-                Room tempRoom = new Room(this.getNumberofRoom(),new Point(x-1,y));
+                Room tempRoom = new Room(this.getNumberofRoom(),new Point(x-1,y),name);
                 tempRoom.setRight(room);
                 room.setLeft(tempRoom);
                 roomList.add(tempRoom);
@@ -133,7 +133,7 @@ public class House {
 
             else if (direction.equals("bottom"))
             {
-                Room tempRoom = new Room(this.getNumberofRoom(),new Point(x,y-1));
+                Room tempRoom = new Room(this.getNumberofRoom(),new Point(x,y-1),name);
                 tempRoom.setTop(room);
                 room.setBottom(tempRoom);
                 roomList.add(tempRoom);
@@ -142,7 +142,7 @@ public class House {
 
             else if (direction.equals("top"))
             {
-                Room tempRoom = new Room(this.getNumberofRoom(),new Point(x,y+1));
+                Room tempRoom = new Room(this.getNumberofRoom(),new Point(x,y+1),name);
                 tempRoom.setBottom(room);
                 room.setTop(tempRoom);
                 roomList.add(tempRoom);
