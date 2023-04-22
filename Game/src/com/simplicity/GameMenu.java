@@ -10,7 +10,7 @@ public class GameMenu {
         System.out.println("Nama        : " + sim.getName());
         System.out.println("Pekerjaan   : " + sim.getJob());
         System.out.println("Kesehatan   : " + sim.getHealth());
-        System.out.println("Kekenyangan : " + sim.getHunger());
+        System.out.println("Kekenyangan : " + sim.getSatiety());
         System.out.println("Mood        : " + sim.getMood());
         System.out.println("Uang        : " + sim.getBalance());
         System.out.println("");
