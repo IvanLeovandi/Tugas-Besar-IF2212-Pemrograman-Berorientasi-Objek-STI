@@ -1,8 +1,5 @@
 package com.simplicity;
 
-import java.util.*;
-
-import com.simplicity.Foods.Ingredient;
 import com.simplicity.Interfaces.Edible;
 import com.simplicity.Interfaces.Purchasable;
 import com.simplicity.Interfaces.WorldObject;
@@ -11,7 +8,6 @@ public class Sim {
     private String name;
     private String job;
     private int balance;
-    private Inventory inventory;
     private int hunger;
     private int mood;
     private int health;

@@ -5,7 +5,6 @@ public class Simplicity {
     public static void main(String[] args) {
         Scanner input = new Scanner(System.in);
         int choice;
-        boolean validChoice = false;
 
         boolean exit = false;
 
