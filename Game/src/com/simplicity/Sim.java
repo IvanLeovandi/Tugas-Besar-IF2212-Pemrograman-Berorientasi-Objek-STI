@@ -1,8 +1,9 @@
 package com.simplicity;
 
+import java.util.*;
+import com.simplicity.House;
 import com.simplicity.Interfaces.Edible;
 import com.simplicity.Interfaces.Purchasable;
-import com.simplicity.Interfaces.WorldObject;
 
 public class Sim {
     private String name;
@@ -13,6 +14,7 @@ public class Sim {
     private int mood;
     private int health;
     private String status;
+    private House house;
 
     //Konstruktor
     public Sim(String name) {
@@ -23,7 +25,7 @@ public class Sim {
         this.satiety = 80;
         this.mood = 80;
         this.health = 80;
-        this.status = null;
+        this.status = "Idle";
     }
 
     //Getter
@@ -101,7 +103,7 @@ public class Sim {
         else {
             setSatiety(i);
         }
-
+        
     }
 
     public void changeMood(int x) {
@@ -135,7 +137,7 @@ public class Sim {
     public void work(int duration){
         int satietyDecrease = (-10)*(duration/30);
         int moodDecrease = (-10)*(duration/30);
-
+        
         changeSatiety(satietyDecrease);
         changeMood(moodDecrease);
 
@@ -148,10 +150,10 @@ public class Sim {
         int satietyIncrease = (-5)*(duration/20);
         int moodDecrease = 10*(duration/20);
         int healthIncrease = 5*(duration/20);
-
+        
         changeSatiety(satietyIncrease);
         changeMood(moodDecrease);
-        changeHealth(healthIncrease);
+        changeHealth(healthIncrease); 
     }
 
     public void sleep(int duration) {
@@ -160,20 +162,38 @@ public class Sim {
 
         changeMood(moodIncrease);
         changeHealth(healthIncrease);
+    }
 
-        //Efek tidak tidur belum di implementasi
+    public void notSleep(){
+        changeMood(-5);
+        changeHealth(-5);
     }
 
     public void eat(Edible food) {
         //Menunggu implementasi inventory
+
     }
 
-    // public CookedFood cook(List<Ingredient> Ingredients) {
-    //     //Menunggu implementasi inventory
+    // public void cook(List<Ingredient> Ingredients) {
+    //     //Menunggu implementasi inventory n objek food
     // }
 
-    public void visit() {
-        //Menunggu implementasi world
+    public void visit(House house1, House house2) {
+        int x1 = house1.getLocation().getX();
+        int y1 = house1.getLocation().getY();
+        
+        int x2 = house2.getLocation().getX();
+        int y2 = house2.getLocation().getY();
+
+        //menghitung jarak (waktu) antara titik Sim dan rumah yang dikunjungi
+        double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+
+        //Efek berkunjung
+        int moodIncrease = 10*(int)distance/30;
+        int satietyDecrease = -10*(int)distance/30;
+
+        changeMood(moodIncrease);
+        changeSatiety(satietyDecrease);
     }
 
     public void defecate() {
@@ -182,12 +202,43 @@ public class Sim {
 
         changeSatiety(satietyDecrease);
         changeMood(moodIncrease);
-
-        //Efek tidak buang air belum di implementasi
     }
 
-    public void upgradeHouse(House house) {
+    public void notDefecate() {
+        changeHealth(-5);
+        changeMood(-5);
+    }
 
+    public void upgradeHouse() {
+        Scanner input = new Scanner(System.in);
+        if (balance < 1500){
+            System.out.println("You can't upgrade the house");
+        }
+        else{
+            balance -= 1500;
+            ArrayList<Room> rooms = house.getRoomList();
+            if (house.getNumberofRoom() == 1){
+                System.out.println("You have to choose the direction of adding the room");
+                System.out.println("You can select top/bottom/left/right");
+                String direction = input.nextLine();
+                house.upgradeRoom(rooms.get(0), direction);              
+            }
+            else
+            if (house.getNumberofRoom() >= 2){
+                System.out.println("You have " + rooms.size() + " rooms.");
+                System.out.println("Please choose the room you want to upgrade by entering its number:");
+                house.printRoomList();
+
+                int roomNumber = input.nextInt();
+                System.out.println("You have to choose the direction of adding the room");
+                System.out.println("You can select top/bottom/left/right");
+                String direction = input.nextLine();
+                house.upgradeRoom(rooms.get(roomNumber-1), direction);    
+            }
+        }
+
+
+        
     }
 
     public void buy(Purchasable item) {
@@ -199,10 +250,6 @@ public class Sim {
     }
 
     public void openInventory() {
-
-    }
-
-    public void place(WorldObject o) {
 
     }
 
