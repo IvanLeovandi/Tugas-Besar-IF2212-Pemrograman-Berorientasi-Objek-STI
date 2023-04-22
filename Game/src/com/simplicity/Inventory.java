@@ -1,23 +1,57 @@
 package com.simplicity;
 
-import java.util.List;
+import java.util.HashMap;
 
-public class Inventory {
-    private List slots;
+public class Inventory<T> {
+    private HashMap<T, Integer> inventory;
+    private int capacity;
 
-    private class Slot<E> {
-        private int count;
+    public Inventory() {
+        inventory = new HashMap<T, Integer>();
+        capacity = 20;
+    }
 
-        public int getCount() {
-            return count;
-        }
-
-        public void setCount(int count) {
-            this.count = count;
+    public void addItem(T itemName, int quantity) {
+        if (inventory.containsKey(itemName)) {
+            int currentQuantity = inventory.get(itemName);
+            inventory.put(itemName, currentQuantity + quantity);
+        } else {
+            if(inventory.size() == capacity){
+                System.out.println("Inventory sudah penuh, mohon untuk menghapus barang atau mengeluarkannya dari inventory.");
+            }
+            inventory.put(itemName, quantity);
         }
     }
 
-    public void take() {
-
+    public int getItemQuantity(T itemName) {
+        if (inventory.containsKey(itemName)) {
+            return inventory.get(itemName);
+        } else {
+            return 0;
+        }
     }
+
+    public HashMap<T, Integer> getInventory() {
+        return inventory;
+    }
+
+    // public HashMap<Food, Integer> getFoodInventory() {
+    //     HashMap<Food, Integer> foodInventory = new HashMap<>();
+    //     for (Map.Entry<Food, Integer> entry : inventory.entrySet()) {
+    //         if (entry.getKey() instanceof Food) {
+    //             filteredInventory.put(entry.getKey(), entry.getValue());
+    //         }
+    //     }
+    //     return foodInventory;
+    // }
+
+    // public HashMap<Furniture, Integer> getFurnitureInventory() {
+    //     HashMap<Furniture, Integer> furnitureInventory = new HashMap<>();
+    //     for (Map.Entry<Furniture, Integer> entry : inventory.entrySet()) {
+    //         if (entry.getKey() instanceof Furniture) {
+    //             filteredInventory.put(entry.getKey(), entry.getValue());
+    //         }
+    //     }
+    //     return furnitureInventory;
+    // }
 }

@@ -1,4 +1,5 @@
 package com.simplicity;
+import com.simplicity.Furniture.*;
 import java.util.ArrayList;
 
 public class Room {
@@ -7,9 +8,9 @@ public class Room {
     public Room left,right,top,bottom;
     public int[][] space;
     public Point locationInHouse;
+    private String name;
 
-
-    public Room(int roomNumber,Point locationInHouse)
+    public Room(int roomNumber,Point locationInHouse, String name)
     {   
         this.roomNumber = roomNumber;
         left = null;
@@ -17,7 +18,19 @@ public class Room {
         top = null;
         bottom = null;
         this.locationInHouse = locationInHouse;
+        objectList = new ArrayList<Furniture>();
         space = new int[6][6];
+        this.name = name;
+    }
+
+    public void setName(String name)
+    {   
+        this.name = name;
+    }
+
+    public String getName()
+    {
+        return this.name;
     }
 
     public Room getLeft()
@@ -76,8 +89,8 @@ public class Room {
         Boolean flag = false;
         if (rotation == 0 || rotation == 2)
         {
-            x = object.getLengthX();
-            y = object.getLengthY();
+            x = object.getSize().getX();
+            y = object.getSize().getY();
             if (rotation == 0)
             {
                 if (placement.getX()+x > 6 || placement.getY()+y > 6)
@@ -121,8 +134,8 @@ public class Room {
         }
         else if (rotation == 1 || rotation == 3)
         {
-            x = object.getLengthY();
-            y = object.getLengthX();
+            x = object.getSize().getX();
+            y = object.getSize().getY();
             if (rotation == 1)
             {
                 if (placement.getX()+x > 6 || placement.getY()+y > 6)
@@ -169,63 +182,98 @@ public class Room {
 
     public void placeObject (Point placement, int rotation, Furniture object)
     {
-        if (!checkFilled(placement, rotation, object))
+        if (!objectList.contains(object))
         {
-            int x,y;
-            if (rotation == 0 || rotation == 2)
+            if (!checkFilled(placement, rotation, object))
             {
-                x = object.getLengthX();
-                y = object.getLengthY();
-                if (rotation == 0)
+                objectList.add(object);
+                int x,y;
+                if (rotation == 0 || rotation == 2)
                 {
-                    for (int i=placement.getY();i<placement.getY()+y;i++)
+                    x = object.getSize().getX();
+                    y = object.getSize().getY();
+                    if (rotation == 0)
+                    {
+                        for (int i=placement.getY();i<placement.getY()+y;i++)
+                            {
+                                for (int j=placement.getX();j<placement.getX()+x;j++)
+                                {
+                                    space[i][j] = object.getId();
+                                }
+                            }
+                        }
+                    
+                    else if (rotation == 2)
+                    {
+                        for (int i=placement.getY();i<placement.getY()+y;i++)
+                        {
+                            for (int j=placement.getX()+x-1;j>=placement.getY();j--)
+                            {
+                                space[i][j] = object.getId();
+                            }
+                        }   
+                    }
+                }
+                else if (rotation == 1 || rotation == 3)
+                {
+                    x = object.getSize().getX();
+                    y = object.getSize().getY();
+                    if (rotation == 1)
+                    {
+                        for (int i=placement.getY();i<placement.getY()+y;i++)
                         {
                             for (int j=placement.getX();j<placement.getX()+x;j++)
                             {
-                                space[i][j] = object.getObjectID();
+                                space    [i][j] = object.getId();
                             }
                         }
                     }
-                }
-                else if (rotation == 2)
-                {
-                    for (int i=placement.getY();i<placement.getY()+y;i++)
+                    else if (rotation == 3)
                     {
-                        for (int j=placement.getX()+x-1;j>=placement.getY();j--)
+                        for (int i=placement.getY()+y-1;i>=placement.getY();i--)
                         {
-                            space[i][j] = object.getObjectID();
-                        }
-                    }   
-                }
-            else if (rotation == 1 || rotation == 3)
-            {
-                x = object.getLengthY();
-                y = object.getLengthX();
-                if (rotation == 1)
-                {
-                    for (int i=placement.getY();i<placement.getY()+y;i++)
-                    {
-                        for (int j=placement.getX();j<placement.getX()+x;j++)
-                        {
-                            space    [i][j] = object.getObjectID;
-                        }
+                            for (int j=placement.getX();j<placement.getX()+x;j++)
+                            {
+                                space[i][j] = object.getId();
+                            }
+                        }   
                     }
                 }
-                else if (rotation == 3)
-                {
-                    for (int i=placement.getY()+y-1;i>=placement.getY();i--)
-                    {
-                        for (int j=placement.getX();j<placement.getX()+x;j++)
-                        {
-                            space[i][j] = object.getObjectID();
-                        }
-                    }   
-                }
+            }
+            else
+            {
+                System.out.printf("There is not enough space for you to place a %s\n",object.getName());
             }
         }
         else
         {
-            System.out.println("You cannot place an object there!");
+            System.out.printf("This room already has a %s\n",object.getName());
+        }
+    }
+    
+    public void removeObject(Point placement)
+    {
+        if (space[placement.getY()][placement.getX()] != 0)
+        {
+            int removedObjectId = space[placement.getY()][placement.getX()];
+            for (Furniture furniture: objectList)
+            {
+                if (furniture.getId() == removedObjectId)
+                {
+                    objectList.remove(furniture);
+                    break;
+                }
+            }
+            for (int i=0; i<6 ; i++)
+            {
+                for (int j=0; j<6; j++)
+                {
+                    if (space[i][j] == removedObjectId)
+                    {
+                        space[i][j] = 0;
+                    }
+                }
+            }
         }
     }
 
