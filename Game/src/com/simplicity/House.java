@@ -120,7 +120,7 @@ public class House {
             }
         }
         return flag;
-    }
+    }  
 
     public void upgradeRoom(Room room, String direction, String name)
     {
@@ -165,3 +165,4 @@ public class House {
         }
     }
 }
+ 
