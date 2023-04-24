@@ -1,5 +1,6 @@
 package com.simplicity;
 import java.util.ArrayList;
+import javax.swing.*;
 
 public class House {
     private Point location;
@@ -43,6 +44,19 @@ public class House {
 
     public void increaseNumberofRoom() {
         this.numberofRoom++;
+    }
+
+    public Boolean checkName(String name)
+    {
+        Boolean flag = false;
+        for (Room room: roomList)
+        {
+            if (room.getName().equals(name))
+            {
+                flag = true;
+            }
+        }
+        return flag;
     }
 
     public Boolean checkUpgradeable(Room roomUp, String direction)
@@ -113,6 +127,7 @@ public class House {
         int x = room.getLocationInHouse().getX();
         int y = room.getLocationInHouse().getY();
         this.increaseNumberofRoom();
+        
         if (this.checkUpgradeable(room, direction))
         {
             if (direction.equals("right"))

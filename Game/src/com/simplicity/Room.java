@@ -4,9 +4,10 @@ import java.util.ArrayList;
 
 public class Room {
     public int roomNumber;
-    public ArrayList<Furniture> objectList;
+    public ArrayList<Furniture> furnitureList;
+    public int[] furnitureCount;
     public Room left,right,top,bottom;
-    public int[][] space;
+    public Point[][] space;
     public Point locationInHouse;
     private String name;
 
@@ -18,9 +19,10 @@ public class Room {
         top = null;
         bottom = null;
         this.locationInHouse = locationInHouse;
-        objectList = new ArrayList<Furniture>();
-        space = new int[6][6];
-        this.name = name;
+        furnitureList = new ArrayList<Furniture>();
+        furnitureCount = new int[8];
+        space = new Point[6][6];
+        this.name = name;   
     }
 
     public void setName(String name)
@@ -83,14 +85,19 @@ public class Room {
         return this.locationInHouse;
     }
 
-    public Boolean checkFilled(Point placement, int rotation, Furniture object)
+    public ArrayList<Furniture> getfurnitureList()
+    {
+        return this.furnitureList;
+    }
+
+    public Boolean checkFilled(Point placement, int rotation, Furniture furniture)
     {
         int x,y;
         Boolean flag = false;
         if (rotation == 0 || rotation == 2)
         {
-            x = object.getSize().getX();
-            y = object.getSize().getY();
+            x = furniture.getSize().getX();
+            y = furniture.getSize().getY();
             if (rotation == 0)
             {
                 if (placement.getX()+x > 6 || placement.getY()+y > 6)
@@ -103,7 +110,7 @@ public class Room {
                     {
                         for (int j=placement.getX();j<placement.getX()+x;j++)
                         {
-                            if (space[i][j] != 0)
+                            if (space[i][j] != null)
                             {
                                 flag = true;
                             } 
@@ -123,7 +130,7 @@ public class Room {
                     {
                         for (int j=placement.getX()+x-1;j>=placement.getY();j--)
                         {
-                            if (space[i][j] != 0)
+                            if (space[i][j] != null)
                             {
                                 flag = true;
                             } 
@@ -134,8 +141,8 @@ public class Room {
         }
         else if (rotation == 1 || rotation == 3)
         {
-            x = object.getSize().getX();
-            y = object.getSize().getY();
+            x = furniture.getSize().getX();
+            y = furniture.getSize().getY();
             if (rotation == 1)
             {
                 if (placement.getX()+x > 6 || placement.getY()+y > 6)
@@ -148,7 +155,7 @@ public class Room {
                     {
                         for (int j=placement.getX();j<placement.getX()+x;j++)
                         {
-                            if (space[i][j] != 0)
+                            if (space[i][j] != null)
                             {
                                 flag = true;
                             } 
@@ -168,7 +175,7 @@ public class Room {
                     {
                         for (int j=placement.getX();j<placement.getX()+x;j++)
                         {
-                            if (space[i][j] != 0)
+                            if (space[i][j] != null)
                             {
                                 flag = true;
                             } 
@@ -180,25 +187,26 @@ public class Room {
         return flag;
     }
 
-    public void placeObject (Point placement, int rotation, Furniture object)
+    public void placeFurniture (Point placement, int rotation, Furniture furniture)
     {
-        if (!objectList.contains(object))
+        if (!furnitureList.contains(furniture))
         {
-            if (!checkFilled(placement, rotation, object))
+            if (!checkFilled(placement, rotation, furniture))
             {
-                objectList.add(object);
+                furnitureCount[furniture.getId()-1]++;
+                furnitureList.add(furniture);
                 int x,y;
                 if (rotation == 0 || rotation == 2)
                 {
-                    x = object.getSize().getX();
-                    y = object.getSize().getY();
+                    x = furniture.getSize().getX();
+                    y = furniture.getSize().getY();
                     if (rotation == 0)
                     {
                         for (int i=placement.getY();i<placement.getY()+y;i++)
                             {
                                 for (int j=placement.getX();j<placement.getX()+x;j++)
                                 {
-                                    space[i][j] = object.getId();
+                                    space[i][j] = new Point(furniture.getId(),furnitureCount[furniture.getId()-1]);
                                 }
                             }
                         }
@@ -209,22 +217,22 @@ public class Room {
                         {
                             for (int j=placement.getX()+x-1;j>=placement.getY();j--)
                             {
-                                space[i][j] = object.getId();
+                                space[i][j] = new Point(furniture.getId(),furnitureCount[furniture.getId()-1]);
                             }
                         }   
                     }
                 }
                 else if (rotation == 1 || rotation == 3)
                 {
-                    x = object.getSize().getX();
-                    y = object.getSize().getY();
+                    x = furniture.getSize().getX();
+                    y = furniture.getSize().getY();
                     if (rotation == 1)
                     {
                         for (int i=placement.getY();i<placement.getY()+y;i++)
                         {
                             for (int j=placement.getX();j<placement.getX()+x;j++)
                             {
-                                space    [i][j] = object.getId();
+                                space[i][j] = new Point(furniture.getId(),furnitureCount[furniture.getId()-1]);
                             }
                         }
                     }
@@ -234,7 +242,7 @@ public class Room {
                         {
                             for (int j=placement.getX();j<placement.getX()+x;j++)
                             {
-                                space[i][j] = object.getId();
+                                space[i][j] = new Point(furniture.getId(),furnitureCount[furniture.getId()-1]);
                             }
                         }   
                     }
@@ -242,25 +250,26 @@ public class Room {
             }
             else
             {
-                System.out.printf("There is not enough space for you to place a %s\n",object.getName());
+                System.out.printf("There is not enough space for you to place a %s\n",furniture.getName());
             }
         }
         else
         {
-            System.out.printf("This room already has a %s\n",object.getName());
+            System.out.printf("This room already has a %s\n",furniture.getName());
         }
     }
     
-    public void removeObject(Point placement)
+    public void removeFurniture(Point placement)
     {
-        if (space[placement.getY()][placement.getX()] != 0)
+        if (space[placement.getY()][placement.getX()] != null)
         {
-            int removedObjectId = space[placement.getY()][placement.getX()];
-            for (Furniture furniture: objectList)
+            Point removedfurnitureId = space[placement.getY()][placement.getX()];
+            furnitureCount[removedfurnitureId.getX()-1]--;
+            for (Furniture furniture: furnitureList)
             {
-                if (furniture.getId() == removedObjectId)
+                if (furniture.getId() == removedfurnitureId.getX())
                 {
-                    objectList.remove(furniture);
+                    furnitureList.remove(furniture);
                     break;
                 }
             }
@@ -268,9 +277,16 @@ public class Room {
             {
                 for (int j=0; j<6; j++)
                 {
-                    if (space[i][j] == removedObjectId)
+                    if (space[i][j] == removedfurnitureId)
                     {
-                        space[i][j] = 0;
+                        space[i][j] = null;
+                    }
+                    if (space[i][j] != null)
+                    {
+                        if (space[i][j].getX() == removedfurnitureId.getX() && space[i][j].getY() > removedfurnitureId.getY())
+                        {
+                            space[i][j].setPoint(space[i][j].getX(),space[i][j].getY()-1);
+                        }
                     }
                 }
             }
@@ -304,16 +320,23 @@ public class Room {
 
     public void printRoom()
     {
-        System.out.println("-------------------------");
+        System.out.println("-------------------------------------");
         for (int i=0;i<6;i++)
         {
             System.out.print("| ");
             for (int j =0;j<6;j++)
             {
-                System.out.print(space[i][j] + " | ");
+                if (space[i][j] == null)
+                {
+                    System.out.print("0,0 | ");
+                }
+                else
+                {
+                    System.out.print(space[i][j].getX() + "," + space[i][j].getY() + " | ");
+                }
             }
             System.out.println(" ");
-            System.out.println("-------------------------");
+            System.out.println("-------------------------------------");
         }
     }
 }
