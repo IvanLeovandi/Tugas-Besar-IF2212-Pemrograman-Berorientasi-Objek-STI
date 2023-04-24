@@ -277,13 +277,13 @@ public class Room {
             {
                 for (int j=0; j<6; j++)
                 {
-                    if (space[i][j] == removedfurnitureId)
-                    {
-                        space[i][j] = null;
-                    }
                     if (space[i][j] != null)
                     {
-                        if (space[i][j].getX() == removedfurnitureId.getX() && space[i][j].getY() > removedfurnitureId.getY())
+                        if (space[i][j].equals(removedfurnitureId))
+                        {
+                            space[i][j] = null;
+                        }
+                        else if (space[i][j].getX() == removedfurnitureId.getX() && space[i][j].getY() > removedfurnitureId.getY())
                         {
                             space[i][j].setPoint(space[i][j].getX(),space[i][j].getY()-1);
                         }
