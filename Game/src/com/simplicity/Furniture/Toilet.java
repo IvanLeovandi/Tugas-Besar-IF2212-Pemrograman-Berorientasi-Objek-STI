@@ -6,7 +6,7 @@ public class Toilet extends Furniture {
     private boolean isUsed;
 
     public Toilet(){
-        super("Toilet", new Point(1,1), 50, 4);
+        super("Toilet", new Dimension2D(1,1), 50, 4);
         isUsed = false;
     }
 

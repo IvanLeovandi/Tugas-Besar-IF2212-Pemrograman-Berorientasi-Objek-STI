@@ -6,7 +6,7 @@ public class GasStove extends Furniture {
     private boolean isUsed;
 
     public GasStove(){
-        super("Kompor Gas", new Point(2,1), 100, 5);
+        super("Kompor Gas", new Dimension2D(1,2), 100, 5);
         isUsed = false;
     }
 

@@ -105,8 +105,8 @@ public class Room {
         Boolean flag = false;
         if (rotation == 0 || rotation == 2) //Furniture horizontal
         {
-            x = furniture.getSize().getX();
-            y = furniture.getSize().getY();
+            x = furniture.getSize().getLength();
+            y = furniture.getSize().getWidth();
             if (rotation == 0) //Furniture menghadap ke arah kanan dari posisi placement awal 
             {
                 if (placement.getX()+x > 6 || placement.getY()+y > 6) //Mengecek apakah melewati border
@@ -150,8 +150,8 @@ public class Room {
         }
         else if (rotation == 1 || rotation == 3) //Furniture vertical
         {
-            x = furniture.getSize().getX();
-            y = furniture.getSize().getY();
+            x = furniture.getSize().getLength();
+            y = furniture.getSize().getWidth();
             if (rotation == 1) //Furniture menghadap ke arah bawah dari posisi placement awal 
             {
                 if (placement.getX()+x > 6 || placement.getY()+y > 6) //Mengecek apakah melewati border
@@ -206,8 +206,8 @@ public class Room {
             int x,y;
             if (rotation == 0 || rotation == 2) //Furniture horizontal
             {
-                x = furniture.getSize().getX();
-                y = furniture.getSize().getY();
+                x = furniture.getSize().getLength();
+                y = furniture.getSize().getWidth();
                 if (rotation == 0) //Furniture menghadap ke arah kanan dari posisi palcement awal
                 {
                     for (int i=placement.getY();i<placement.getY()+y;i++) //Looping untuk memasukkan furniture pada space
@@ -232,8 +232,8 @@ public class Room {
             }
             else if (rotation == 1 || rotation == 3) //Furniture vertical
             {
-                x = furniture.getSize().getX();
-                y = furniture.getSize().getY();
+                x = furniture.getSize().getLength();
+                y = furniture.getSize().getWidth();
                 if (rotation == 1) //Furniture menghadap ke arah bawah dari posisi palcement awal
                 {
                     for (int i=placement.getY();i<placement.getY()+y;i++) //Looping untuk memasukkan furniture pada space
