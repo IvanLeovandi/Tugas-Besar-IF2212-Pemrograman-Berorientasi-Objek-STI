@@ -86,6 +86,10 @@ public class House {
                     }
                 }
             }
+            else
+            {
+                flag = false;
+            }
         }
 
         else if (direction.equals("left")) //Mengecek apakah ruangan sebelah kiri terisi atau tidak
@@ -99,6 +103,10 @@ public class House {
                         flag = false;
                     }
                 }
+            }
+            else
+            {
+                flag = false;
             }
         }
 
@@ -114,6 +122,10 @@ public class House {
                     }
                 }
             }
+            else
+            {
+                flag = false;
+            }
         }
 
         else if (direction.equals("bottom")) //Mengecek apakah ruangan sebelah bawah terisi atau tidak
@@ -128,6 +140,10 @@ public class House {
                     }
                 }
             }
+            else
+            {
+                flag = false;
+            }
         }
         return flag;
     }  
@@ -137,10 +153,10 @@ public class House {
     {
         int x = room.getLocationInHouse().getX();
         int y = room.getLocationInHouse().getY();
-        this.increaseNumberofRoom();
         
         if (this.checkUpgradeable(room, direction))
         {
+            this.increaseNumberofRoom();
             if (direction.equals("right"))
             {
                 Room tempRoom = new Room(this.getNumberofRoom(),new Point(x+1,y),name);
@@ -172,6 +188,33 @@ public class House {
                 tempRoom.setBottom(room);
                 room.setTop(tempRoom);
                 roomList.add(tempRoom);
+            }
+            
+            Room tempRoom = roomList.get(roomList.size()-1);
+            int x2 = tempRoom.getLocationInHouse().getX();
+            int y2 = tempRoom.getLocationInHouse().getY();
+            for (Room room2 : roomList)
+            {
+                if (room2.getLocationInHouse().getX() == x2-1 && room2.getLocationInHouse().getY() == y2)
+                {
+                    room2.setRight(tempRoom);
+                    tempRoom.setLeft(room2);
+                }
+                if (room2.getLocationInHouse().getX() == x2+1 && room2.getLocationInHouse().getY() == y2)
+                {
+                    room2.setLeft(tempRoom);
+                    tempRoom.setRight(room2);
+                }
+                if (room2.getLocationInHouse().getX() == x2 && room2.getLocationInHouse().getY() == y2-1)
+                {
+                    room2.setTop(tempRoom);
+                    tempRoom.setBottom(room2);
+                }
+                if (room2.getLocationInHouse().getX() == x2 && room2.getLocationInHouse().getY() == y2+1)
+                {
+                    room2.setBottom(tempRoom);
+                    tempRoom.setTop(room2);
+                }
             }
         }
     }
