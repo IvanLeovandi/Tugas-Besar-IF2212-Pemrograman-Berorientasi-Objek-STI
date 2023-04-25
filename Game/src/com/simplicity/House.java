@@ -1,11 +1,13 @@
 package com.simplicity;
 import java.util.ArrayList;
+import javax.swing.*;
 
 public class House {
-    private Point location;
-    private int numberofRoom;
-    private ArrayList<Room> roomList;
+    private Point location; //Lokasi di World
+    private int numberofRoom; //Jumlah ruangan di rumah
+    private ArrayList<Room> roomList; //List ruangan di rumah
 
+    //Konstruktor
     public House(Point location)
     {
         this.location = location;
@@ -14,10 +16,13 @@ public class House {
         roomList.add(new Room(numberofRoom,new Point(0,0),"Starting Room"));
     }
 
+    //Getter Room List
     public ArrayList<Room> getRoomList()
     {
         return this.roomList;
     }
+    
+    //Untuk mencetak room list
     public void printRoomList()
     {
         System.out.println("These are the rooms available in this house: ");
@@ -27,36 +32,55 @@ public class House {
         }
     }
     
+    //Getter location
     public Point getLocation()
     {
         return this.location;
     }
 
+    //Setter Location
     public void setLocation(Point location)
     {
         this.location = location;
     }
 
+    //Getter numberOfRoom
     public int getNumberofRoom() {
         return numberofRoom;
     }
 
+    //Meningkatkan numberofRoom
     public void increaseNumberofRoom() {
         this.numberofRoom++;
     }
 
+    //Validator untuk mengecek nama ruangan baru
+    public Boolean checkName(String name)
+    {
+        Boolean flag = false;
+        for (Room room: roomList)
+        {
+            if (room.getName().equals(name))
+            {
+                flag = true;
+            }
+        }
+        return flag;
+    }
+
+    //Validator apakah ruangan bisa di upgrade atau tidak
     public Boolean checkUpgradeable(Room roomUp, String direction)
     {
         Boolean flag = true;
         int x = roomUp.getLocationInHouse().getX();
         int y = roomUp.getLocationInHouse().getY();
-        if (direction.equals("right"))
+        if (direction.equals("right")) //Mengecek apakah ruangan sebelah kanan terisi atau tidak
         {
-            if (roomUp.getRight() == null)
+            if (roomUp.getRight() == null) 
             {
                 for (Room room: roomList)
                 {
-                    if (room.getLocationInHouse().getX() == x+1 && room.getLocationInHouse().getY() == y)
+                    if (room.getLocationInHouse().getX() == x+1 && room.getLocationInHouse().getY() == y) 
                     {
                         flag = false;
                     }
@@ -64,7 +88,7 @@ public class House {
             }
         }
 
-        else if (direction.equals("left"))
+        else if (direction.equals("left")) //Mengecek apakah ruangan sebelah kiri terisi atau tidak
         {
             if (roomUp.getLeft() == null)
             {
@@ -78,7 +102,7 @@ public class House {
             }
         }
 
-        else if (direction.equals("top"))
+        else if (direction.equals("top")) //Mengecek apakah ruangan sebelah atas terisi atau tidak
         {
             if (roomUp.getTop() == null)
             {
@@ -92,7 +116,7 @@ public class House {
             }
         }
 
-        else if (direction.equals("bottom"))
+        else if (direction.equals("bottom")) //Mengecek apakah ruangan sebelah bawah terisi atau tidak
         {
             if (roomUp.getBottom() == null)
             {
@@ -106,13 +130,15 @@ public class House {
             }
         }
         return flag;
-    }
+    }  
 
+    //Untuk upgrade ruangan
     public void upgradeRoom(Room room, String direction, String name)
     {
         int x = room.getLocationInHouse().getX();
         int y = room.getLocationInHouse().getY();
         this.increaseNumberofRoom();
+        
         if (this.checkUpgradeable(room, direction))
         {
             if (direction.equals("right"))
@@ -150,3 +176,4 @@ public class House {
         }
     }
 }
+ 
