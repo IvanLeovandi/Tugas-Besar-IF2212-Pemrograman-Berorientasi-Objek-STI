@@ -6,7 +6,7 @@ public class TableAndChair extends Furniture {
     private boolean isUsed;
 
     public TableAndChair(){
-        super("TableAndChair", new Point(3,3), 50, 7);
+        super("TableAndChair", new Dimension2D(3,3), 50, 7);
         isUsed = false;
     }
 

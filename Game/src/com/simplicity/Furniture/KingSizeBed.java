@@ -6,7 +6,7 @@ public class KingSizeBed extends Furniture{
     private boolean isUsed;
 
     public KingSizeBed(String type){
-        super("Kasur King Size", new Point(5,2), 150, 3);
+        super("Kasur King Size", new Dimension2D(2,5), 150, 3);
         isUsed = false;
     }
 

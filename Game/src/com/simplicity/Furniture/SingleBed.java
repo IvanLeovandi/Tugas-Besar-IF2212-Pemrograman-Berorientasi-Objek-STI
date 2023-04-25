@@ -6,7 +6,7 @@ public class SingleBed extends Furniture{
     private boolean isUsed;
 
     public SingleBed(String type){
-        super("Kasur Single", new Point(4,1), 50, 1);
+        super("Kasur Single", new Dimension2D(1,4), 50, 1);
         isUsed = false;
     }
 

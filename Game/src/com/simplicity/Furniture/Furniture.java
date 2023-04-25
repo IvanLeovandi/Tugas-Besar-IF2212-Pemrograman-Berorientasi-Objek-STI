@@ -3,10 +3,10 @@ package com.simplicity.Furniture;
 import com.simplicity.*;
 public class Furniture /* extends GameObject */ {
     private String name;
-    private Point size;
+    private Dimension2D size;
     private int price, id;
 
-    public Furniture(String name, Point size, int price, int id) {
+    public Furniture(String name, Dimension2D size, int price, int id) {
         this.name = name;
         this.size = size;
         this.price = price;
@@ -17,7 +17,7 @@ public class Furniture /* extends GameObject */ {
         return name;
     }
 
-    public Point getSize() {
+    public Dimension2D getSize() {
         return size;
     }
 
@@ -33,7 +33,7 @@ public class Furniture /* extends GameObject */ {
         this.name = name;
     }
 
-    public void setSize(Point size) {
+    public void setSize(Dimension2D size) {
         this.size = size;
     }
 
