@@ -11,7 +11,7 @@ public class Sim {
     private String name;
     private Job job;
     private int balance;
-    private Inventory<Furniture> FurnitureInventory;
+    private Inventory<Furniture> furnitureInventory;
     private int satiety;
     private int mood;
     private int health;
@@ -24,7 +24,7 @@ public class Sim {
         this.name = name;
         this.job = new Job();
         this.balance = 100;
-        this.FurnitureInventory = new Inventory();
+        this.furnitureInventory = new Inventory();
         this.satiety = 80;
         this.mood = 80;
         this.health = 80;
@@ -47,7 +47,7 @@ public class Sim {
     }
 
     public Inventory<Furniture> getFurnitureInventory() {
-        return FurnitureInventory;
+        return furnitureInventory;
     }
 
     public int getSatiety() {
@@ -76,7 +76,7 @@ public class Sim {
     }
 
     public void setFurnitureInventory(Inventory<Furniture> inventory) {
-        this.FurnitureInventory = inventory;
+        this.furnitureInventory = inventory;
     }
 
     public void setSatiety(int satiety) {
@@ -138,36 +138,64 @@ public class Sim {
             setHealth(i);
         }
     }
+
+    public Boolean validationDuration(int duration, int modulo){
+        if (duration % modulo == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
+
+    }
     
     //---------Active Action---------
     public void work(int duration){
-        int satietyDecrease = (-10)*(duration/30);
-        int moodDecrease = (-10)*(duration/30);
-        
-        changeSatiety(satietyDecrease);
-        changeMood(moodDecrease);
-
-        //Penambahan uang
-        int moneyIncrease = job.getSalary();
-        setBalance(getBalance() + moneyIncrease);
+        if (validationDuration(duration, 120) == false){
+            System.out.println("Duration must be multiple of 120 seconds");
+        }
+        else {
+            int satietyDecrease = (-10)*(duration/30);
+            int moodDecrease = (-10)*(duration/30);
+            
+            changeSatiety(satietyDecrease);
+            changeMood(moodDecrease);
+    
+            //Penambahan uang
+            int moneyIncrease = job.getSalary();
+            setBalance(getBalance() + moneyIncrease);
+        }
+       
     }
 
     public void workout(int duration) {
-        int satietyIncrease = (-5)*(duration/20);
-        int moodDecrease = 10*(duration/20);
-        int healthIncrease = 5*(duration/20);
-        
-        changeSatiety(satietyIncrease);
-        changeMood(moodDecrease);
-        changeHealth(healthIncrease); 
+        if (validationDuration(duration, 20) == false){
+            System.out.println("Duration must be multiple of 20 seconds");
+        }
+        else {
+            int satietyDecrease = (-5)*(duration/20);
+            int moodIncrease = 10*(duration/20);
+            int healthIncrease = 5*(duration/20);
+            
+            changeSatiety(satietyDecrease);
+            changeMood(moodIncrease);
+            changeHealth(healthIncrease); 
+        }
     }
 
     public void sleep(int duration) {
-        int moodIncrease = 30*(duration/4*60);
-        int healthIncrease = 20*(duration/4*60);
-
-        changeMood(moodIncrease);
-        changeHealth(healthIncrease);
+        if (validationDuration(duration, 240) == false){
+            System.out.println("Duration must be multiple of 4 minutes");
+        }
+        else {
+            int satietyDecrease = (-5)*(duration/240);
+            int moodIncrease = 10*(duration/240);
+            int healthIncrease = 5*(duration/240);
+            
+            changeSatiety(satietyDecrease);
+            changeMood(moodIncrease);
+            changeHealth(healthIncrease); 
+        }
     }
 
     public void notSleep(){
@@ -270,7 +298,7 @@ public class Sim {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                FurnitureInventory.addItem(furniture, quantity);
+                furnitureInventory.addItem(furniture, quantity);
             }
         }
         // else if (item instanceof Food){
@@ -307,7 +335,7 @@ public class Sim {
 
     public void setUpObject (Point placement, int rotation, Furniture furniture) {
         //Mengecek apakah furniture yang dipilih ada di inventory
-        if (FurnitureInventory.getInventory().containsKey(furniture) == false){
+        if (furnitureInventory.getInventory().containsKey(furniture) == false){
             System.out.println("You don't have the furniture");
         }
         else {
@@ -315,7 +343,7 @@ public class Sim {
         }
         
         //Menghapus furniture dari inventory
-        FurnitureInventory.removeItem(furniture);
+        furnitureInventory.removeItem(furniture);
     }
 
     public void viewInventory() {
@@ -328,8 +356,8 @@ public class Sim {
         System.out.println(header);
         System.out.println(line);
     
-        for (Furniture item : FurnitureInventory.getInventory().keySet()) {
-            int quantity = FurnitureInventory.getInventory().get(item);
+        for (Furniture item : furnitureInventory.getInventory().keySet()) {
+            int quantity = furnitureInventory.getInventory().get(item);
             String row = String.format("| %-20s | %-10d |", item.toString(), quantity);
             System.out.println(row);
         }
@@ -357,6 +385,7 @@ public class Sim {
     }
 
     public void viewTime() {
+
 
     }
 
