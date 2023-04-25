@@ -268,14 +268,20 @@ public class Room {
         if (space[placement.getY()][placement.getX()] != null) //Mengecek placement yang dimasukkan ada furniture atau tidak
         {
             Point removedfurnitureId = space[placement.getY()][placement.getX()]; 
-            int furnitureX = removedfurnitureId.getY(); //Furniture dengan tipe x ke berapa 
+            int furnitureX = removedfurnitureId.getY()-1; //Furniture dengan tipe x ke berapa 
             furnitureCount[removedfurnitureId.getX()-1]--; //Mengurangi count furniture dari furnitureCount
             for (Furniture furniture: furnitureList) //Menghilangkan furniture dari furnitureList
             {
-                if (furniture.getId() == removedfurnitureId.getX() && furnitureX != 0)
+                if (furniture.getId() == removedfurnitureId.getX())
                 {
-                    furnitureList.remove(furniture);
-                    furnitureX--;
+                    if (furnitureX==0)
+                    {
+                        furnitureList.remove(furniture);
+                    }
+                    else
+                    {
+                        furnitureX--;
+                    }
                 }
             }
             for (int i=0; i<6 ; i++) //Looping untuk menghilangkan furniture dari space 
