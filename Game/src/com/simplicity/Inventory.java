@@ -23,6 +23,20 @@ public class Inventory<T> {
         }
     }
 
+    public void removeItem(T itemName) {
+        if (inventory.containsKey(itemName)) {
+            int currentQuantity = inventory.get(itemName);
+            if (currentQuantity > 1) {
+                inventory.put(itemName, currentQuantity - 1);
+            } else {
+                inventory.remove(itemName);
+            }
+        } else {
+            System.out.println("Benda tidak ada di inventory");
+        }
+    }
+    
+
     public int getItemQuantity(T itemName) {
         if (inventory.containsKey(itemName)) {
             return inventory.get(itemName);
