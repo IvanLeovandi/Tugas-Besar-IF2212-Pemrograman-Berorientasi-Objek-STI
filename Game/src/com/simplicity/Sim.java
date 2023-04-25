@@ -1,11 +1,9 @@
 package com.simplicity;
 
 import java.util.*;
-import com.simplicity.House;
-import java.util.HashMap;
-import com.simplicity.Interfaces.Edible;
-import com.simplicity.Furniture.Furniture;
-import com.simplicity.Interfaces.Purchasable;
+
+import com.simplicity.Furniture.*;
+import com.simplicity.Interfaces.*;
 
 public class Sim {
     private String name;
@@ -18,19 +16,21 @@ public class Sim {
     private String status;
     private House house;
     private Room currentRoom;
+    private Furniture currentObject;
 
     //Konstruktor
     public Sim(String name, Point location) {
         this.name = name;
         this.job = new Job();
         this.balance = 100;
-        this.furnitureInventory = new Inventory();
+        this.furnitureInventory = new Inventory<Furniture>();
         this.satiety = 80;
         this.mood = 80;
         this.health = 80;
         this.status = "Idle";
         this.house = new House(location);
         this.currentRoom = house.getRoomList().get(0);
+        this.currentObject = null;
     }
 
     //Getter
@@ -184,17 +184,27 @@ public class Sim {
     }
 
     public void sleep(int duration) {
-        if (validationDuration(duration, 240) == false){
-            System.out.println("Duration must be multiple of 4 minutes");
+        if (this.currentObject != null) {
+            if (this.currentObject instanceof KingSizeBed || this.currentObject instanceof SingleBed || this.currentObject instanceof QueenSizeBed) {
+                if (validationDuration(duration, 240) == false){
+                    System.out.println("Duration must be multiple of 4 minutes");
+                }
+                else {
+                    int satietyDecrease = (-5)*(duration/240);
+                    int moodIncrease = 10*(duration/240);
+                    int healthIncrease = 5*(duration/240);
+                    
+                    changeSatiety(satietyDecrease);
+                    changeMood(moodIncrease);
+                    changeHealth(healthIncrease); 
+                }
+            }
+            else {
+                System.out.println("You can't sleep here");
+            }
         }
         else {
-            int satietyDecrease = (-5)*(duration/240);
-            int moodIncrease = 10*(duration/240);
-            int healthIncrease = 5*(duration/240);
-            
-            changeSatiety(satietyDecrease);
-            changeMood(moodIncrease);
-            changeHealth(healthIncrease); 
+            System.out.println("You can't sleep here");
         }
     }
 
@@ -231,11 +241,21 @@ public class Sim {
     }
 
     public void defecate() {
-        int satietyDecrease = -20;
-        int moodIncrease = 10;
-
-        changeSatiety(satietyDecrease);
-        changeMood(moodIncrease);
+        if (this.currentObject != null) {
+            if (this.currentObject instanceof Toilet) {
+                int satietyDecrease = -20;
+                int moodIncrease = 10;
+    
+                changeSatiety(satietyDecrease);
+                changeMood(moodIncrease);
+            }
+            else {
+                System.out.println("You can't defecate here");
+            }
+        }
+        else {
+            System.out.println("You can't defecate here");
+        }
     }
 
     public void notDefecate() {
@@ -379,14 +399,24 @@ public class Sim {
         // System.out.println(line);
 
         //Inventory Cuisine sama Ingredient belum dipisah, nunggu implementasi food dulu
-    
-
-
+    }
+    public void moveToObject(Furniture furniture) {
+        if (currentRoom.getfurnitureList().contains(furniture) == false){
+            System.out.println("You can't move to the object");
+        }
+        else{
+            this.currentObject = furniture;
+        }
     }
 
-    public void viewTime() {
+    public void viewTime() {  
+        if(this.currentObject instanceof Clock){
+            //Implementasi
 
-
+        }
+        else{
+            System.out.println("You can't view the time");
+        }
     }
 
     //------------
