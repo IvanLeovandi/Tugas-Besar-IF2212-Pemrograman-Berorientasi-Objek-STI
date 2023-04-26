@@ -330,6 +330,12 @@ public class Room {
         }
     } 
 
+    //Mengecek di suatu titik ada furniture atau tidak
+    public Boolean checkPoint(Point point)
+    {
+        return (space[point.getY()][point.getX()] == null);
+    }
+
     //Mencetak ruangan beserta furniture yang ada di dalamnya
     public void printRoom() 
     {
