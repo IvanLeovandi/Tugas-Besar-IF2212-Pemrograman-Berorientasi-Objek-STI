@@ -3,12 +3,12 @@ package com.simplicity.Foods;
 import com.simplicity.Interfaces.Edible;
 
 public abstract class Food implements Edible {
-    private String type;
+    // private String type;
     private String name;
     private int satietyPoint;
 
-    public Food(String type, int satietyPoint) {
-        this.type = type;
+    public Food(String name, int satietyPoint) {
+        this.name = name;
         this.satietyPoint = satietyPoint;
     }
 
@@ -20,9 +20,9 @@ public abstract class Food implements Edible {
         return name;
     }
 
-    public String getType() {
-        return type;
-    }
+    // public String getType() {
+    //     return type;
+    // }
 
     @Override
     public boolean equals(Object o) {
@@ -32,6 +32,6 @@ public abstract class Food implements Edible {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        return getType().equals(((Food)o).getType());
+        return getName().equals(((Food)o).getName());
     }
 }
