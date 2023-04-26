@@ -330,7 +330,7 @@ public class Room {
         }
     } 
 
-    //Mengecek di suatu titik ada furniture atau tidak
+    //Mengecek di suatu titik ada furniture tertentu atau tidak
     public Boolean checkFurniture(Point point, Furniture furniture)
     {
         if (space[point.getY()][point.getX()] == null)
@@ -350,6 +350,7 @@ public class Room {
         }
     }
 
+    //Mengembalikan semua point furniture pada ruangan (sesuai dengan ukuran)
     public ArrayList<Point> getFurnitureLocation(Furniture furniture)
     {
         ArrayList<Point> location = new ArrayList<Point>();
@@ -366,6 +367,7 @@ public class Room {
         return location;
     }
 
+    //Mengecek furniture apa yang terdapat pada point tertentu
     public Furniture checkPoint(Point point)
     {
         Furniture furniture=null;;
