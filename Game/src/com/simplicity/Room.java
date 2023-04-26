@@ -331,9 +331,64 @@ public class Room {
     } 
 
     //Mengecek di suatu titik ada furniture atau tidak
-    public Boolean checkPoint(Point point)
+    public Boolean checkFurniture(Point point, Furniture furniture)
     {
-        return (space[point.getY()][point.getX()] == null); //Akan mereturn true jika tidak ada furniture di point tersebut
+        if (space[point.getY()][point.getX()] == null)
+        {
+            return false;
+        }
+        else
+        {
+            if (space[point.getY()][point.getX()].getX() == furniture.getId())
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
+    public ArrayList<Point> getFurnitureLocation(Furniture furniture)
+    {
+        ArrayList<Point> location = new ArrayList<Point>();
+        for (int i=0;i<6;i++)
+        {
+            for (int j=0;j<6;j++)
+            {
+                if (space[i][j].getX() == furniture.getId())
+                {
+                    location.add(new Point(j,i));
+                }
+            }
+        }
+        return location;
+    }
+
+    public Furniture checkPoint(Point point)
+    {
+        Furniture furniture=null;;
+        if (space[point.getY()][point.getX()] != null)
+        {
+            int x = space[point.getY()][point.getX()].getY();
+            for (Furniture furniturex :furnitureList)
+            {
+                if (furniturex.getId() == space[point.getY()][point.getX()].getX())
+                {
+                    x--;
+                }
+                if (x==0)
+                {
+                    furniture = furniturex;
+                }
+            }
+            return furniture;
+        }
+        else
+        {
+            return furniture;
+        }
     }
 
     //Mencetak ruangan beserta furniture yang ada di dalamnya
