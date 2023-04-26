@@ -10,6 +10,7 @@ public enum  Furniture{
     TABLEANDCHAIR("Table And Chair", new Dimension2D(3,3), 50, 7), 
     CLOCK("Clock", new Dimension2D(1,1), 10, 8);
 
+    private final String type = "Furniture";
     private final String name;
     private final Dimension2D size;
     private final int price, id;
@@ -20,6 +21,10 @@ public enum  Furniture{
         this.size = size;
         this.price = price;
         this.id = id;
+    }
+
+    public String getType(){
+        return type;
     }
 
     public String getName() {
