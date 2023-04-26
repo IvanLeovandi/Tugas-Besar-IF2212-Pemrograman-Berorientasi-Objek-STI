@@ -2,7 +2,9 @@ package com.simplicity;
 
 import java.util.*;
 
-import com.simplicity.Furniture.*;
+import com.simplicity.Foods.Ingredients.Ingredient;
+import com.simplicity.Foods.CookedFood.CookedFood;
+import com.simplicity.*;
 import com.simplicity.Interfaces.*;
 
 public class Sim {
@@ -10,6 +12,8 @@ public class Sim {
     private Job job;
     private int balance;
     private Inventory<Furniture> furnitureInventory;
+    private Inventory<Ingredient> ingredientsInventory;
+    private Inventory<CookedFood> cookedFoodInventory;
     private int satiety;
     private int mood;
     private int health;
@@ -24,6 +28,8 @@ public class Sim {
         this.job = new Job();
         this.balance = 100;
         this.furnitureInventory = new Inventory<Furniture>();
+        this.ingredientsInventory = new Inventory<Ingredient>();
+        this.cookedFoodInventory = new Inventory<CookedFood>();
         this.satiety = 80;
         this.mood = 80;
         this.health = 80;
@@ -185,7 +191,7 @@ public class Sim {
 
     public void sleep(int duration) {
         if (this.currentObject != null) {
-            if (this.currentObject instanceof KingSizeBed || this.currentObject instanceof SingleBed || this.currentObject instanceof QueenSizeBed) {
+            if (this.currentObject.getName().equals("King Bed") || this.currentObject.getName().equals("Single Bed") || this.currentObject.getName().equals("Single Bed")) {
                 if (validationDuration(duration, 240) == false){
                     System.out.println("Duration must be multiple of 4 minutes");
                 }
@@ -214,13 +220,35 @@ public class Sim {
     }
 
     public void eat(Edible food) {
-        //Menunggu implementasi food
-
+        if(food instanceof CookedFood){
+            CookedFood food1 = (CookedFood) food;
+           if (this.cookedFoodInventory.getInventory().containsKey(food1)){
+                changeSatiety(food1.getSatietyPoint());
+                this.cookedFoodInventory.getInventory().remove(food1);
+            }
+            else{
+                System.out.println("You don't have this food");
+            }      
+        }
+        else if(food instanceof Ingredient){
+            Ingredient food1 = (Ingredient) food;
+            if (this.ingredientsInventory.getInventory().containsKey(food1)){
+                changeSatiety(food1.getSatietyPoint());
+                this.ingredientsInventory.getInventory().remove(food1);
+            }
+            else{
+                System.out.println("You don't have this food");
+            }      
+        }
+        else {
+            System.out.println("You can't eat this");
+        }
     }
 
-    // public void cook(List<Ingredient> Ingredients) {
-    //     //Menunggu implementasi objek food
-    // }
+    public void cook(List<Ingredient> Ingredients) {
+        //Menunggu implementasi objek food
+
+    }
 
     public void visit(House house1, House house2) {
         int x1 = house1.getLocation().getX();
@@ -300,7 +328,8 @@ public class Sim {
                 String name = input.nextLine();
                 house.upgradeRoom(rooms.get(roomNumber-1), direction, name);    
             }
-        }        
+        }  
+        input.close();      
     }
 
     public void buy(Purchasable item, int quantity) {
