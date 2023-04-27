@@ -1,10 +1,8 @@
 package com.simplicity;
 
 import java.util.*;
-
-import com.simplicity.Foods.Ingredients.Ingredient;
 import com.simplicity.Foods.CookedFood.CookedFood;
-import com.simplicity.*;
+import com.simplicity.Foods.Ingredients.Ingredient;
 import com.simplicity.Interfaces.*;
 
 public class Sim {
@@ -20,7 +18,7 @@ public class Sim {
     private String status;
     private House house;
     private Room currentRoom;
-    private Furniture currentObject;
+    private Point currentPosition;
 
     //Konstruktor
     public Sim(String name, Point location) {
@@ -36,7 +34,7 @@ public class Sim {
         this.status = "Idle";
         this.house = new House(location);
         this.currentRoom = house.getRoomList().get(0);
-        this.currentObject = null;
+        this.currentPosition = new Point(0, 0);
     }
 
     //Getter
@@ -154,6 +152,10 @@ public class Sim {
         }
 
     }
+
+    public Furniture currentObject(){
+        return this.currentRoom.checkPoint(this.currentPosition);
+    }
     
     //---------Active Action---------
     public void work(int duration){
@@ -190,8 +192,8 @@ public class Sim {
     }
 
     public void sleep(int duration) {
-        if (this.currentObject != null) {
-            if (this.currentObject.getName().equals("King Bed") || this.currentObject.getName().equals("Single Bed") || this.currentObject.getName().equals("Single Bed")) {
+        if (this.currentObject() != null) {
+            if (this.currentObject().getName().equals("King Bed") || this.currentObject().getName().equals("Single Bed") || this.currentObject().getName().equals("Single Bed")) {
                 if (validationDuration(duration, 240) == false){
                     System.out.println("Duration must be multiple of 4 minutes");
                 }
@@ -220,29 +222,40 @@ public class Sim {
     }
 
     public void eat(Edible food) {
-        if(food instanceof CookedFood){
-            CookedFood food1 = (CookedFood) food;
-           if (this.cookedFoodInventory.getInventory().containsKey(food1)){
-                changeSatiety(food1.getSatietyPoint());
-                this.cookedFoodInventory.getInventory().remove(food1);
+        if (currentObject() != null) {
+            if (currentObject().getName().equals("Table And Chair")){
+                if(food instanceof CookedFood){
+                    CookedFood food1 = (CookedFood) food;
+                   if (this.cookedFoodInventory.getInventory().containsKey(food1)){
+                        changeSatiety(food1.getSatietyPoint());
+                        this.cookedFoodInventory.getInventory().remove(food1);
+                    }
+                    else{
+                        System.out.println("You don't have this food");
+                    }      
+                }
+                else if(food instanceof Ingredient){
+                    Ingredient food1 = (Ingredient) food;
+                    if (this.ingredientsInventory.getInventory().containsKey(food1)){
+                        changeSatiety(food1.getSatietyPoint());
+                        this.ingredientsInventory.getInventory().remove(food1);
+                    }
+                    else{
+                        System.out.println("You don't have this food");
+                    }      
+                }
+                else {
+                    System.out.println("You can't eat this");
+                }
             }
             else{
-                System.out.println("You don't have this food");
-            }      
-        }
-        else if(food instanceof Ingredient){
-            Ingredient food1 = (Ingredient) food;
-            if (this.ingredientsInventory.getInventory().containsKey(food1)){
-                changeSatiety(food1.getSatietyPoint());
-                this.ingredientsInventory.getInventory().remove(food1);
+                System.out.println("You can't eat here");
             }
-            else{
-                System.out.println("You don't have this food");
-            }      
         }
         else {
-            System.out.println("You can't eat this");
+            System.out.println("You can't eat here");
         }
+        
     }
 
     public void cook(List<Ingredient> Ingredients) {
@@ -268,14 +281,19 @@ public class Sim {
         changeSatiety(satietyDecrease);
     }
 
-    public void defecate() {
-        if (this.currentObject != null) {
-            if (this.currentObject instanceof Toilet) {
-                int satietyDecrease = -20;
-                int moodIncrease = 10;
-    
-                changeSatiety(satietyDecrease);
-                changeMood(moodIncrease);
+    public void defecate(int duration) {
+        if (currentObject() != null) {
+            if (currentObject().getName().equals("Toilet")) {
+                if (validationDuration(duration, 10) == false){
+                    System.out.println("Duration must be multiple of 10 seconds");
+                }
+                else {
+                    int satietyDecrease = -20;
+                    int moodIncrease = 10;
+        
+                    changeSatiety(satietyDecrease);
+                    changeMood(moodIncrease);
+                }
             }
             else {
                 System.out.println("You can't defecate here");
@@ -434,12 +452,13 @@ public class Sim {
             System.out.println("You can't move to the object");
         }
         else{
-            this.currentObject = furniture;
+            Point furniturePosition = currentRoom.getFurnitureLocation(furniture).get(0);
+            this.currentPosition = furniturePosition;
         }
     }
 
     public void viewTime() {  
-        if(this.currentObject instanceof Clock){
+        if(currentObject().getName().equals("Clock")){
             //Implementasi
 
         }
@@ -448,6 +467,39 @@ public class Sim {
         }
     }
 
+    //Another Action Note : Masih disesuain sama keinginan kelompok
+    public void nubes(){
+        changeMood(-50);
+        changeHealth(-50);
+    }
+
+    public void sayHello(){
+        changeMood(10);
+        System.out.println("Hello, my name is " + getName());
+    }
+
+    public void listenMusic(int duration){
+        changeMood(duration/10);
+    }
+
+    public void watchTV(int duration){
+        changeMood(duration/10);
+    }
+
+    public void bath(int duration){
+        changeMood(duration/10);
+        changeHealth(duration/10);
+    }
+
+    public void meetup(int duration){
+        changeMood(duration/10);
+        balance -= duration/10;
+    }
+
+    public void missyou(int duration){
+        changeMood(-duration/10);
+        changeHealth(-duration/10);
+    }
     //------------
     private void die(){
         setStatus("Die");
