@@ -1,8 +1,8 @@
 package com.simplicity;
 
 import java.util.*;
-import com.simplicity.Foods.CookedFood.CookedFood;
-import com.simplicity.Foods.Ingredients.Ingredient;
+import com.simplicity.Foods.CookedFood;
+import com.simplicity.Foods.Ingredient;
 import com.simplicity.Interfaces.*;
 
 public class Sim {
@@ -258,9 +258,47 @@ public class Sim {
         
     }
 
-    public void cook(List<Ingredient> Ingredients) {
-        //Menunggu implementasi objek food
+    public void cook(CookedFood cookedFood) {
+        if (currentObject() != null) {
+            if (currentObject().getName().equals("Stove")){
+                List<Ingredient> ingredients = cookedFood.getIngredients();
+                Boolean flag = true;
+                for (Ingredient ingredient : ingredients) {
+                    if (this.ingredientsInventory.getInventory().containsKey(ingredient)){   
+                        if (this.ingredientsInventory.getInventory().get(ingredient) < 1) {
+                            System.out.println("Sorry, " + ingredient.getName() + " is out of stock");
+                            flag = false;
+                        }
+                    }
+                    else {
+                        System.out.println("Sorry, " + ingredient.getName() + " is out of stock");
+                        flag = false;
+                    }
+                }
 
+                if (flag == true){
+                    for (Ingredient ingredient : ingredients) {
+                        this.ingredientsInventory.removeItem(ingredient);
+                    }
+                    this.cookedFoodInventory.addItem(cookedFood, 1);
+                    System.out.println("You have successfully cooked " + cookedFood.getName());
+
+                    //Duration belum diintegrasikan
+                    Double duration = 1.5 * cookedFood.getSatietyPoint();
+
+                    changeMood(10);
+                }
+                else{
+                    System.out.println("You can't cook this because you don't have the ingredients");
+                }
+            }
+            else{
+                System.out.println("You can't cook here");
+            }
+        }
+        else {
+            System.out.println("You can't cook here");
+        }
     }
 
     public void visit(House house1, House house2) {
@@ -368,23 +406,23 @@ public class Sim {
                 furnitureInventory.addItem(furniture, quantity);
             }
         }
-        // else if (item instanceof Food){
-        //     Food food = (Food) item;
-        //     int itemPrice = food.getPrice() * quantity;
-        //     if (balance < itemPrice){
-        //         System.out.println("You can't buy the food");
-        //     }
-        //     else{
-        //         balance -= itemPrice;
-        //         int deliveryTime = (new Random().nextInt(5) + 1) * 30;
-        //         try {
-        //             Thread.sleep(deliveryTime * 1000);
-        //         } catch (InterruptedException e) {
-        //             e.printStackTrace();
-        //         }
-        //         inventoryFood.addItem(food, quantity);
-        //     }
-        // }
+        else if (item instanceof Ingredient){
+            Ingredient ingredient = (Ingredient) item;
+            int itemPrice = ingredient.getPrice() * quantity;
+            if (balance < itemPrice){
+                System.out.println("You can't buy the food");
+            }
+            else{
+                balance -= itemPrice;
+                int deliveryTime = (new Random().nextInt(5) + 1) * 30;
+                try {
+                    Thread.sleep(deliveryTime * 1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                ingredientsInventory.addItem(ingredient, quantity);
+            }
+        }
         else {
             throw new IllegalArgumentException("The item is not purchasable");
         }
