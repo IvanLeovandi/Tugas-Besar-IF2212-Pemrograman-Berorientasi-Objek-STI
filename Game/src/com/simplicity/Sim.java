@@ -20,6 +20,8 @@ public class Sim {
     private Room currentRoom;
     private Point currentPosition;
 
+    public static int numberOfSims = 0;
+
     //Konstruktor
     public Sim(String name, Point location) {
         this.name = name;
@@ -35,6 +37,7 @@ public class Sim {
         this.house = new House(location);
         this.currentRoom = house.getRoomList().get(0);
         this.currentPosition = new Point(0, 0);
+        numberOfSims++;
     }
 
     //Getter
@@ -54,6 +57,14 @@ public class Sim {
         return furnitureInventory;
     }
 
+    public Inventory<Ingredient> getIngredientsInventory() {
+        return ingredientsInventory;
+    }
+
+    public Inventory<CookedFood> getCookedFoodInventory() {
+        return cookedFoodInventory;
+    }
+
     public int getSatiety() {
         return satiety;
     }
@@ -70,6 +81,19 @@ public class Sim {
         return status;
     }
 
+    public House getHouse() {
+        return house;
+    }
+
+    public Room getCurrentRoom() {
+        return currentRoom;
+    }
+
+    public Point getCurrentPosition() {
+        return currentPosition;
+    }
+
+
     //Setter
     public void setName(String name) {
         this.name = name;
@@ -81,6 +105,14 @@ public class Sim {
 
     public void setFurnitureInventory(Inventory<Furniture> inventory) {
         this.furnitureInventory = inventory;
+    }
+
+    public void setIngredientsInventory(Inventory<Ingredient> inventory) {
+        this.ingredientsInventory = inventory;
+    }
+
+    public void setCookedFoodInventory(Inventory<CookedFood> inventory) {
+        this.cookedFoodInventory = inventory;
     }
 
     public void setSatiety(int satiety) {
@@ -97,6 +129,18 @@ public class Sim {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void setHouse(House house) {
+        this.house = house;
+    }
+
+    public void setCurrentRoom(Room currentRoom) {
+        this.currentRoom = currentRoom;
+    }
+
+    public void setCurrentPosition(Point currentPosition) {
+        this.currentPosition = currentPosition;
     }
 
     //Method
@@ -468,22 +512,33 @@ public class Sim {
         }
         System.out.println(line);
 
+        //Menampilkan inventory cooked food
+        System.out.println("Cooked Food Inventory");
+        System.out.println(line);
+        System.out.println(header);
+        System.out.println(line);
 
-        //Menampilkan inventory food
-        // System.out.println("Food Inventory");
-        // System.out.println(line);
-        // System.out.println(header);
-        // System.out.println(line);
+        for (CookedFood item : cookedFoodInventory.getInventory().keySet()) {
+            int quantity = cookedFoodInventory.getInventory().get(item);
+            String row = String.format("| %-20s | %-10d |", item.toString(), quantity);
+            System.out.println(row);
+        }
+        System.out.println(line);
 
-        // for (Food item : inventoryFood.getInventory().keySet()) {
-        //     int quantity = inventoryFood.getInventory().get(item);
-        //     String row = String.format("| %-20s | %-10d |", item.toString(), quantity);
-        //     System.out.println(row);
-        // }
+        //Menampilkan inventory ingredients
+        System.out.println("Ingredients Inventory");
+        System.out.println(line);
+        System.out.println(header);
+        System.out.println(line);
 
-        // System.out.println(line);
+        for (Ingredient item : ingredientsInventory.getInventory().keySet()) {
+            int quantity = ingredientsInventory.getInventory().get(item);
+            String row = String.format("| %-20s | %-10d |", item.toString(), quantity);
+            System.out.println(row);
+        }
+        System.out.println(line);
 
-        //Inventory Cuisine sama Ingredient belum dipisah, nunggu implementasi food dulu
+        
     }
     public void moveToObject(Furniture furniture) {
         if (currentRoom.getfurnitureList().contains(furniture) == false){
