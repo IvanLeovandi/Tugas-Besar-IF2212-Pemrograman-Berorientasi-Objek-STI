@@ -99,6 +99,11 @@ public class Room {
         return this.furnitureList;
     }
 
+    public ArrayList<Sim> getSimList()
+    {
+        return this.simsList;
+    }
+
     //Nambahin sims ke ruangan
     public void addSim(Sim sim)
     {
@@ -426,37 +431,22 @@ public class Room {
             System.out.print("| ");
             for (int j =0;j<6;j++)
             {
-                if (copySimList.size() != 0)
+                for (Sim sim : copySimList)
                 {
-                    for (Sim sim : copySimList)
+                    if (sim.getCurrentPosition().getX() == j && sim.getCurrentPosition().getY() == i)
                     {
-                        if (sim.getCurrentPosition().getX() == j && sim.getCurrentPosition().getY() == i)
-                        {
-                            System.out.print("9," + sim.getSimNumber() + " | ");
-                            copySimList.remove(sim);
-                        }
-                        else
-                        {
-                            if (space[i][j] == null)
-                            {
-                                System.out.print("0,0 | ");
-                            }
-                            else
-                            {
-                                System.out.print(space[i][j].getX() + "," + space[i][j].getY() + " | ");
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if (space[i][j] == null)
-                    {
-                        System.out.print("0,0 | ");
+                        System.out.print("9," + sim.getSimNumber() + " | ");
                     }
                     else
                     {
-                        System.out.print(space[i][j].getX() + "," + space[i][j].getY() + " | ");
+                        if (space[i][j] == null)
+                        {
+                            System.out.print("0,0 | ");
+                        }
+                        else
+                        {
+                            System.out.print(space[i][j].getX() + "," + space[i][j].getY() + " | ");
+                        }
                     }
                 }
             }
