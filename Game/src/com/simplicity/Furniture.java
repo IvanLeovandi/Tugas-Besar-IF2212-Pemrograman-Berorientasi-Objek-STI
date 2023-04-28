@@ -1,6 +1,8 @@
 package com.simplicity;
 
-public enum Furniture{
+import com.simplicity.Interfaces.Purchasable;
+
+public enum Furniture implements Purchasable{
     SINGLEBED("Single Bed", new Dimension2D(1,4), 50, 1), 
     QUEENBED("Queen Bed", new Dimension2D(2,4), 100, 2), 
     KINGBED("King Bed", new Dimension2D(2,5), 150, 3), 

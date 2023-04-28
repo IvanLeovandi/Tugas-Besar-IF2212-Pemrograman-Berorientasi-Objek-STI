@@ -4,14 +4,14 @@ import com.simplicity.Interfaces.Edible;
 import com.simplicity.Interfaces.Purchasable;
 
 public enum Ingredient implements Purchasable, Edible {
-    RICE("Nasi", 5, 5),
-    POTATO("Kentang", 3, 4),
-    CHICKEN("Ayam", 10, 8),
-    BEEF("Sapi", 12, 15),
-    CARROT("Wortel", 3, 2),
-    SPINACH("Bayam", 3, 2),
-    PEANUT("Kacang", 2, 2),
-    MILK("Susu", 2, 1);
+    RICE("Rice", 5, 5),
+    POTATO("Potato", 3, 4),
+    CHICKEN("Chicken", 10, 8),
+    BEEF("Beef", 12, 15),
+    CARROT("Carrot", 3, 2),
+    SPINACH("Spinach", 3, 2),
+    PEANUT("Peanut", 2, 2),
+    MILK("Milk", 2, 1);
 
     private final String type = "Ingredient";
     private final String name;
