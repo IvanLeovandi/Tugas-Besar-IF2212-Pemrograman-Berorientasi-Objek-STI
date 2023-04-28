@@ -19,6 +19,9 @@ public class Sim {
     private House house;
     private Room currentRoom;
     private Point currentPosition;
+    private int simNumber;
+
+    public static int numberOfSims = 0;
 
     //Konstruktor
     public Sim(String name, Point location) {
@@ -35,6 +38,8 @@ public class Sim {
         this.house = new House(location);
         this.currentRoom = house.getRoomList().get(0);
         this.currentPosition = new Point(0, 0);
+        numberOfSims++;
+        this.simNumber = numberOfSims;
     }
 
     //Getter
@@ -54,6 +59,14 @@ public class Sim {
         return furnitureInventory;
     }
 
+    public Inventory<Ingredient> getIngredientsInventory() {
+        return ingredientsInventory;
+    }
+
+    public Inventory<CookedFood> getCookedFoodInventory() {
+        return cookedFoodInventory;
+    }
+
     public int getSatiety() {
         return satiety;
     }
@@ -70,6 +83,23 @@ public class Sim {
         return status;
     }
 
+    public House getHouse() {
+        return house;
+    }
+
+    public Room getCurrentRoom() {
+        return currentRoom;
+    }
+
+    public Point getCurrentPosition() {
+        return currentPosition;
+    }
+
+    public int getSimNumber() {
+        return simNumber;
+    }
+
+
     //Setter
     public void setName(String name) {
         this.name = name;
@@ -81,6 +111,14 @@ public class Sim {
 
     public void setFurnitureInventory(Inventory<Furniture> inventory) {
         this.furnitureInventory = inventory;
+    }
+
+    public void setIngredientsInventory(Inventory<Ingredient> inventory) {
+        this.ingredientsInventory = inventory;
+    }
+
+    public void setCookedFoodInventory(Inventory<CookedFood> inventory) {
+        this.cookedFoodInventory = inventory;
     }
 
     public void setSatiety(int satiety) {
@@ -97,6 +135,22 @@ public class Sim {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void setHouse(House house) {
+        this.house = house;
+    }
+
+    public void setCurrentRoom(Room currentRoom) {
+        this.currentRoom = currentRoom;
+    }
+
+    public void setCurrentPosition(Point currentPosition) {
+        this.currentPosition = currentPosition;
+    }
+
+    public void setSimNumber(int simNumber) {
+        this.simNumber = simNumber;
     }
 
     //Method
@@ -163,17 +217,17 @@ public class Sim {
             System.out.println("Duration must be multiple of 120 seconds");
         }
         else {
+            setStatus("Working");
+            World.gameTimer.start(duration);
             int satietyDecrease = (-10)*(duration/30);
             int moodDecrease = (-10)*(duration/30);
-            
             changeSatiety(satietyDecrease);
             changeMood(moodDecrease);
-    
+
             //Penambahan uang
             int moneyIncrease = job.getSalary();
             setBalance(getBalance() + moneyIncrease);
-        }
-       
+        }   
     }
 
     public void workout(int duration) {
@@ -181,6 +235,8 @@ public class Sim {
             System.out.println("Duration must be multiple of 20 seconds");
         }
         else {
+            setStatus("Working Out");
+            World.gameTimer.start(duration);
             int satietyDecrease = (-5)*(duration/20);
             int moodIncrease = 10*(duration/20);
             int healthIncrease = 5*(duration/20);
@@ -198,13 +254,15 @@ public class Sim {
                     System.out.println("Duration must be multiple of 4 minutes");
                 }
                 else {
+                    setStatus("Sleeping");
+                    World.gameTimer.start(duration);
                     int satietyDecrease = (-5)*(duration/240);
                     int moodIncrease = 10*(duration/240);
                     int healthIncrease = 5*(duration/240);
                     
                     changeSatiety(satietyDecrease);
                     changeMood(moodIncrease);
-                    changeHealth(healthIncrease); 
+                    changeHealth(healthIncrease);                
                 }
             }
             else {
@@ -227,6 +285,8 @@ public class Sim {
                 if(food instanceof CookedFood){
                     CookedFood food1 = (CookedFood) food;
                    if (this.cookedFoodInventory.getInventory().containsKey(food1)){
+                        setStatus("Eating");
+                        World.gameTimer.start(30);
                         changeSatiety(food1.getSatietyPoint());
                         this.cookedFoodInventory.getInventory().remove(food1);
                     }
@@ -237,6 +297,8 @@ public class Sim {
                 else if(food instanceof Ingredient){
                     Ingredient food1 = (Ingredient) food;
                     if (this.ingredientsInventory.getInventory().containsKey(food1)){
+                        setStatus("Eating");
+                        World.gameTimer.start(30);
                         changeSatiety(food1.getSatietyPoint());
                         this.ingredientsInventory.getInventory().remove(food1);
                     }
@@ -277,15 +339,15 @@ public class Sim {
                 }
 
                 if (flag == true){
+                    Double duration = 1.5 * cookedFood.getSatietyPoint();
+                    int duration1 = duration.intValue();
+                    setStatus("Cooking");
+                    World.gameTimer.start(duration1);
                     for (Ingredient ingredient : ingredients) {
                         this.ingredientsInventory.removeItem(ingredient);
                     }
                     this.cookedFoodInventory.addItem(cookedFood, 1);
                     System.out.println("You have successfully cooked " + cookedFood.getName());
-
-                    //Duration belum diintegrasikan
-                    Double duration = 1.5 * cookedFood.getSatietyPoint();
-
                     changeMood(10);
                 }
                 else{
@@ -310,6 +372,9 @@ public class Sim {
 
         //menghitung jarak (waktu) antara titik Sim dan rumah yang dikunjungi
         double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        int duration = (int)distance;
+        setStatus("Visiting");
+        World.gameTimer.start(duration);       
 
         //Efek berkunjung
         int moodIncrease = 10*(int)distance/30;
@@ -326,6 +391,8 @@ public class Sim {
                     System.out.println("Duration must be multiple of 10 seconds");
                 }
                 else {
+                    setStatus("Defecating");
+                    World.gameTimer.start(duration);
                     int satietyDecrease = -20;
                     int moodIncrease = 10;
         
@@ -468,22 +535,33 @@ public class Sim {
         }
         System.out.println(line);
 
+        //Menampilkan inventory cooked food
+        System.out.println("Cooked Food Inventory");
+        System.out.println(line);
+        System.out.println(header);
+        System.out.println(line);
 
-        //Menampilkan inventory food
-        // System.out.println("Food Inventory");
-        // System.out.println(line);
-        // System.out.println(header);
-        // System.out.println(line);
+        for (CookedFood item : cookedFoodInventory.getInventory().keySet()) {
+            int quantity = cookedFoodInventory.getInventory().get(item);
+            String row = String.format("| %-20s | %-10d |", item.toString(), quantity);
+            System.out.println(row);
+        }
+        System.out.println(line);
 
-        // for (Food item : inventoryFood.getInventory().keySet()) {
-        //     int quantity = inventoryFood.getInventory().get(item);
-        //     String row = String.format("| %-20s | %-10d |", item.toString(), quantity);
-        //     System.out.println(row);
-        // }
+        //Menampilkan inventory ingredients
+        System.out.println("Ingredients Inventory");
+        System.out.println(line);
+        System.out.println(header);
+        System.out.println(line);
 
-        // System.out.println(line);
+        for (Ingredient item : ingredientsInventory.getInventory().keySet()) {
+            int quantity = ingredientsInventory.getInventory().get(item);
+            String row = String.format("| %-20s | %-10d |", item.toString(), quantity);
+            System.out.println(row);
+        }
+        System.out.println(line);
 
-        //Inventory Cuisine sama Ingredient belum dipisah, nunggu implementasi food dulu
+        
     }
     public void moveToObject(Furniture furniture) {
         if (currentRoom.getfurnitureList().contains(furniture) == false){

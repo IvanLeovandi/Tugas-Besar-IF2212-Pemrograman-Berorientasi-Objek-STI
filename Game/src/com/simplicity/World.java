@@ -6,9 +6,12 @@ import com.simplicity.Exceptions.OverlapingWorldObjectException;
 import com.simplicity.Exceptions.PlacementOutOfBoundException;
 import com.simplicity.Interfaces.WorldObject;
 
+
 public class World {
     private Dimension2D size;
     private Map<Point, WorldObject> map = new HashMap<>();
+
+    public static GameTimer gameTimer = new GameTimer();
 
     public World(int width, int length) {
         size = new Dimension2D(width, length);
