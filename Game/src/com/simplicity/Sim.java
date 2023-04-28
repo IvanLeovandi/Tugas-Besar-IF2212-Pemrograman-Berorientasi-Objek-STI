@@ -57,6 +57,14 @@ public class Sim {
         return furnitureInventory;
     }
 
+    public Inventory<Ingredient> getIngredientsInventory() {
+        return ingredientsInventory;
+    }
+
+    public Inventory<CookedFood> getCookedFoodInventory() {
+        return cookedFoodInventory;
+    }
+
     public int getSatiety() {
         return satiety;
     }
@@ -73,6 +81,19 @@ public class Sim {
         return status;
     }
 
+    public House getHouse() {
+        return house;
+    }
+
+    public Room getCurrentRoom() {
+        return currentRoom;
+    }
+
+    public Point getCurrentPosition() {
+        return currentPosition;
+    }
+
+
     //Setter
     public void setName(String name) {
         this.name = name;
@@ -84,6 +105,14 @@ public class Sim {
 
     public void setFurnitureInventory(Inventory<Furniture> inventory) {
         this.furnitureInventory = inventory;
+    }
+
+    public void setIngredientsInventory(Inventory<Ingredient> inventory) {
+        this.ingredientsInventory = inventory;
+    }
+
+    public void setCookedFoodInventory(Inventory<CookedFood> inventory) {
+        this.cookedFoodInventory = inventory;
     }
 
     public void setSatiety(int satiety) {
@@ -100,6 +129,18 @@ public class Sim {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public void setHouse(House house) {
+        this.house = house;
+    }
+
+    public void setCurrentRoom(Room currentRoom) {
+        this.currentRoom = currentRoom;
+    }
+
+    public void setCurrentPosition(Point currentPosition) {
+        this.currentPosition = currentPosition;
     }
 
     //Method
