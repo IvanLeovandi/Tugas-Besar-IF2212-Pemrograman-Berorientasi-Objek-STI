@@ -1,10 +1,12 @@
 package com.simplicity;
 
 import java.util.*;
+import javax.swing.*;
+import java.io.File;
 
 import com.simplicity.Interfaces.Interactable;
 
-public class GameMenu {
+public class GameMenu extends JPanel {
     public static void showSimInfo(Sim sim) {
         System.out.println("Berikut informasi sim,");
         System.out.println("Nama        : " + sim.getName());
