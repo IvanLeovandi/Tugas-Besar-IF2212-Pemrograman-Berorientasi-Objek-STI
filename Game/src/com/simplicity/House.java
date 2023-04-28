@@ -8,12 +8,13 @@ public class House {
     private ArrayList<Room> roomList; //List ruangan di rumah
 
     //Konstruktor
-    public House(Point location)
+    public House(Point location,Sim sim)
     {
         this.location = location;
         this.numberofRoom = 1;
         this.roomList = new ArrayList<Room>();
         roomList.add(new Room(numberofRoom,new Point(0,0),"Starting Room"));
+        roomList.get(0).addSim(sim);
     }
 
     //Getter Room List

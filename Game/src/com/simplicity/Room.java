@@ -10,20 +10,22 @@ public class Room {
     public Point[][] space; //Space dalam ruangan untuk meletakkan furniture dengan bentuk Point (x,y) (x: Furniture Number, y: Furniture dengan tipe x ke berapa di ruangan)
     public Point locationInHouse; //Lokasi di rumah
     private String name; //Nama Ruangan
+    private ArrayList<Sim> simsList; 
 
     //Konstruktor
     public Room(int roomNumber,Point locationInHouse, String name)
     {   
         this.roomNumber = roomNumber;
+        this.name = name;   
+        this.locationInHouse = locationInHouse;
         left = null;
         right = null;
         top = null;
         bottom = null;
-        this.locationInHouse = locationInHouse;
         furnitureList = new ArrayList<Furniture>();
+        simsList = new ArrayList<Sim>();
         furnitureCount = new int[8];
         space = new Point[6][6];
-        this.name = name;   
     }
 
     //Setter Name
@@ -96,6 +98,24 @@ public class Room {
     public ArrayList<Furniture> getfurnitureList()
     {
         return this.furnitureList;
+    }
+
+    //Nambahin sims ke ruangan
+    public void addSim(Sim sim)
+    {
+        simsList.add(sim);
+    }
+
+    //Sims keluar dari ruangan
+    public void removeSim(Sim removedSim)
+    {
+        for (Sim sim:simsList)
+        {
+            if (sim.getName().equals(removedSim.getName()))
+            {
+                simsList.remove(sim);
+            }
+        }
     }
 
     //Untuk mengecek ada furniture lain di posisi yang akan diletakkan furniture atau mengecek apakah furniture yang akan diletakkan melewati border atau tidak
@@ -351,16 +371,16 @@ public class Room {
     }
 
     //Mengembalikan semua point furniture pada ruangan (sesuai dengan ukuran)
-    public ArrayList<Point> getFurnitureLocation(Furniture furniture)
+    public Point getFurnitureLocation(Furniture furniture,int furnitureX)
     {
-        ArrayList<Point> location = new ArrayList<Point>();
+        Point location = null;
         for (int i=0;i<6;i++)
         {
             for (int j=0;j<6;j++)
             {
-                if (space[i][j].getX() == furniture.getId())
+                if (space[i][j].getX() == furniture.getId() && space[i][j].getY() == furnitureX)
                 {
-                    location.add(new Point(j,i));
+                    return location = space[i][j];
                 }
             }
         }
@@ -393,22 +413,49 @@ public class Room {
         }
     }
 
+    
     //Mencetak ruangan beserta furniture yang ada di dalamnya
     public void printRoom() 
     {
+        ArrayList<Sim> copySimList = new ArrayList<Sim>(simsList);
         System.out.println("-------------------------------------");
         for (int i=0;i<6;i++)
         {
             System.out.print("| ");
             for (int j =0;j<6;j++)
             {
-                if (space[i][j] == null)
+                if (copySimList.size() != 0)
                 {
-                    System.out.print("0,0 | ");
+                    for (Sim sim : copySimList)
+                    {
+                        if (sim.getCurrentPosition().getX() == j && sim.getCurrentPosition().getY() == i)
+                        {
+                            System.out.print("9," + sim.getSimNumber() + " | ");
+                            copySimList.remove(sim);
+                        }
+                        else
+                        {
+                            if (space[i][j] == null)
+                            {
+                                System.out.print("0,0 | ");
+                            }
+                            else
+                            {
+                                System.out.print(space[i][j].getX() + "," + space[i][j].getY() + " | ");
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    System.out.print(space[i][j].getX() + "," + space[i][j].getY() + " | ");
+                    if (space[i][j] == null)
+                    {
+                        System.out.print("0,0 | ");
+                    }
+                    else
+                    {
+                        System.out.print(space[i][j].getX() + "," + space[i][j].getY() + " | ");
+                    }
                 }
             }
             System.out.println(" ");
