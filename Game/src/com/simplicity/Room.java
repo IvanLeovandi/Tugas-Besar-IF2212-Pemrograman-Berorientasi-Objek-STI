@@ -1,6 +1,8 @@
 package com.simplicity;
-import com.simplicity.Furniture.*;
 import java.util.ArrayList;
+
+import com.simplicity.Furniture.Furniture;
+import com.simplicity.Furniture.Furniture.*;
 
 public class Room {
     public int roomNumber; //Nomor ruangan di rumah

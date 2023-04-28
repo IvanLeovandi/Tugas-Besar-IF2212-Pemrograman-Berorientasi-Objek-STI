@@ -1,5 +1,6 @@
 package com.simplicity;
 
+import com.simplicity.Furniture.*;
 import com.simplicity.GUI.MainMenu;
 
 public class Main {
