@@ -1,6 +1,5 @@
 package com.simplicity;
 import java.util.ArrayList;
-import javax.swing.*;
 
 public class House {
     private Point location; //Lokasi di World
