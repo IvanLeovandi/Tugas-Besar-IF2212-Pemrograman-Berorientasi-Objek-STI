@@ -4,6 +4,10 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 public class WorldView implements ActionListener{
     Window window;
@@ -29,8 +33,21 @@ public class WorldView implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == backButton) {
-            window.dispose();
-            new MainMenu();
+            String[] options = {"Leave without saving", "Save progress"};
+            int responses = JOptionPane.showOptionDialog(null, "Do you want to leave", "Leaving soon?", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, 1);
+            if(responses == 0) {
+                window.dispose();
+                new MainMenu();
+            } else if (responses == 1){
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setCurrentDirectory(new File("Tugas-Besar-IF2212-Pemrograman-Berorientasi-Objek-STI/Game/src/com/simplicity"));
+
+                int response = fileChooser.showSaveDialog(null);
+                if(response == JFileChooser.APPROVE_OPTION){
+                    File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
+                    System.out.println(file);
+                }
+            }
         }
     }
 }
