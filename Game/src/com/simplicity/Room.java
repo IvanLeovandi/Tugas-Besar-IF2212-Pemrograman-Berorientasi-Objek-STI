@@ -424,37 +424,37 @@ public class Room {
     }
 
     
-    //Mencetak ruangan beserta sim dan furniture yang ada di dalamnya
+    //Mencetak ruangan beserta sim dan furniture yang ada di dalamnya ( x,y (simNumber))
     public void printRoom() 
     {
         ArrayList<Sim> copySimList = new ArrayList<Sim>(simsList);
-        System.out.println("-------------------------------------");
+        System.out.println("--------------------------------------------------------------------------");
         for (int i=0;i<6;i++)
         {
-            System.out.print("| ");
+            System.out.print("|");
             for (int j =0;j<6;j++)
             {
                 for (Sim sim : copySimList)
                 {
                     if (sim.getCurrentPosition().getX() == j && sim.getCurrentPosition().getY() == i)
                     {
-                        System.out.print("9," + sim.getSimNumber() + " | ");
+                        System.out.print("  " + space[i][j].getX() + "," + space[i][j].getY() + " (" + sim.getSimNumber() +")" + "  |");
                     }
                     else
                     {
                         if (space[i][j] == null)
                         {
-                            System.out.print("0,0 | ");
+                            System.out.print("    0,0    |");
                         }
                         else
                         {
-                            System.out.print(space[i][j].getX() + "," + space[i][j].getY() + " | ");
+                            System.out.print("    "+space[i][j].getX() + "," + space[i][j].getY() + "    |");
                         }
                     }
                 }
             }
             System.out.println(" ");
-            System.out.println("-------------------------------------");
+            System.out.println("--------------------------------------------------------------------------");
         }
     }
 }
