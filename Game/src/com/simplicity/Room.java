@@ -380,9 +380,12 @@ public class Room {
         {
             for (int j=0;j<6;j++)
             {
-                if (space[i][j].getX() == furniture.getId() && space[i][j].getY() == furnitureX)
-                {
-                    return location = space[i][j];
+                if (space[i][j] != null)
+                { 
+                    if (space[i][j].getX() == furniture.getId() && space[i][j].getY() == furnitureX)
+                    {
+                        return location = new Point(j,i);
+                    }
                 }
             }
         }
