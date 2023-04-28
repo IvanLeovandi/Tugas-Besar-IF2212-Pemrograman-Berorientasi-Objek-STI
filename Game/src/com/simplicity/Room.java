@@ -372,7 +372,7 @@ public class Room {
         }
     }
 
-    //Mengembalikan semua point furniture pada ruangan (sesuai dengan ukuran)
+    //Mengembalikan point furniture pada ruangan dengan furnitureX merupakan furniture ke x di ruangan tersebut
     public Point getFurnitureLocation(Furniture furniture,int furnitureX)
     {
         Point location = null;
@@ -416,7 +416,7 @@ public class Room {
     }
 
     
-    //Mencetak ruangan beserta furniture yang ada di dalamnya
+    //Mencetak ruangan beserta sim dan furniture yang ada di dalamnya
     public void printRoom() 
     {
         ArrayList<Sim> copySimList = new ArrayList<Sim>(simsList);
