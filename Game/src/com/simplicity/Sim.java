@@ -3,6 +3,7 @@ package com.simplicity;
 import java.util.*;
 import com.simplicity.Foods.CookedFood;
 import com.simplicity.Foods.Ingredient;
+import com.simplicity.Furniture.Furniture;
 import com.simplicity.Interfaces.*;
 
 public class Sim {
