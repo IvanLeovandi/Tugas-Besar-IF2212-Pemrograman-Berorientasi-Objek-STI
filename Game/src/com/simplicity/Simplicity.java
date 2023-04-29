@@ -55,7 +55,7 @@ public class Simplicity {
                     while (play) {
                         System.out.println("Halo " + currentSim.getName());
                         System.out.println("What do you want to do?");
-                        System.out.println(World.gameTimer.getSecond());
+                        // System.out.println(World.gameTimer.getSecond());
                         input = scan.nextLine().toUpperCase();
 
                         if(input.equals("ACTION")){
@@ -104,12 +104,12 @@ public class Simplicity {
                             }
                             
                             else if(input.equals("PLACE ITEM")) {
+                                currentSim.getHouse().printRoomList();
                                 currentSim.getCurrentRoom().printRoom();
                                 System.out.println("What do you want to place?");
                                 currentSim.viewInventory(); 
                             
                                 currentSim.setUpObject(new Point(1,1), 0, new SingleBed());
-                                currentSim.getFurnitureInventory().removeItem(new SingleBed());
                                 currentSim.getCurrentRoom().printRoom();
                             }
                             
@@ -123,12 +123,20 @@ public class Simplicity {
                             GameMenu.showSimInfo(currentSim);
                         }
 
+                        else if(input.equals("CURRENT LOCATION")){
+                            System.out.println("You are now in " + currentSim.getHouse().getLocation() + " house");
+                            System.out.println("You are now in " + currentSim.getCurrentRoom().getName() + " which located in " + currentSim.getCurrentRoom().getLocationInHouse());
+                            System.out.println("And you are now in " + currentSim.getCurrentPosition());
+                        }
+
                         else if(input.equals("INVENTORY")) {
                             currentSim.viewInventory();
                         }
                         
                         else if(input.equals("MOVE TO ROOM")) {
-                            // currentSim.moveToRoom(null, null);
+                            System.out.println("Where do you want to go?");
+                            currentSim.getHouse().printRoomList();
+                            currentSim.moveToRoom(currentSim.getHouse(), currentSim.getHouse().getRoomList().get(1));
                         } 
                         
                         else if(input.equals("UPGRADE HOUSE")) {
@@ -140,8 +148,12 @@ public class Simplicity {
                         } 
                         
                         else if(input.equals("QUIT GAME")) {
-                            System.out.println("Terima kasih telah bermain!!");
+                            System.out.println("Thank you for playing!!");
                             System.exit(0);
+                        }
+
+                        else {
+                            System.out.println("Wrong command, please input the right command.");
                         }
                     }
                 }

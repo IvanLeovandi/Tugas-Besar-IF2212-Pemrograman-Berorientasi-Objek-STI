@@ -1,5 +1,7 @@
 package com.simplicity.Furniture;
 
+import java.util.Objects;
+
 import com.simplicity.Dimension2D;
 import com.simplicity.GameObject;
 import com.simplicity.Interfaces.Purchasable;
@@ -107,6 +109,22 @@ public class Furniture extends GameObject implements Purchasable{
 
     public int getId(){
         return myFurniture.getId();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || !getClass().isAssignableFrom(o.getClass())) {
+            return false;
+        }
+        return getName() == ((Furniture)o).getName();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 
 }

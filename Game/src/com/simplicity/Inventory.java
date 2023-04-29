@@ -49,6 +49,7 @@ public class Inventory<T> {
         return inventory;
     }
 
+    
     // public HashMap<Food, Integer> getFoodInventory() {
     //     HashMap<Food, Integer> foodInventory = new HashMap<>();
     //     for (Map.Entry<Food, Integer> entry : inventory.entrySet()) {

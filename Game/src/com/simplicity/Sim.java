@@ -1,6 +1,8 @@
 package com.simplicity;
 
 import java.util.*;
+
+import com.simplicity.Exceptions.OverlapingRoomObjectException;
 import com.simplicity.Foods.CookedFood;
 import com.simplicity.Foods.Ingredient;
 import com.simplicity.Furniture.Clock;
@@ -34,7 +36,7 @@ public class Sim {
     public Sim(String name, Point location) {
         this.name = name;
         this.job = new Job();
-        this.balance = 100;
+        this.balance = 2000;
         this.furnitureInventory = new Inventory<Furniture>();
         furnitureInventory.addItem(new SingleBed(),1);
         furnitureInventory.addItem(new Toilet(),1);
@@ -495,7 +497,7 @@ public class Sim {
                 house.upgradeRoom(rooms.get(roomNumber-1), direction, name);    
             }
         }  
-        input.close();      
+        // input.close();      
     }
 
     public void buy(Purchasable item, int quantity) {
@@ -548,7 +550,11 @@ public class Sim {
             System.out.println("You don't have the furniture");
         }
         else {
-            currentRoom.placeFurniture(placement, rotation, furniture);
+            try {
+                currentRoom.placeFurniture(placement, rotation, furniture);
+            } catch (OverlapingRoomObjectException e) {
+                e.printStackTrace();
+            }
         }
         
         //Menghapus furniture dari inventory
