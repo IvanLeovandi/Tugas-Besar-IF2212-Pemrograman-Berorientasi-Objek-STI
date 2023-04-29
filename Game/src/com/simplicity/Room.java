@@ -121,6 +121,7 @@ public class Room {
             if (sim.getName().equals(removedSim.getName()))
             {
                 simsList.remove(sim);
+                break;
             }
         }
     }
