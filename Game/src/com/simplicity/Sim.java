@@ -245,8 +245,8 @@ public class Sim {
                 System.out.println("Duration must be multiple of 120 seconds");
             }
             else {
-                setStatus("Working");
-                World.gameTimer.start(GameTimer.gameTime + duration);
+                int durationTimer = GameTimer.gameTime + duration;
+                World.gameTimer.startTimer(durationTimer);                
                 int satietyDecrease = (-10)*(duration/30);
                 int moodDecrease = (-10)*(duration/30);
                 changeSatiety(satietyDecrease);
@@ -255,6 +255,7 @@ public class Sim {
                 //Penambahan uang
                 int moneyIncrease = job.getSalary();
                 setBalance(getBalance() + moneyIncrease);
+                
             }
         }
         else {
@@ -268,7 +269,8 @@ public class Sim {
         }
         else {
             setStatus("Working Out");
-            World.gameTimer.start(GameTimer.gameTime + duration);
+            int durationTimer = GameTimer.gameTime + duration;
+            World.gameTimer.startTimer(durationTimer);
             int satietyDecrease = (-5)*(duration/20);
             int moodIncrease = 10*(duration/20);
             int healthIncrease = 5*(duration/20);
@@ -288,7 +290,8 @@ public class Sim {
                     }
                     else {
                         setStatus("Sleeping");
-                        World.gameTimer.start(GameTimer.gameTime + duration);
+                        int durationTimer = GameTimer.gameTime + duration;
+                        World.gameTimer.startTimer(durationTimer);
                         int satietyDecrease = (-5)*(duration/240);
                         int moodIncrease = 10*(duration/240);
                         int healthIncrease = 5*(duration/240);
@@ -319,7 +322,8 @@ public class Sim {
                     CookedFood food1 = (CookedFood) food;
                    if (this.cookedFoodInventory.getInventory().containsKey(food1)){
                         setStatus("Eating");
-                        World.gameTimer.start(GameTimer.gameTime + 30);
+                        int durationTimer = GameTimer.gameTime + 30;
+                        World.gameTimer.startTimer(durationTimer);
                         changeSatiety(food1.getSatietyPoint());
                         this.cookedFoodInventory.getInventory().remove(food1);
                     }
@@ -331,7 +335,8 @@ public class Sim {
                     Ingredient food1 = (Ingredient) food;
                     if (this.ingredientsInventory.getInventory().containsKey(food1)){
                         setStatus("Eating");
-                        World.gameTimer.start(GameTimer.gameTime + 30);
+                        int durationTimer = GameTimer.gameTime + 30;
+                        World.gameTimer.startTimer(durationTimer);
                         changeSatiety(food1.getSatietyPoint());
                         this.ingredientsInventory.getInventory().remove(food1);
                     }
@@ -373,9 +378,9 @@ public class Sim {
 
                 if (flag == true){
                     Double duration = 1.5 * cookedFood.getSatietyPoint();
-                    int duration1 = duration.intValue();
+                    int duration1 = duration.intValue() + GameTimer.gameTime ;
                     setStatus("Cooking");
-                    World.gameTimer.start(GameTimer.gameTime + duration1);
+                    World.gameTimer.startTimer(duration1);
                     for (Ingredient ingredient : ingredients) {
                         this.ingredientsInventory.removeItem(ingredient);
                     }
@@ -407,7 +412,8 @@ public class Sim {
         double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         int duration = (int)distance;
         setStatus("Visiting");
-        World.gameTimer.start(GameTimer.gameTime + duration);       
+        int durationTimer = GameTimer.gameTime + duration;
+        World.gameTimer.startTimer(durationTimer);       
 
         //Efek berkunjung
         int moodIncrease = 10*(int)distance/30;
@@ -425,7 +431,8 @@ public class Sim {
                 }
                 else {
                     setStatus("Defecating");
-                    World.gameTimer.start(GameTimer.gameTime + duration);
+                    int durationTimer = GameTimer.gameTime + duration;
+                    World.gameTimer.startTimer(durationTimer);
                     int satietyDecrease = -20;
                     int moodIncrease = 10;
         
@@ -603,6 +610,7 @@ public class Sim {
     public void viewTime() {  
         if(currentObject().getName().equals("Clock")){
             //Implementasi
+            
 
         }
         else{
