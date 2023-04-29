@@ -1,10 +1,11 @@
 package com.simplicity;
 import java.util.ArrayList;
 
+import com.simplicity.Exceptions.OverlapingRoomObjectException;
 import com.simplicity.Furniture.Furniture;
 import com.simplicity.Furniture.Furniture.*;
 
-public class Room {
+public class Room{
     public int roomNumber; //Nomor ruangan di rumah
     public ArrayList<Furniture> furnitureList; //List Furniture
     public int[] furnitureCount; //Jumlah setiap tipe furniture di ruangan
@@ -127,10 +128,9 @@ public class Room {
     }
 
     //Untuk mengecek ada furniture lain di posisi yang akan diletakkan furniture atau mengecek apakah furniture yang akan diletakkan melewati border atau tidak
-    public Boolean checkFilled(Point placement, int rotation, Furniture furniture)
+    public void checkFilled(Point placement, int rotation, Furniture furniture) throws OverlapingRoomObjectException
     {
         int x,y;
-        Boolean flag = false;
         if (rotation == 0 || rotation == 2) //Furniture horizontal
         {
             x = furniture.getSize().getLength();
@@ -139,7 +139,7 @@ public class Room {
             {
                 if (placement.getX()+x > 6 || placement.getY()+y > 6) //Mengecek apakah melewati border
                 {
-                    flag = true;
+                    throw new OverlapingRoomObjectException("Theres already an object there!");
                 }
                 else
                 {
@@ -149,7 +149,7 @@ public class Room {
                         {
                             if (space[i][j] != null) 
                             {
-                                flag = true;
+                                throw new OverlapingRoomObjectException("Theres already an object there!");
                             } 
                         }
                     }
@@ -159,7 +159,7 @@ public class Room {
             {
                 if (placement.getX()-x < 0 || placement.getY()+y > 6) //Mengecek apakah melewati border
                 {
-                    flag = true;
+                    throw new OverlapingRoomObjectException("Theres already an object there!");
                 }
                 else
                 {
@@ -169,7 +169,7 @@ public class Room {
                         {
                             if (space[i][j] != null)
                             {
-                                flag = true;
+                                throw new OverlapingRoomObjectException("Theres already an object there!");
                             } 
                         }
                     }   
@@ -184,7 +184,7 @@ public class Room {
             {
                 if (placement.getX()+x > 6 || placement.getY()+y > 6) //Mengecek apakah melewati border
                 {
-                    flag = true;
+                    throw new OverlapingRoomObjectException("Theres already an object there!");
                 }
                 else
                 {
@@ -194,7 +194,7 @@ public class Room {
                         {
                             if (space[i][j] != null)
                             {
-                                flag = true;
+                                throw new OverlapingRoomObjectException("Theres already an object there!");
                             } 
                         }
                     }
@@ -204,7 +204,7 @@ public class Room {
             {
                 if (placement.getX()+x > 6 || placement.getY() < 0) //Mengecek apakah melewati border
                 {
-                    flag = true;
+                    throw new OverlapingRoomObjectException("Theres already an object there!");
                 }
                 else
                 {
@@ -214,21 +214,27 @@ public class Room {
                         {
                             if (space[i][j] != null)
                             {
-                                flag = true;
+                                throw new OverlapingRoomObjectException("Theres already an object there!");
                             } 
                         }
                     }
                 }   
             }
         }
-        return flag;
     }
 
     //Untuk meletakkan furniture di ruangan
-    public void placeFurniture (Point placement, int rotation, Furniture furniture)
+    public void placeFurniture (Point placement, int rotation, Furniture furniture) throws OverlapingRoomObjectException
     {
-        if (!checkFilled(placement, rotation, furniture)) //Melakukan pengecekan mengunakan checkFilled
+        try 
         {
+            checkFilled(placement, rotation, furniture);
+        } //Melakukan pengecekan mengunakan checkFilled
+        catch (OverlapingRoomObjectException e)
+        {
+            System.out.println(e.getMessage());
+            return;
+        }
             furnitureCount[furniture.getId()-1]++; //Penambahan jumlah furniture untuk memberikan kode pada furniture yang diletakkan
             furnitureList.add(furniture); //Menambahkan furniture ke furnitureList
             int x,y;
@@ -282,13 +288,9 @@ public class Room {
                         }
                     }   
                 }
-            }
-        }
-        else //Placement yang dimasukkan tidak cukup untuk meletakkan furniture
-        {
-            System.out.printf("There is not enough space for you to place a %s\n",furniture.getName());
         }
     }
+    
     
     //Untuk remove furniture dari ruangan
     public void removeFurniture(Point placement) 
