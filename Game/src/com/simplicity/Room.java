@@ -439,7 +439,14 @@ public class Room {
                 {
                     if (sim.getCurrentPosition().getX() == j && sim.getCurrentPosition().getY() == i)
                     {
-                        System.out.print("  " + space[i][j].getX() + "," + space[i][j].getY() + " (" + sim.getSimNumber() +")" + "  |");
+                        if (space[i][j] != null)
+                        {
+                            System.out.print("  " + space[i][j].getX() + "," + space[i][j].getY() + " (" + sim.getSimNumber() +")" + "  |");
+                        }
+                        else
+                        {
+                            System.out.print("     " + sim.getSimNumber() + "     |");
+                        }
                     }
                     else
                     {
