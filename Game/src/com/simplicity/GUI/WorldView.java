@@ -3,6 +3,9 @@ package com.simplicity.GUI;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
+import com.simplicity.UI.MainMenu;
+
 import java.io.File;
 
 public class WorldView implements ActionListener{
@@ -30,7 +33,7 @@ public class WorldView implements ActionListener{
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == backButton) {
             window.dispose();
-            new MainMenu();
+            new MainMenu(null);
         }
     }
 }

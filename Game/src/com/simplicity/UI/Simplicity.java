@@ -1,12 +1,16 @@
-package com.simplicity;
+package com.simplicity.UI;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+import com.simplicity.Interfaces.GameListener;
+import com.simplicity.Layouts.Game;
+
 public class Simplicity {
     public static void main(String[] args) {
         JFrame frame = new SimplicityFrame();
+
         // Scanner input = new Scanner(System.in);
         // int choice;
 

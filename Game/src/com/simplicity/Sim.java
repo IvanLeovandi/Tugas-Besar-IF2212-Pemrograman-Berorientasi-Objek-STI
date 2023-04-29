@@ -3,6 +3,7 @@ package com.simplicity;
 import com.simplicity.Interfaces.Edible;
 import com.simplicity.Interfaces.Purchasable;
 import com.simplicity.Interfaces.WorldObject;
+import com.simplicity.Layouts.House;
 
 public class Sim {
     private String name;

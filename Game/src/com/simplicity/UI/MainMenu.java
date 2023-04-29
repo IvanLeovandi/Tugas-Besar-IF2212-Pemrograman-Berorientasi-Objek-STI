@@ -1,17 +1,24 @@
-package com.simplicity.GUI;
+package com.simplicity.UI;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+
+import com.simplicity.GUI.RoundedButton;
+import com.simplicity.Interfaces.GameListener;
+import com.simplicity.Layouts.Game;
+
 import java.io.File;
 import java.util.*;
 
 public class MainMenu extends JPanel {
     JPanel mainPanel = new MainPanel();
     JPanel helpPanel = new HelpPanel();
+    GameListener gameListener;
 
-    public MainMenu() {
+    public MainMenu(GameListener gameListener) {
         this.add(mainPanel);
+        this.gameListener = gameListener;
     }
 
     public void showHelp() {
@@ -80,6 +87,7 @@ public class MainMenu extends JPanel {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (e.getSource() == playButton) {
+                gameListener.onPlay();
             } else if (e.getSource() == loadButton) {
                 JFileChooser fileChooser = new JFileChooser();
                 fileChooser.setCurrentDirectory(new File("."));
