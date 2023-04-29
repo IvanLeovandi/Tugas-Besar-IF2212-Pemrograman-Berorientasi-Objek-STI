@@ -21,6 +21,7 @@ public class Sim {
     private Room currentRoom;
     private Point currentPosition;
     private int simNumber;
+    private Boolean changeJob;
 
     public static int numberOfSims = 0;
 
@@ -41,6 +42,7 @@ public class Sim {
         this.currentPosition = new Point(0, 0);
         numberOfSims++;
         this.simNumber = numberOfSims;
+        this.changeJob = false;
     }
 
     //Getter
@@ -100,10 +102,30 @@ public class Sim {
         return simNumber;
     }
 
+    public Boolean getChangeJob() {
+        return changeJob;
+    }
 
     //Setter
     public void setName(String name) {
         this.name = name;
+    }
+
+    public void setJob(String jobName) {
+        float pay =  job.getJobList().get(jobName) / 2;
+        if (this.balance >= pay) { 
+            if (this.job.getDurationOfWork() < 12*60){
+                System.out.println("You can't change your job now because you haven't worked for 12 minutes");
+            }
+            else {
+                this.job = new Job(jobName);
+            }
+        }
+        else {
+            System.out.println("You don't have enough money to change your job");
+        }
+
+        setChangeJob(true);
     }
 
     public void setBalance(int balance) {
@@ -152,6 +174,10 @@ public class Sim {
 
     public void setSimNumber(int simNumber) {
         this.simNumber = simNumber;
+    }
+
+    public void setChangeJob(Boolean changeJob) {
+        this.changeJob = changeJob;
     }
 
     //Method
@@ -211,6 +237,7 @@ public class Sim {
     public Furniture currentObject(){
         return this.currentRoom.checkPoint(this.currentPosition);
     }
+
     
     //---------Active Action---------
     public void work(int duration){
@@ -218,6 +245,7 @@ public class Sim {
             System.out.println("Duration must be multiple of 120 seconds");
         }
         else {
+
             setStatus("Working");
             World.gameTimer.start(GameTimer.gameTime + duration);
             int satietyDecrease = (-10)*(duration/30);
