@@ -21,7 +21,7 @@ public class Sim {
     private Room currentRoom;
     private Point currentPosition;
     private int simNumber;
-    private Boolean changeJob;
+    private Pair<Boolean,Integer> changeJob;
 
     public static int numberOfSims = 0;
 
@@ -42,7 +42,7 @@ public class Sim {
         this.currentPosition = new Point(0, 0);
         numberOfSims++;
         this.simNumber = numberOfSims;
-        this.changeJob = false;
+        this.changeJob = new Pair<Boolean,Integer>(false,0);//<Boolean, Integer> (true/false, day)
     }
 
     //Getter
@@ -102,7 +102,7 @@ public class Sim {
         return simNumber;
     }
 
-    public Boolean getChangeJob() {
+    public Pair<Boolean,Integer> getChangeJob() {
         return changeJob;
     }
 
@@ -119,13 +119,12 @@ public class Sim {
             }
             else {
                 this.job = new Job(jobName);
+                setChangeJob(true);
             }
         }
         else {
             System.out.println("You don't have enough money to change your job");
         }
-
-        setChangeJob(true);
     }
 
     public void setBalance(int balance) {
@@ -177,7 +176,7 @@ public class Sim {
     }
 
     public void setChangeJob(Boolean changeJob) {
-        this.changeJob = changeJob;
+        this.changeJob = new Pair<Boolean,Integer>(changeJob, World.gameTimer.getDay());       
     }
 
     //Method
@@ -241,22 +240,26 @@ public class Sim {
     
     //---------Active Action---------
     public void work(int duration){
-        if (validationDuration(duration, 120) == false){
-            System.out.println("Duration must be multiple of 120 seconds");
+        if (!getChangeJob().getFirst() || (getChangeJob().getFirst() && (World.gameTimer.getDay() - getChangeJob().getSecond() >= 1))){
+            if (validationDuration(duration, 120) == false){
+                System.out.println("Duration must be multiple of 120 seconds");
+            }
+            else {
+                setStatus("Working");
+                World.gameTimer.start(GameTimer.gameTime + duration);
+                int satietyDecrease = (-10)*(duration/30);
+                int moodDecrease = (-10)*(duration/30);
+                changeSatiety(satietyDecrease);
+                changeMood(moodDecrease);
+
+                //Penambahan uang
+                int moneyIncrease = job.getSalary();
+                setBalance(getBalance() + moneyIncrease);
+            }
         }
         else {
-
-            setStatus("Working");
-            World.gameTimer.start(GameTimer.gameTime + duration);
-            int satietyDecrease = (-10)*(duration/30);
-            int moodDecrease = (-10)*(duration/30);
-            changeSatiety(satietyDecrease);
-            changeMood(moodDecrease);
-
-            //Penambahan uang
-            int moneyIncrease = job.getSalary();
-            setBalance(getBalance() + moneyIncrease);
-        }   
+            System.out.println("You can't work now because you have changed your job less than 1 day ago");
+        }
     }
 
     public void workout(int duration) {
