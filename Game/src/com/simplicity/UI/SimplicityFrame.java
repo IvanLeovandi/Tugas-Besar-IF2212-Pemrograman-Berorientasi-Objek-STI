@@ -7,28 +7,20 @@ import javax.swing.*;
 import com.simplicity.Interfaces.GameListener;
 import com.simplicity.Layouts.GamePanel;
 
-public class SimplicityFrame extends JFrame implements GameListener {
-    JPanel MainMenuPanel = new MainMenu(this);
-    GamePanel game;
-    SimplicityFrame() {
+public class SimplicityFrame extends JFrame {
+    JPanel currentPanel;
+    SimplicityFrame(JPanel firstPanel) {
+        currentPanel = firstPanel;
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(1280, 720);
-        this.setResizable(false);
 
-        this.add(MainMenuPanel);
-
-        this.setVisible(true);
+        this.add(currentPanel);
     }
 
-    public static void main(String[] args) {
-        new SimplicityFrame();
-    }
-
-    @Override
-    public void onPlay() {
-        game = new GamePanel();
-        this.remove(MainMenuPanel);
-        this.add(game);
+    public void setCurrentPanel(JPanel newPanel) {
+        this.remove(currentPanel);
+        currentPanel = newPanel;
+        this.add(currentPanel);
         this.revalidate();
     }
 }

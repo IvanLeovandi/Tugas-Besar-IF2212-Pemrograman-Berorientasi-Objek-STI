@@ -21,7 +21,7 @@ public class House {
     {
         return this.roomList;
     }
-    
+
     //Untuk mencetak room list
     public void printRoomList()
     {
@@ -31,7 +31,7 @@ public class House {
             System.out.println(room.getroomNumber() + ". " + room.getName());
         }
     }
-    
+
     //Getter location
     public Point getLocation()
     {
@@ -76,11 +76,11 @@ public class House {
         int y = roomUp.getLocationInHouse().getY();
         if (direction.equals("right")) //Mengecek apakah ruangan sebelah kanan terisi atau tidak
         {
-            if (roomUp.getRight() == null) 
+            if (roomUp.getRight() == null)
             {
                 for (Room room: roomList)
                 {
-                    if (room.getLocationInHouse().getX() == x+1 && room.getLocationInHouse().getY() == y) 
+                    if (room.getLocationInHouse().getX() == x+1 && room.getLocationInHouse().getY() == y)
                     {
                         flag = false;
                     }
@@ -146,14 +146,14 @@ public class House {
             }
         }
         return flag;
-    }  
+    }
 
     //Untuk upgrade ruangan
     public void upgradeRoom(Room room, String direction, String name)
     {
         int x = room.getLocationInHouse().getX();
         int y = room.getLocationInHouse().getY();
-        
+
         if (this.checkUpgradeable(room, direction))
         {
             this.increaseNumberofRoom();
@@ -189,7 +189,7 @@ public class House {
                 room.setTop(tempRoom);
                 roomList.add(tempRoom);
             }
-            
+
             Room tempRoom = roomList.get(roomList.size()-1);
             int x2 = tempRoom.getLocationInHouse().getX();
             int y2 = tempRoom.getLocationInHouse().getY();
@@ -218,5 +218,6 @@ public class House {
             }
         }
     }
+
+
 }
- 
