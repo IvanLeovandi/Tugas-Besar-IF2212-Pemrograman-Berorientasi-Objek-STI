@@ -1,5 +1,7 @@
 package com.simplicity;
 
+import java.util.Objects;
+
 public class Point {
     private int x;
     private int y;
@@ -32,6 +34,12 @@ public class Point {
         return getX() == ((Point)o).getX() && getY() == ((Point)o).getY();
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(x, y);
+    }
+
+    @Override
     public String toString() {
         return  "Point{" +
                 "x= " + x +

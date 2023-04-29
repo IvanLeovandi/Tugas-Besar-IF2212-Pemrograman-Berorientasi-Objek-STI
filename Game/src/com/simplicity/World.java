@@ -9,7 +9,7 @@ import com.simplicity.Interfaces.WorldObject;
 
 public class World {
     private Dimension2D size;
-    private Map<Point, WorldObject> map = new HashMap<>();
+    private Map<Point, House> map = new HashMap<>();
 
     public static GameTimer gameTimer = new GameTimer();
 
@@ -17,45 +17,32 @@ public class World {
         size = new Dimension2D(width, length);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < length; j++) {
-                map.put(new Point(i, j), null);
+                map.put(new Point(i, j), null); // butuh perubahan
             }
         }
     }
 
-    public void addContent(Point p, WorldObject wo) throws PlacementOutOfBoundException, OverlapingWorldObjectException {
-        if (p.getX() < 0 || p.getY() < 0 || wo.getSize().getLength() + p.getX() > size.getLength() || wo.getSize().getWidth() + p.getY() > size.getWidth()) {
-            throw new PlacementOutOfBoundException(wo);
-        }
-
-        int iMax = size.getWidth();
-        int jMax = size.getLength();
-        for (int i = 0; i < iMax; i++) {
-            for (int j = 0; j < jMax; j++) {
-                WorldObject objectCheck = map.get(new Point(i, j));
-                if (objectCheck != null) {
-                    throw new OverlapingWorldObjectException(wo, objectCheck);
-                }
-            }
-        }
-
-        for (int i = p.getX(); i < p.getX() + wo.getSize().getLength(); i++) {
-            for (int j = p.getY(); j < p.getY() + wo.getSize().getWidth(); j++) {
-                map.replace(new Point(i, j), wo);
-            }
-        }
+    public void setHouse(int x, int y, House house) {
+        setHouse(new Point(x, y), house);
     }
 
-    public void removeContent(Point p) {}
-
-    public void removeContent(WorldObject wo) {}
-
-    public Dimension2D getSize() {
-        return size;
+    public void setHouse(Point location, House house) {
+        map.put(location, house);
     }
 
-    public List<WorldObject> getObjects() {
-        Set<WorldObject> pret = new HashSet<>(map.values());
-        pret.remove(null);
-        return new ArrayList<>(pret);
+    public void removeHouse(int x, int y) {
+        removeHouse(new Point(x, y));
+    }
+
+    public void removeHouse(Point location) {
+        map.remove(location);
+    }
+
+    public House getHouse(int x, int y) {
+        return getHouse(new Point(x, y));
+    }
+
+    public House getHouse(Point p) {
+        return map.get(p);
     }
 }
