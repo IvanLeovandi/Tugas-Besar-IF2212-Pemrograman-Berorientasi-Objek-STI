@@ -1,24 +1,61 @@
 package com.simplicity;
 
+<<<<<<< HEAD
 import com.simplicity.Interfaces.Edible;
 import com.simplicity.Interfaces.Purchasable;
 import com.simplicity.Interfaces.WorldObject;
 import com.simplicity.Layouts.House;
+=======
+import java.util.*;
+import com.simplicity.Foods.CookedFood;
+import com.simplicity.Foods.Ingredient;
+import com.simplicity.Furniture.Furniture;
+import com.simplicity.Interfaces.*;
+>>>>>>> main
 
 public class Sim {
     private String name;
-    private String job;
+    private Job job;
     private int balance;
-    private int hunger;
+    private Inventory<Furniture> furnitureInventory;
+    private Inventory<Ingredient> ingredientsInventory;
+    private Inventory<CookedFood> cookedFoodInventory;
+    private int satiety;
     private int mood;
     private int health;
-    private int status;
+    private String status;
+    private House house;
+    private Room currentRoom;
+    private Point currentPosition;
+    private int simNumber;
 
+    public static int numberOfSims = 0;
+
+    //Konstruktor
+    public Sim(String name, Point location) {
+        this.name = name;
+        this.job = new Job();
+        this.balance = 100;
+        this.furnitureInventory = new Inventory<Furniture>();
+        this.ingredientsInventory = new Inventory<Ingredient>();
+        this.cookedFoodInventory = new Inventory<CookedFood>();
+        this.satiety = 80;
+        this.mood = 80;
+        this.health = 80;
+        this.status = "Idle";
+        this.house = new House(location, this);
+        this.currentRoom = house.getRoomList().get(0);
+        this.currentPosition = new Point(0, 0);
+        numberOfSims++;
+        this.simNumber = numberOfSims;
+    }
+
+    //Getter
     public String getName() {
         return name;
     }
 
-    public String getJob() {
+    public Job getJob() {
         return job;
     }
 
@@ -26,8 +63,20 @@ public class Sim {
         return balance;
     }
 
-    public int getHunger() {
-        return hunger;
+    public Inventory<Furniture> getFurnitureInventory() {
+        return furnitureInventory;
+    }
+
+    public Inventory<Ingredient> getIngredientsInventory() {
+        return ingredientsInventory;
+    }
+
+    public Inventory<CookedFood> getCookedFoodInventory() {
+        return cookedFoodInventory;
+    }
+
+    public int getSatiety() {
+        return satiety;
     }
 
     public int getMood() {
@@ -38,54 +87,542 @@ public class Sim {
         return health;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void work(int durMilli) {
+    public House getHouse() {
+        return house;
     }
 
-    public void workout(int durMilli) {
+    public Room getCurrentRoom() {
+        return currentRoom;
+    }
+
+    public Point getCurrentPosition() {
+        return currentPosition;
+    }
+
+    public int getSimNumber() {
+        return simNumber;
+    }
+
+
+    //Setter
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setBalance(int balance) {
+        this.balance = balance;
+    }
+
+    public void setFurnitureInventory(Inventory<Furniture> inventory) {
+        this.furnitureInventory = inventory;
+    }
+
+    public void setIngredientsInventory(Inventory<Ingredient> inventory) {
+        this.ingredientsInventory = inventory;
+    }
+
+    public void setCookedFoodInventory(Inventory<CookedFood> inventory) {
+        this.cookedFoodInventory = inventory;
+    }
+
+    public void setSatiety(int satiety) {
+        this.satiety = satiety;
+    }
+
+    public void setMood(int mood) {
+        this.mood = mood;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setHouse(House house) {
+        this.house = house;
+    }
+
+    public void setCurrentRoom(Room currentRoom) {
+        this.currentRoom = currentRoom;
+    }
+
+    public void setCurrentPosition(Point currentPosition) {
+        this.currentPosition = currentPosition;
+    }
+
+    public void setSimNumber(int simNumber) {
+        this.simNumber = simNumber;
+    }
+
+    //Method
+    public void changeSatiety(int x) {
+        int i = satiety + x;
+        if (i > 100) {
+            setSatiety(100);
+        }
+        else if(i <= 0) {
+            setSatiety(0);
+            die();
+        }
+        else {
+            setSatiety(i);
+        }
+        
+    }
+
+    public void changeMood(int x) {
+        int i = mood + x;
+        if (i > 100) {
+            setMood(100);
+        }
+        else if(i <= 0) {
+            setMood(0);
+            die();
+        }
+        else {
+            setMood(i);
+        }
+    }
+
+    public void changeHealth(int x) {
+        int i = health + x;
+        if (i > 100) {
+            setHealth(100);
+        }
+        else if(i <= 0) {
+            setHealth(0);
+            die();
+        }
+        else {
+            setHealth(i);
+        }
+    }
+
+    public Boolean validationDuration(int duration, int modulo){
+        if (duration % modulo == 0){
+            return true;
+        }
+        else{
+            return false;
+        }
 
     }
 
-    public void sleep(int durMilli) {
+    public Furniture currentObject(){
+        return this.currentRoom.checkPoint(this.currentPosition);
+    }
+    
+    //---------Active Action---------
+    public void work(int duration){
+        if (validationDuration(duration, 120) == false){
+            System.out.println("Duration must be multiple of 120 seconds");
+        }
+        else {
+            setStatus("Working");
+            World.gameTimer.start(duration);
+            int satietyDecrease = (-10)*(duration/30);
+            int moodDecrease = (-10)*(duration/30);
+            changeSatiety(satietyDecrease);
+            changeMood(moodDecrease);
 
+            //Penambahan uang
+            int moneyIncrease = job.getSalary();
+            setBalance(getBalance() + moneyIncrease);
+        }   
+    }
+
+    public void workout(int duration) {
+        if (validationDuration(duration, 20) == false){
+            System.out.println("Duration must be multiple of 20 seconds");
+        }
+        else {
+            setStatus("Working Out");
+            World.gameTimer.start(duration);
+            int satietyDecrease = (-5)*(duration/20);
+            int moodIncrease = 10*(duration/20);
+            int healthIncrease = 5*(duration/20);
+            
+            changeSatiety(satietyDecrease);
+            changeMood(moodIncrease);
+            changeHealth(healthIncrease); 
+        }
+    }
+
+    public void sleep(int duration) {
+        if (this.currentObject() != null) {
+            if (this.currentObject().getName().equals("King Bed") || this.currentObject().getName().equals("Single Bed") || this.currentObject().getName().equals("Single Bed")) {
+                
+                    if (validationDuration(duration, 240) == false){
+                        System.out.println("Duration must be multiple of 4 minutes");
+                    }
+                    else {
+                        setStatus("Sleeping");
+                        World.gameTimer.start(duration);
+                        int satietyDecrease = (-5)*(duration/240);
+                        int moodIncrease = 10*(duration/240);
+                        int healthIncrease = 5*(duration/240);
+                        
+                        changeSatiety(satietyDecrease);
+                        changeMood(moodIncrease);
+                        changeHealth(healthIncrease);                
+                    }
+                }
+            else {
+                System.out.println("You can't sleep here");
+            }
+        }
+        else {
+            System.out.println("You can't sleep here");
+        }
+    }
+
+    public void notSleep(){
+        changeMood(-5);
+        changeHealth(-5);
     }
 
     public void eat(Edible food) {
-
+        if (currentObject() != null) {
+            if (currentObject().getName().equals("Table And Chair")){
+                if(food instanceof CookedFood){
+                    CookedFood food1 = (CookedFood) food;
+                   if (this.cookedFoodInventory.getInventory().containsKey(food1)){
+                        setStatus("Eating");
+                        World.gameTimer.start(30);
+                        changeSatiety(food1.getSatietyPoint());
+                        this.cookedFoodInventory.getInventory().remove(food1);
+                    }
+                    else{
+                        System.out.println("You don't have this food");
+                    }      
+                }
+                else if(food instanceof Ingredient){
+                    Ingredient food1 = (Ingredient) food;
+                    if (this.ingredientsInventory.getInventory().containsKey(food1)){
+                        setStatus("Eating");
+                        World.gameTimer.start(30);
+                        changeSatiety(food1.getSatietyPoint());
+                        this.ingredientsInventory.getInventory().remove(food1);
+                    }
+                    else{
+                        System.out.println("You don't have this food");
+                    }      
+                }
+                else {
+                    System.out.println("You can't eat this");
+                }
+            }
+            else{
+                System.out.println("You can't eat here");
+            }
+        }
+        else {
+            System.out.println("You can't eat here");
+        }
+        
     }
 
-    public void visit() {
+    public void cook(CookedFood cookedFood) {
+        if (currentObject() != null) {
+            if (currentObject().getName().equals("Stove")){
+                List<Ingredient> ingredients = cookedFood.getIngredients();
+                Boolean flag = true;
+                for (Ingredient ingredient : ingredients) {
+                    if (this.ingredientsInventory.getInventory().containsKey(ingredient)){   
+                        if (this.ingredientsInventory.getInventory().get(ingredient) < 1) {
+                            System.out.println("Sorry, " + ingredient.getName() + " is out of stock");
+                            flag = false;
+                        }
+                    }
+                    else {
+                        System.out.println("Sorry, " + ingredient.getName() + " is out of stock");
+                        flag = false;
+                    }
+                }
 
+                if (flag == true){
+                    Double duration = 1.5 * cookedFood.getSatietyPoint();
+                    int duration1 = duration.intValue();
+                    setStatus("Cooking");
+                    World.gameTimer.start(duration1);
+                    for (Ingredient ingredient : ingredients) {
+                        this.ingredientsInventory.removeItem(ingredient);
+                    }
+                    this.cookedFoodInventory.addItem(cookedFood, 1);
+                    System.out.println("You have successfully cooked " + cookedFood.getName());
+                    changeMood(10);
+                }
+                else{
+                    System.out.println("You can't cook this because you don't have the ingredients");
+                }
+            }
+            else{
+                System.out.println("You can't cook here");
+            }
+        }
+        else {
+            System.out.println("You can't cook here");
+        }
     }
 
-    public void defecate() {
+    public void visit(House house1, House house2) {
+        int x1 = house1.getLocation().getX();
+        int y1 = house1.getLocation().getY();
+        
+        int x2 = house2.getLocation().getX();
+        int y2 = house2.getLocation().getY();
 
+        //menghitung jarak (waktu) antara titik Sim dan rumah yang dikunjungi
+        double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
+        int duration = (int)distance;
+        setStatus("Visiting");
+        World.gameTimer.start(duration);       
+
+        //Efek berkunjung
+        int moodIncrease = 10*(int)distance/30;
+        int satietyDecrease = -10*(int)distance/30;
+
+        changeMood(moodIncrease);
+        changeSatiety(satietyDecrease);
     }
 
-    public void upgradeHouse(House house) {
-
+    public void defecate(int duration) {
+        if (currentObject() != null) {
+            if (currentObject().getName().equals("Toilet")) {
+                if (validationDuration(duration, 10) == false){
+                    System.out.println("Duration must be multiple of 10 seconds");
+                }
+                else {
+                    setStatus("Defecating");
+                    World.gameTimer.start(duration);
+                    int satietyDecrease = -20;
+                    int moodIncrease = 10;
+        
+                    changeSatiety(satietyDecrease);
+                    changeMood(moodIncrease);
+                }
+            }
+            else {
+                System.out.println("You can't defecate here");
+            }
+        }
+        else {
+            System.out.println("You can't defecate here");
+        }
     }
 
-    public void buy(Purchasable item) {
-
+    public void notDefecate() {
+        changeHealth(-5);
+        changeMood(-5);
     }
 
-    public void move() {
+    //---------Upgrade Action---------
+    public void upgradeHouse() {
+        Scanner input = new Scanner(System.in);
+        if (balance < 1500){
+            System.out.println("You can't upgrade the house");
+        }
+        else{
+            balance -= 1500;
+            ArrayList<Room> rooms = house.getRoomList();
+            if (house.getNumberofRoom() == 1){
+                //Menentukan arah penambahan ruangan
+                System.out.println("You have to choose the direction of adding the room");
+                System.out.println("You can select top/bottom/left/right");
+                String direction = input.nextLine();
 
+                //Memberikan nama ruangan
+                System.out.println("Please create the name of the room");
+                String name = input.nextLine();
+                house.upgradeRoom(rooms.get(0), direction, name);              
+            }
+            else if (house.getNumberofRoom() >= 2){
+                //Menentukan ruangan acuan
+                System.out.println("You have " + rooms.size() + " rooms.");
+                System.out.println("Please choose the room you want to upgrade by entering its number:");
+                house.printRoomList();
+                int roomNumber = input.nextInt();
+
+                //Menentukan arah penambahan ruangan
+                System.out.println("You have to choose the direction of adding the room");
+                System.out.println("You can select top/bottom/left/right");
+                String direction = input.nextLine();
+
+                //Memberikan nama ruangan
+                System.out.println("Please create the name of the room");
+                String name = input.nextLine();
+                house.upgradeRoom(rooms.get(roomNumber-1), direction, name);    
+            }
+        }  
+        input.close();      
     }
 
-    public void openInventory() {
-
+    public void buy(Purchasable item, int quantity) {
+        if (item instanceof Furniture){
+            Furniture furniture = (Furniture) item;
+            int itemPrice = furniture.getPrice() * quantity;
+            if (balance < itemPrice){
+                System.out.println("You can't buy the furniture");
+            }
+            else{
+                balance -= itemPrice;
+                int deliveryTime = (new Random().nextInt(5) + 1) * 30;
+    
+                furnitureInventory.addItem(furniture, quantity);
+            }
+        }
+        else if (item instanceof Ingredient){
+            Ingredient ingredient = (Ingredient) item;
+            int itemPrice = ingredient.getPrice() * quantity;
+            if (balance < itemPrice){
+                System.out.println("You can't buy the food");
+            }
+            else{
+                balance -= itemPrice;
+                int deliveryTime = (new Random().nextInt(5) + 1) * 30;
+                      
+                ingredientsInventory.addItem(ingredient, quantity);
+            }
+        }
+        else {
+            throw new IllegalArgumentException("The item is not purchasable");
+        }
     }
 
-    public void place(WorldObject o) {
-
+    //---------Non Active Action---------
+    public void moveToRoom(House house,Room room) {
+        if (house.getRoomList().contains(room) == false){
+            System.out.println("You can't move to the room");
+        }
+        else{
+            room.addSim(this);
+            currentRoom.removeSim(this);
+            this.currentRoom = room;
+        }        
     }
 
-    public void viewTime() {
+    public void setUpObject (Point placement, int rotation, Furniture furniture) {
+        //Mengecek apakah furniture yang dipilih ada di inventory
+        if (furnitureInventory.getInventory().containsKey(furniture) == false){
+            System.out.println("You don't have the furniture");
+        }
+        else {
+            currentRoom.placeFurniture(placement, rotation, furniture);
+        }
+        
+        //Menghapus furniture dari inventory
+        furnitureInventory.removeItem(furniture);
+    }
 
+    public void viewInventory() {
+        //Menampilkan inventory furniture
+        System.out.println("Furniture Inventory");
+        String header = String.format("| %-20s | %-10s |", "Item", "Quantity");
+        String line = "-".repeat(header.length());
+    
+        System.out.println(line);
+        System.out.println(header);
+        System.out.println(line);
+    
+        for (Furniture item : furnitureInventory.getInventory().keySet()) {
+            int quantity = furnitureInventory.getInventory().get(item);
+            String row = String.format("| %-20s | %-10d |", item.toString(), quantity);
+            System.out.println(row);
+        }
+        System.out.println(line);
+
+        //Menampilkan inventory cooked food
+        System.out.println("Cooked Food Inventory");
+        System.out.println(line);
+        System.out.println(header);
+        System.out.println(line);
+
+        for (CookedFood item : cookedFoodInventory.getInventory().keySet()) {
+            int quantity = cookedFoodInventory.getInventory().get(item);
+            String row = String.format("| %-20s | %-10d |", item.toString(), quantity);
+            System.out.println(row);
+        }
+        System.out.println(line);
+
+        //Menampilkan inventory ingredients
+        System.out.println("Ingredients Inventory");
+        System.out.println(line);
+        System.out.println(header);
+        System.out.println(line);
+
+        for (Ingredient item : ingredientsInventory.getInventory().keySet()) {
+            int quantity = ingredientsInventory.getInventory().get(item);
+            String row = String.format("| %-20s | %-10d |", item.toString(), quantity);
+            System.out.println(row);
+        }
+        System.out.println(line);
+
+        
+    }
+    public void moveToObject(Furniture furniture, int furnitureX) {
+        if (currentRoom.getfurnitureList().contains(furniture) == false){
+            System.out.println("You can't move to the object");
+        }
+        else{
+            Point furniturePosition = currentRoom.getFurnitureLocation(furniture, furnitureX);
+            this.currentPosition = furniturePosition;
+        }
+    }
+
+    public void viewTime() {  
+        if(currentObject().getName().equals("Clock")){
+            //Implementasi
+
+        }
+        else{
+            System.out.println("You can't view the time");
+        }
+    }
+
+    //Another Action Note : Masih disesuain sama keinginan kelompok
+    public void nubes(){
+        changeMood(-50);
+        changeHealth(-50);
+    }
+
+    public void sayHello(){
+        changeMood(10);
+        System.out.println("Hello, my name is " + getName());
+    }
+
+    public void listenMusic(int duration){
+        changeMood(duration/10);
+    }
+
+    public void watchTV(int duration){
+        changeMood(duration/10);
+    }
+
+    public void bath(int duration){
+        changeMood(duration/10);
+        changeHealth(duration/10);
+    }
+
+    public void meetup(int duration){
+        changeMood(duration/10);
+        balance -= duration/10;
+    }
+
+    public void missyou(int duration){
+        changeMood(-duration/10);
+        changeHealth(-duration/10);
+    }
+    //------------
+    private void die(){
+        setStatus("Die");
     }
 }
+    
+
