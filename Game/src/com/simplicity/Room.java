@@ -102,6 +102,11 @@ public class Room {
         return this.furnitureList;
     }
 
+    public ArrayList<Sim> getSimList()
+    {
+        return this.simsList;
+    }
+
     //Nambahin sims ke ruangan
     public void addSim(Sim sim)
     {
@@ -419,52 +424,37 @@ public class Room {
     }
 
     
-    //Mencetak ruangan beserta sim dan furniture yang ada di dalamnya
+    //Mencetak ruangan beserta sim dan furniture yang ada di dalamnya ( x,y (simNumber))
     public void printRoom() 
     {
         ArrayList<Sim> copySimList = new ArrayList<Sim>(simsList);
-        System.out.println("-------------------------------------");
+        System.out.println("--------------------------------------------------------------------------");
         for (int i=0;i<6;i++)
         {
-            System.out.print("| ");
+            System.out.print("|");
             for (int j =0;j<6;j++)
             {
-                if (copySimList.size() != 0)
+                for (Sim sim : copySimList)
                 {
-                    for (Sim sim : copySimList)
+                    if (sim.getCurrentPosition().getX() == j && sim.getCurrentPosition().getY() == i)
                     {
-                        if (sim.getCurrentPosition().getX() == j && sim.getCurrentPosition().getY() == i)
-                        {
-                            System.out.print("9," + sim.getSimNumber() + " | ");
-                            copySimList.remove(sim);
-                        }
-                        else
-                        {
-                            if (space[i][j] == null)
-                            {
-                                System.out.print("0,0 | ");
-                            }
-                            else
-                            {
-                                System.out.print(space[i][j].getX() + "," + space[i][j].getY() + " | ");
-                            }
-                        }
-                    }
-                }
-                else
-                {
-                    if (space[i][j] == null)
-                    {
-                        System.out.print("0,0 | ");
+                        System.out.print("  " + space[i][j].getX() + "," + space[i][j].getY() + " (" + sim.getSimNumber() +")" + "  |");
                     }
                     else
                     {
-                        System.out.print(space[i][j].getX() + "," + space[i][j].getY() + " | ");
+                        if (space[i][j] == null)
+                        {
+                            System.out.print("    0,0    |");
+                        }
+                        else
+                        {
+                            System.out.print("    "+space[i][j].getX() + "," + space[i][j].getY() + "    |");
+                        }
                     }
                 }
             }
             System.out.println(" ");
-            System.out.println("-------------------------------------");
+            System.out.println("--------------------------------------------------------------------------");
         }
     }
 }
