@@ -36,7 +36,7 @@ public class Sim {
         this.mood = 80;
         this.health = 80;
         this.status = "Idle";
-        this.house = new House(location);
+        this.house = new House(location, this);
         this.currentRoom = house.getRoomList().get(0);
         this.currentPosition = new Point(0, 0);
         numberOfSims++;
@@ -251,21 +251,22 @@ public class Sim {
     public void sleep(int duration) {
         if (this.currentObject() != null) {
             if (this.currentObject().getName().equals("King Bed") || this.currentObject().getName().equals("Single Bed") || this.currentObject().getName().equals("Single Bed")) {
-                if (validationDuration(duration, 240) == false){
-                    System.out.println("Duration must be multiple of 4 minutes");
+                
+                    if (validationDuration(duration, 240) == false){
+                        System.out.println("Duration must be multiple of 4 minutes");
+                    }
+                    else {
+                        setStatus("Sleeping");
+                        World.gameTimer.start(duration);
+                        int satietyDecrease = (-5)*(duration/240);
+                        int moodIncrease = 10*(duration/240);
+                        int healthIncrease = 5*(duration/240);
+                        
+                        changeSatiety(satietyDecrease);
+                        changeMood(moodIncrease);
+                        changeHealth(healthIncrease);                
+                    }
                 }
-                else {
-                    setStatus("Sleeping");
-                    World.gameTimer.start(duration);
-                    int satietyDecrease = (-5)*(duration/240);
-                    int moodIncrease = 10*(duration/240);
-                    int healthIncrease = 5*(duration/240);
-                    
-                    changeSatiety(satietyDecrease);
-                    changeMood(moodIncrease);
-                    changeHealth(healthIncrease);                
-                }
-            }
             else {
                 System.out.println("You can't sleep here");
             }
@@ -466,11 +467,7 @@ public class Sim {
             else{
                 balance -= itemPrice;
                 int deliveryTime = (new Random().nextInt(5) + 1) * 30;
-                try {
-                    Thread.sleep(deliveryTime * 1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+    
                 furnitureInventory.addItem(furniture, quantity);
             }
         }
@@ -483,11 +480,7 @@ public class Sim {
             else{
                 balance -= itemPrice;
                 int deliveryTime = (new Random().nextInt(5) + 1) * 30;
-                try {
-                    Thread.sleep(deliveryTime * 1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+                      
                 ingredientsInventory.addItem(ingredient, quantity);
             }
         }
@@ -502,6 +495,8 @@ public class Sim {
             System.out.println("You can't move to the room");
         }
         else{
+            room.addSim(this);
+            currentRoom.removeSim(this);
             this.currentRoom = room;
         }        
     }
@@ -564,12 +559,12 @@ public class Sim {
 
         
     }
-    public void moveToObject(Furniture furniture) {
+    public void moveToObject(Furniture furniture, int furnitureX) {
         if (currentRoom.getfurnitureList().contains(furniture) == false){
             System.out.println("You can't move to the object");
         }
         else{
-            Point furniturePosition = currentRoom.getFurnitureLocation(furniture).get(0);
+            Point furniturePosition = currentRoom.getFurnitureLocation(furniture, furnitureX);
             this.currentPosition = furniturePosition;
         }
     }
