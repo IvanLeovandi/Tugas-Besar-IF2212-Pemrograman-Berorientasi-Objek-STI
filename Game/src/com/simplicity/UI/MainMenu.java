@@ -6,7 +6,7 @@ import javax.swing.*;
 
 import com.simplicity.GUI.RoundedButton;
 import com.simplicity.Interfaces.GameListener;
-import com.simplicity.Layouts.Game;
+import com.simplicity.Layouts.GamePanel;
 
 import java.io.File;
 import java.util.*;

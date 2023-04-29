@@ -5,7 +5,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import com.simplicity.Interfaces.GameListener;
-import com.simplicity.Layouts.Game;
+import com.simplicity.Layouts.GamePanel;
 
 public class Simplicity {
     public static void main(String[] args) {

@@ -1,5 +1,5 @@
 package com.simplicity.Layouts;
 
-public class Room {
+public class RoomPanel {
 
 }

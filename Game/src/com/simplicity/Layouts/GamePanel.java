@@ -5,11 +5,11 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
 
-public class Game extends JPanel {
+public class GamePanel extends JPanel {
     SideMenu sideMenu = new SideMenu();
-    World world = new World();
+    WorldPanel world = new WorldPanel();
     SideInfo sideInfo = new SideInfo();
-    public Game() {
+    public GamePanel() {
         this.setLayout(new BorderLayout());
         this.add(sideMenu, BorderLayout.WEST);
         this.add(world, BorderLayout.CENTER);
@@ -62,7 +62,7 @@ public class Game extends JPanel {
         frame.setLayout(new GridLayout());
         frame.setBackground(Color.BLACK);
 
-        Game gamePanel = new Game();
+        GamePanel gamePanel = new GamePanel();
 
         frame.add(gamePanel);
         frame.setSize(1280, 720);

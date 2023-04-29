@@ -5,7 +5,7 @@ import javax.swing.*;
 import java.io.File;
 
 import com.simplicity.Interfaces.Interactable;
-import com.simplicity.Layouts.House;
+import com.simplicity.Layouts.HousePanel;
 
 public class GameMenu extends JPanel {
     public static void showSimInfo(Sim sim) {
@@ -24,7 +24,7 @@ public class GameMenu extends JPanel {
     public static void showSimInventory(Sim sim) {}
 
     // need House
-    public static void openHouseUpgrade(House house) {}
+    public static void openHouseUpgrade(HousePanel house) {}
 
     // need room
     public static void openRoomEdit() {}

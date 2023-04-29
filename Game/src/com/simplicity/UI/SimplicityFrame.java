@@ -5,11 +5,11 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import com.simplicity.Interfaces.GameListener;
-import com.simplicity.Layouts.Game;
+import com.simplicity.Layouts.GamePanel;
 
 public class SimplicityFrame extends JFrame implements GameListener {
     JPanel MainMenuPanel = new MainMenu(this);
-    Game game;
+    GamePanel game;
     SimplicityFrame() {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(1280, 720);
@@ -26,7 +26,7 @@ public class SimplicityFrame extends JFrame implements GameListener {
 
     @Override
     public void onPlay() {
-        game = new Game();
+        game = new GamePanel();
         this.remove(MainMenuPanel);
         this.add(game);
         this.revalidate();

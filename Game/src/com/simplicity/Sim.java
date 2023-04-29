@@ -1,17 +1,10 @@
 package com.simplicity;
 
-<<<<<<< HEAD
-import com.simplicity.Interfaces.Edible;
-import com.simplicity.Interfaces.Purchasable;
-import com.simplicity.Interfaces.WorldObject;
-import com.simplicity.Layouts.House;
-=======
 import java.util.*;
 import com.simplicity.Foods.CookedFood;
 import com.simplicity.Foods.Ingredient;
 import com.simplicity.Furniture.Furniture;
 import com.simplicity.Interfaces.*;
->>>>>>> main
 
 public class Sim {
     private String name;
@@ -174,7 +167,7 @@ public class Sim {
         else {
             setSatiety(i);
         }
-        
+
     }
 
     public void changeMood(int x) {
@@ -218,7 +211,7 @@ public class Sim {
     public Furniture currentObject(){
         return this.currentRoom.checkPoint(this.currentPosition);
     }
-    
+
     //---------Active Action---------
     public void work(int duration){
         if (validationDuration(duration, 120) == false){
@@ -235,7 +228,7 @@ public class Sim {
             //Penambahan uang
             int moneyIncrease = job.getSalary();
             setBalance(getBalance() + moneyIncrease);
-        }   
+        }
     }
 
     public void workout(int duration) {
@@ -248,17 +241,17 @@ public class Sim {
             int satietyDecrease = (-5)*(duration/20);
             int moodIncrease = 10*(duration/20);
             int healthIncrease = 5*(duration/20);
-            
+
             changeSatiety(satietyDecrease);
             changeMood(moodIncrease);
-            changeHealth(healthIncrease); 
+            changeHealth(healthIncrease);
         }
     }
 
     public void sleep(int duration) {
         if (this.currentObject() != null) {
             if (this.currentObject().getName().equals("King Bed") || this.currentObject().getName().equals("Single Bed") || this.currentObject().getName().equals("Single Bed")) {
-                
+
                     if (validationDuration(duration, 240) == false){
                         System.out.println("Duration must be multiple of 4 minutes");
                     }
@@ -268,10 +261,10 @@ public class Sim {
                         int satietyDecrease = (-5)*(duration/240);
                         int moodIncrease = 10*(duration/240);
                         int healthIncrease = 5*(duration/240);
-                        
+
                         changeSatiety(satietyDecrease);
                         changeMood(moodIncrease);
-                        changeHealth(healthIncrease);                
+                        changeHealth(healthIncrease);
                     }
                 }
             else {
@@ -301,7 +294,7 @@ public class Sim {
                     }
                     else{
                         System.out.println("You don't have this food");
-                    }      
+                    }
                 }
                 else if(food instanceof Ingredient){
                     Ingredient food1 = (Ingredient) food;
@@ -313,7 +306,7 @@ public class Sim {
                     }
                     else{
                         System.out.println("You don't have this food");
-                    }      
+                    }
                 }
                 else {
                     System.out.println("You can't eat this");
@@ -326,7 +319,7 @@ public class Sim {
         else {
             System.out.println("You can't eat here");
         }
-        
+
     }
 
     public void cook(CookedFood cookedFood) {
@@ -335,7 +328,7 @@ public class Sim {
                 List<Ingredient> ingredients = cookedFood.getIngredients();
                 Boolean flag = true;
                 for (Ingredient ingredient : ingredients) {
-                    if (this.ingredientsInventory.getInventory().containsKey(ingredient)){   
+                    if (this.ingredientsInventory.getInventory().containsKey(ingredient)){
                         if (this.ingredientsInventory.getInventory().get(ingredient) < 1) {
                             System.out.println("Sorry, " + ingredient.getName() + " is out of stock");
                             flag = false;
@@ -375,7 +368,7 @@ public class Sim {
     public void visit(House house1, House house2) {
         int x1 = house1.getLocation().getX();
         int y1 = house1.getLocation().getY();
-        
+
         int x2 = house2.getLocation().getX();
         int y2 = house2.getLocation().getY();
 
@@ -383,7 +376,7 @@ public class Sim {
         double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         int duration = (int)distance;
         setStatus("Visiting");
-        World.gameTimer.start(duration);       
+        World.gameTimer.start(duration);
 
         //Efek berkunjung
         int moodIncrease = 10*(int)distance/30;
@@ -404,7 +397,7 @@ public class Sim {
                     World.gameTimer.start(duration);
                     int satietyDecrease = -20;
                     int moodIncrease = 10;
-        
+
                     changeSatiety(satietyDecrease);
                     changeMood(moodIncrease);
                 }
@@ -441,7 +434,7 @@ public class Sim {
                 //Memberikan nama ruangan
                 System.out.println("Please create the name of the room");
                 String name = input.nextLine();
-                house.upgradeRoom(rooms.get(0), direction, name);              
+                house.upgradeRoom(rooms.get(0), direction, name);
             }
             else if (house.getNumberofRoom() >= 2){
                 //Menentukan ruangan acuan
@@ -458,10 +451,10 @@ public class Sim {
                 //Memberikan nama ruangan
                 System.out.println("Please create the name of the room");
                 String name = input.nextLine();
-                house.upgradeRoom(rooms.get(roomNumber-1), direction, name);    
+                house.upgradeRoom(rooms.get(roomNumber-1), direction, name);
             }
-        }  
-        input.close();      
+        }
+        input.close();
     }
 
     public void buy(Purchasable item, int quantity) {
@@ -474,7 +467,7 @@ public class Sim {
             else{
                 balance -= itemPrice;
                 int deliveryTime = (new Random().nextInt(5) + 1) * 30;
-    
+
                 furnitureInventory.addItem(furniture, quantity);
             }
         }
@@ -487,7 +480,7 @@ public class Sim {
             else{
                 balance -= itemPrice;
                 int deliveryTime = (new Random().nextInt(5) + 1) * 30;
-                      
+
                 ingredientsInventory.addItem(ingredient, quantity);
             }
         }
@@ -505,7 +498,7 @@ public class Sim {
             room.addSim(this);
             currentRoom.removeSim(this);
             this.currentRoom = room;
-        }        
+        }
     }
 
     public void setUpObject (Point placement, int rotation, Furniture furniture) {
@@ -516,7 +509,7 @@ public class Sim {
         else {
             currentRoom.placeFurniture(placement, rotation, furniture);
         }
-        
+
         //Menghapus furniture dari inventory
         furnitureInventory.removeItem(furniture);
     }
@@ -526,11 +519,11 @@ public class Sim {
         System.out.println("Furniture Inventory");
         String header = String.format("| %-20s | %-10s |", "Item", "Quantity");
         String line = "-".repeat(header.length());
-    
+
         System.out.println(line);
         System.out.println(header);
         System.out.println(line);
-    
+
         for (Furniture item : furnitureInventory.getInventory().keySet()) {
             int quantity = furnitureInventory.getInventory().get(item);
             String row = String.format("| %-20s | %-10d |", item.toString(), quantity);
@@ -564,7 +557,7 @@ public class Sim {
         }
         System.out.println(line);
 
-        
+
     }
     public void moveToObject(Furniture furniture, int furnitureX) {
         if (currentRoom.getfurnitureList().contains(furniture) == false){
@@ -576,7 +569,7 @@ public class Sim {
         }
     }
 
-    public void viewTime() {  
+    public void viewTime() {
         if(currentObject().getName().equals("Clock")){
             //Implementasi
 
@@ -624,5 +617,5 @@ public class Sim {
         setStatus("Die");
     }
 }
-    
+
 

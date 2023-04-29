@@ -5,9 +5,9 @@ import java.awt.event.*;
 import javax.swing.*;
 import java.util.*;
 
-public class World extends JPanel {
+public class WorldPanel extends JPanel {
 
-    public World() {
+    public WorldPanel() {
         this.setLayout(new GridLayout(64, 64, 2, 2));
         this.setBackground(new Color(0x215e07));
         this.setPreferredSize(new Dimension(720, 720));
@@ -15,7 +15,7 @@ public class World extends JPanel {
 
     public static void main(String[] args) {
         JFrame frame = new JFrame();
-        World aan = new World();
+        WorldPanel aan = new WorldPanel();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setPreferredSize(new Dimension(720, 720));
         frame.setLayout(new BorderLayout());
