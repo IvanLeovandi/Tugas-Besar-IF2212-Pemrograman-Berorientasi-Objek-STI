@@ -29,7 +29,7 @@ public class House {
     {
         return this.roomList;
     }
-    
+
     //Untuk mencetak room list
     public void printRoomList()
     {
@@ -39,7 +39,7 @@ public class House {
             System.out.println(room.getValue().getroomNumber() + ". " + room.getValue().getName());
         }
     }
-    
+
     //Getter location
     public Point getLocation()
     {
@@ -84,11 +84,11 @@ public class House {
         int y = roomUp.getLocationInHouse().getY();
         if (direction.equals("right")) //Mengecek apakah ruangan sebelah kanan terisi atau tidak
         {
-            if (roomUp.getRight() == null) 
+            if (roomUp.getRight() == null)
             {
                 for (Map.Entry<Point,Room> room: roomList.entrySet())
                 {
-                    if (room.getValue().getLocationInHouse().getX() == x+1 && room.getValue().getLocationInHouse().getY() == y) 
+                    if (room.getValue().getLocationInHouse().getX() == x+1 && room.getValue().getLocationInHouse().getY() == y)
                     {
                         flag = false;
                     }
@@ -154,7 +154,7 @@ public class House {
             }
         }
         return flag;
-    }  
+    }
 
     //Untuk upgrade ruangan
     public void upgradeRoom(Room room, String direction, String name)
@@ -162,7 +162,7 @@ public class House {
         int x = room.getLocationInHouse().getX();
         int y = room.getLocationInHouse().getY();
         Room tempRoom=null;
-        
+
         if (this.checkUpgradeable(room, direction))
         {
             this.increaseNumberofRoom();
@@ -198,7 +198,7 @@ public class House {
                 tempRoom.setBottom(room);
                 room.setTop(tempRoom);
             }
-            
+
             int x2 = tempRoom.getLocationInHouse().getX();
             int y2 = tempRoom.getLocationInHouse().getY();
             for (Map.Entry<Point,Room> room2: roomList.entrySet())
@@ -226,5 +226,6 @@ public class House {
             }
         }
     }
+
+
 }
- 

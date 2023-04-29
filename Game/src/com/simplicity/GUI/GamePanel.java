@@ -1,12 +1,12 @@
 package com.simplicity.GUI;
 
-import java.awt.Color;
-import java.awt.Dimension;
-
-import javax.swing.JPanel;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.io.File;
 
 public class GamePanel extends JPanel{
-    
+
     // SCREEN SETTINGS
     final int originalTileSize = 16;
     final int scale = 3;

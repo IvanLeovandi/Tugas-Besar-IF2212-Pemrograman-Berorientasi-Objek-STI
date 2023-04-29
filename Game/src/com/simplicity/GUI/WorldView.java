@@ -17,7 +17,7 @@ public class WorldView implements ActionListener{
         window.setTitle("Simplicity");
 
         GamePanel gamePanel = new GamePanel();
-        
+
         backButton = new RoundedButton("Back");
         backButton.setBounds(10, 10, 100, 50);
         backButton.setBackground(new Color(33, 185, 107));
