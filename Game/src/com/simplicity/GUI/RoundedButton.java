@@ -15,7 +15,8 @@ public class RoundedButton extends JButton {
         setOpaque(false);
         setContentAreaFilled(false);
         setBorderPainted(false);
-        setPreferredSize(new Dimension(100, 30));
+        setAlignmentX(Component.CENTER_ALIGNMENT);
+        setPreferredSize(new Dimension(400, 80));
     }
 
     @Override

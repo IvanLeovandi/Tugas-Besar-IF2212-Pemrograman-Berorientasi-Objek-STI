@@ -17,71 +17,91 @@ public class MainMenu extends JPanel {
     GameListener gameListener;
 
     public MainMenu(GameListener gameListener) {
-        this.add(mainPanel);
+        this.setLayout(new BorderLayout());
+        this.add(mainPanel, BorderLayout.CENTER);
         this.gameListener = gameListener;
     }
 
     public void showHelp() {
         this.remove(mainPanel);
-        this.add(helpPanel);
+        this.add(helpPanel, BorderLayout.CENTER);
         revalidate();
         repaint();
     };
 
     public void showMain() {
         this.remove(helpPanel);
-        this.add(mainPanel);
+        this.add(mainPanel, BorderLayout.CENTER);
         revalidate();
         repaint();
     }
 
     private class MainPanel extends JPanel implements ActionListener {
         private ImageIcon simplicityIcon = new ImageIcon(new ImageIcon("Tugas-Besar-IF2212-Pemrograman-Berorientasi-Objek-STI/Game/src/com/simplicity/Images/sims_diamond.png").getImage().getScaledInstance(30, 60, Image.SCALE_SMOOTH));
+        private JPanel buttonPanel = new JPanel(new GridLayout(0, 1, 0, 20));
+        private JPanel titlePanel = new JPanel();
         private JLabel titleLabel = new JLabel("SIMPLICITY");
         private JButton playButton = new RoundedButton("play game");
         private JButton loadButton = new RoundedButton("load");
         private JButton helpButton = new RoundedButton("help");
         private JButton quitButton = new RoundedButton("quit");
+        private Color buttonBackgroundColor = new Color(0x21b96b);
 
         public MainPanel() {
+            this.setLayout(new BorderLayout(10, 10));
+            this.setBackground(Color.BLUE);
 
-            this.setLayout(new GridLayout(10, 1));
+            titlePanel.setOpaque(false);
+            buttonPanel.setOpaque(false);
 
             titleLabel.setIcon(simplicityIcon);
             titleLabel.setHorizontalTextPosition(JLabel.CENTER);
             titleLabel.setVerticalTextPosition(JLabel.TOP);
-            titleLabel.setBounds(500, 100, 300, 200);
             titleLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 50));
 
-            playButton.setBounds(515, 300, 200, 100);
-            playButton.setBackground(new Color(33, 185, 107));
+            playButton.setBackground(buttonBackgroundColor);
             playButton.setFocusable(false);
             playButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
             playButton.addActionListener(this);
 
-            loadButton.setBounds(515, 450, 200, 100);
-            loadButton.setBackground(new Color(33, 185, 107));
+            loadButton.setBackground(buttonBackgroundColor);
             loadButton.setFocusable(false);
             loadButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
             loadButton.addActionListener(this);
 
-            helpButton.setBounds(515, 450, 200, 100);
-            helpButton.setBackground(new Color(33, 185, 107));
+            helpButton.setBackground(buttonBackgroundColor);
             helpButton.setFocusable(false);
             helpButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
             helpButton.addActionListener(this);
 
-            quitButton.setBounds(515, 600, 200, 100);
-            quitButton.setBackground(new Color(33, 185, 107));
+            quitButton.setBackground(buttonBackgroundColor);
             quitButton.setFocusable(false);
             quitButton.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 20));
             quitButton.addActionListener(this);
 
-            this.add(titleLabel);
-            this.add(playButton);
-            this.add(loadButton);
-            this.add(helpButton);
-            this.add(quitButton);
+            JPanel playButtonPanel = new JPanel();
+            playButtonPanel.add(playButton);
+            playButtonPanel.setOpaque(false);
+
+            JPanel loadButtonPanel = new JPanel();
+            loadButtonPanel.add(loadButton);
+            loadButtonPanel.setOpaque(false);
+
+            JPanel helpButtonPanel = new JPanel();
+            helpButtonPanel.add(helpButton);
+            helpButtonPanel.setOpaque(false);
+
+            JPanel quitButtonPanel = new JPanel();
+            quitButtonPanel.add(quitButton);
+            quitButtonPanel.setOpaque(false);
+
+            buttonPanel.add(playButtonPanel);
+            buttonPanel.add(loadButtonPanel);
+            buttonPanel.add(helpButtonPanel);
+            buttonPanel.add(quitButtonPanel);
+            titlePanel.add(titleLabel);
+            this.add(buttonPanel, BorderLayout.CENTER);
+            this.add(titlePanel, BorderLayout.NORTH);
         }
 
         @Override
