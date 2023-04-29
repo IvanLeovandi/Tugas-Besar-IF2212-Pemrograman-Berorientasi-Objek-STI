@@ -5,6 +5,7 @@ import java.util.*;
 public class Job {
     private String jobName;
     private int salary;
+    private int durationOfWork;
 
     private static HashMap <String, Integer> jobList = new HashMap<String, Integer>(){{ 
         put("Badut Sulap", 15); 
@@ -24,6 +25,19 @@ public class Job {
             this.jobName = randomKey;
             this.salary = jobList.get(jobName);
         }
+
+        this.durationOfWork = 0;
+    }
+
+    public Job(String jobName) {
+        if (!jobList.containsKey(jobName))
+            throw new IllegalArgumentException("Job name is not valid");
+        else {
+            this.jobName = jobName;
+            this.salary = jobList.get(jobName);
+        }
+
+        this.durationOfWork = 0;
     }
 
     public String getJobName() {
@@ -32,6 +46,18 @@ public class Job {
 
     public int getSalary() {
         return salary;
+    }
+
+    public int getDurationOfWork() {
+        return durationOfWork;
+    }
+
+    public HashMap <String, Integer> getJobList() {
+        return jobList;
+    }
+
+    public void setDurationOfWork(int durationOfWork) {
+        this.durationOfWork = durationOfWork;
     }
 }
 
