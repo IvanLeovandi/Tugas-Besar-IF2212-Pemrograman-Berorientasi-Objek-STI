@@ -1,7 +1,7 @@
 package com.simplicity.Interfaces;
 
-import com.simplicity.Point;
+import com.simplicity.Events.HousePickEvent;
 
 public interface HousePickListener {
-    public void onHousePick(Point location);
+    public void onHousePick(HousePickEvent e);
 }

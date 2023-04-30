@@ -1,10 +1,15 @@
 package com.simplicity;
 import java.util.*;
+import javax.swing.*;
 
-public class House {
+import com.simplicity.Interfaces.SimplicityPrintable;
+import com.simplicity.Layouts.HousePanel;
+
+public class House implements SimplicityPrintable {
     private Point location; //Lokasi di World
     private int numberofRoom; //Jumlah ruangan di rumah
     private Map<Point,Room> roomList; //List ruangan di rumah
+    private JPanel panel;
 
     //Konstruktor
     public House(Point location,Sim sim)
@@ -227,5 +232,17 @@ public class House {
         }
     }
 
+    @Override
+    public JPanel getPanel() {
+        if (panel == null) {
+            panel = new HousePanel();
+        }
 
+        return panel;
+    }
+
+    @Override
+    public void clearPanel() {
+        panel = null;
+    }
 }

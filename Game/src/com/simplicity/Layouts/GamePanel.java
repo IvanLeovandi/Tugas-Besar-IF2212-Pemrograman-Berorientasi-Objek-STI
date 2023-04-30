@@ -6,6 +6,7 @@ import javax.swing.*;
 
 import com.simplicity.Point;
 import com.simplicity.World;
+import com.simplicity.Events.HousePickEvent;
 import com.simplicity.Interfaces.HousePickListener;
 
 import java.util.*;
@@ -20,7 +21,8 @@ public class GamePanel extends JPanel implements HousePickListener {
 
     public GamePanel(World world) {
         this.world = world;
-        worldPanel = new WorldPanel(64, 64, world, this);
+        worldPanel = new WorldPanel(64, 64, world);
+        worldPanel.setHousePickListener(this);
         currentCenterPanel = worldPanel;
         this.setLayout(new BorderLayout());
         this.add(sideMenu, BorderLayout.WEST);
@@ -79,15 +81,13 @@ public class GamePanel extends JPanel implements HousePickListener {
     }
 
     public void getSidePanelText() {
-                                                                    // TODO: isi
+        // TODO: isi
     }
 
     @Override
-    public void onHousePick(Point location) {
-        if (housePanel == null) {
-            housePanel = new HousePanel(world.getHouse(location));
-        } else {
-            housePanel.setHouse(world.getHouse(location));
-        }
+    public void onHousePick(HousePickEvent e) {
+        Point location = e.getPoint();
+        housePanel = (HousePanel)world.getHouse(location).getPanel();
+        setCurrentCenterPanel(housePanel);
     }
 }
