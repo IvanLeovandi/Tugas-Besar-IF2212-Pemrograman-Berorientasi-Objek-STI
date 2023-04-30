@@ -262,14 +262,16 @@ public class Sim {
                 int moodDecrease = (-10)*(duration/30);
                 changeSatiety(satietyDecrease);
                 changeMood(moodDecrease);
+                job.setDurationOfWork(job.getDurationOfWork() + duration);
 
                 //Penambahan uang
-                job.setDurationOfWork(job.getDurationOfWork() + duration);
-                if (job.getDurationOfWork() >= 4*60){
-                    int x = job.getDurationOfWork() / (4*60);{
+                job.setDurationNotPaid(job.getDurationNotPaid() + duration);
+                if (job.getDurationNotPaid() >= 4*60){
+                    int x = job.getDurationNotPaid()/ (4*60);{
                         for (int i = 0; i < x; i++){
                             int moneyIncrease = job.getSalary();
                             setBalance(getBalance() + moneyIncrease);
+                            job.setDurationNotPaid(job.getDurationNotPaid() - (4*60));
                         }
                     }
                 }   
@@ -286,8 +288,7 @@ public class Sim {
         }
         else {
             setStatus("Working Out");
-            int durationTimer = GameTimer.gameTime + duration;
-            World.gameTimer.startTimer(durationTimer);
+            World.gameTimer.startTimer(duration);
             int satietyDecrease = (-5)*(duration/20);
             int moodIncrease = 10*(duration/20);
             int healthIncrease = 5*(duration/20);
