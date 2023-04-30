@@ -295,7 +295,7 @@ public class Sim {
 
     public void sleep(int duration) {
         if (this.currentObject() != null) {
-            if (this.currentObject().getName().equals("King Bed") || this.currentObject().getName().equals("Single Bed") || this.currentObject().getName().equals("Single Bed")) {
+            if (this.currentObject().getName().equals("KING BED") || this.currentObject().getName().equals("QUEEN BED") || this.currentObject().getName().equals("SINGLE BED")) {
 
                     if (validationDuration(duration, 240) == false){
                         System.out.println("Duration must be multiple of 4 minutes");
@@ -329,7 +329,7 @@ public class Sim {
 
     public void eat(Edible food) {
         if (currentObject() != null) {
-            if (currentObject().getName().equals("Table And Chair")){
+            if (currentObject().getName().equals("TABLE AND CHAIR")){
                 if(food instanceof CookedFood){
                     CookedFood food1 = (CookedFood) food;
                    if (this.cookedFoodInventory.getInventory().containsKey(food1)){
@@ -372,7 +372,7 @@ public class Sim {
 
     public void cook(CookedFood cookedFood) {
         if (currentObject() != null) {
-            if (currentObject().getName().equals("Stove")){
+            if (currentObject().getName().equals("GAS STOVE") || currentObject().getName().equals("ELECTRIC STOVE") ){
                 List<Ingredient> ingredients = cookedFood.getIngredients();
                 Boolean flag = true;
                 for (Ingredient ingredient : ingredients) {
@@ -437,7 +437,7 @@ public class Sim {
 
     public void defecate(int duration) {
         if (currentObject() != null) {
-            if (currentObject().getName().equals("Toilet")) {
+            if (currentObject().getName().equals("TOILET")) {
                 if (validationDuration(duration, 10) == false){
                     System.out.println("Duration must be multiple of 10 seconds");
                 }
@@ -521,21 +521,21 @@ public class Sim {
         }
     }
 
-    public void setUpObject (Point placement, int rotation, Furniture furniture) throws OverlapingRoomObjectException {
+    public void setUpObject (Point placement, int rotation, String furniture) throws OverlapingRoomObjectException {
         //Mengecek apakah furniture yang dipilih ada di inventory
-        if (furnitureInventory.getInventory().containsKey(furniture) == false){
+        if (furnitureInventory.getInventory().containsKey(new Furniture(furniture)) == false){
             System.out.println("You don't have the furniture");
         }
         else {
             try {
-                currentRoom.placeFurniture(placement, rotation, furniture);
+                currentRoom.placeFurniture(placement, rotation, new Furniture(furniture));
             } catch (OverlapingRoomObjectException e) {
                 e.printStackTrace();
             }
         }
 
         //Menghapus furniture dari inventory
-        furnitureInventory.removeItem(furniture);
+        furnitureInventory.removeItem(new Furniture(furniture));
     }
 
     public void viewInventory() {
@@ -594,7 +594,7 @@ public class Sim {
     }
 
     public void viewTime() {
-        if(currentObject().getName().equals("Clock")){
+        if(currentObject().getName().equals("CLOCK")){
             //Implementasi
             
 

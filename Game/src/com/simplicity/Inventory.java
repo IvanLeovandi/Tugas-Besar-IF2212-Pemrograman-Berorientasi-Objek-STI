@@ -52,16 +52,16 @@ public class Inventory<T> {
         return inventory;
     }
 
-    public Furniture getFurniture(String string){
-        for (Entry<T, Integer> furniture : inventory.entrySet())
-        {
-            if(furniture.getKey().equals(string))
-            {
-                    return new Furniture(string);
-            }
-        }
-        return null; 
-    }
+    // public T getFurniture(String string){
+    //     for (Entry<T, Integer> furniture : inventory.entrySet())
+    //     {
+    //         if(furniture.getKey().toString().equals(string))
+    //         {
+    //                 return furniture.getKey();
+    //         }
+    //     }
+    //     return null; 
+    // }
 
     
     // public HashMap<Food, Integer> getFoodInventory() {

@@ -93,11 +93,13 @@ public class Simplicity {
                             }
     
                             else if(input.equals("COOK")) {
-    
+                                
                             }
     
                             else if(input.equals("VISIT")) {
-                                
+                                System.out.println("You are now in " + currentSim.getHouse().getLocation() + "house");
+                                System.out.println("Which house do you want to visit?");
+
                             }
     
                             else if(input.equals("DEFECATE")) {
@@ -113,17 +115,17 @@ public class Simplicity {
                             
                             else if(input.equals("PLACE ITEM")) {
                                 currentSim.getHouse().printRoomList();
-                                // currentSim.getCurrentRoom().printRoom();
+                                currentSim.getCurrentRoom().printRoom();
                                 System.out.println("What do you want to place?");
                                 currentSim.viewInventory(); 
-                                input = scan.nextLine();
+                                input = scan.nextLine().toUpperCase();
                                 try {
-                                    currentSim.setUpObject(new Point(1,1), 0, currentSim.getFurnitureInventory().getFurniture(input));
+                                    currentSim.setUpObject(new Point(1,1), 0, input);
                                 } catch (OverlapingRoomObjectException e) {
                                     // TODO Auto-generated catch block
                                     e.printStackTrace();
                                 }
-                                // currentSim.getCurrentRoom().printRoom();
+                                currentSim.getCurrentRoom().printRoom();
                             }
                             
                             else if(input.equals("VIEW TIME")) {
@@ -174,7 +176,7 @@ public class Simplicity {
                         }
 
                         else if(input.equals("CHANGE SIM")) {
-                            
+
                         }
 
                         else if(input.equals("LIST OBJECT")){
