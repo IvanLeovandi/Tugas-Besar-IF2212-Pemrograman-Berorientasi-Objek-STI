@@ -1,14 +1,16 @@
-package com.simplicity.UI;
+package com.simplicity;
 
-import com.simplicity.House;
-import com.simplicity.Point;
-import com.simplicity.SimplicityManager;
-import com.simplicity.World;
+import java.util.Random;
+
+import com.simplicity.UI.MainMenu;
+import com.simplicity.UI.SimplicityFrame;
 
 public class Simplicity {
     public static void main(String[] args) {
+        Random rand = new Random();
+
         SimplicityManager manager = new SimplicityManager();
-        Point p = new Point(32, 32);
+        Point p = new Point(rand.nextInt(64), rand.nextInt(64));
         manager.setWorld(new World(64, 64));
         manager.getWorld().setHouse(p, new House(p));
         manager.setMainMenuPanel(new MainMenu(manager));
