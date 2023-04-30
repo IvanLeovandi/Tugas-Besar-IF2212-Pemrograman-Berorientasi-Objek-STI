@@ -12,11 +12,11 @@ public class CookedFood extends GameObject implements Edible {
 
     public enum MyCookedFood {
         
-        CHICKENRICE("Chicken Rice", Arrays.asList(Ingredient.RICE, Ingredient.CHICKEN), 16),
-        CURRYRICE("Curry Rice", Arrays.asList(Ingredient.RICE, Ingredient.POTATO, Ingredient.CARROT, Ingredient.BEEF), 30),
-        PEANUTMILK("Peanut Milk", Arrays.asList(Ingredient.MILK, Ingredient.PEANUT), 5),
-        STIRFRY("Stir Fry", Arrays.asList(Ingredient.CARROT, Ingredient.SPINACH), 5),
-        STEAK("Steak", Arrays.asList(Ingredient.POTATO, Ingredient.BEEF), 22);
+        CHICKENRICE("Chicken Rice", Arrays.asList(new Ingredient("Rice"), new Ingredient("Chicken")), 16),
+        CURRYRICE("Curry Rice", Arrays.asList(new Ingredient("Rice"), new Ingredient("Potato"), new Ingredient("Carrot"), new Ingredient("Beef")), 30),
+        PEANUTMILK("Peanut Milk", Arrays.asList(new Ingredient("Milk"), new Ingredient("Peanut")), 5),
+        STIRFRY("Stir Fry", Arrays.asList(new Ingredient("Carrot"), new Ingredient("Spinach")), 5),
+        STEAK("Steak", Arrays.asList(new Ingredient("Potato"), new Ingredient("Beef")), 22);
 
         private final String type = "CookedFood";
         private final String name;
@@ -39,10 +39,6 @@ public class CookedFood extends GameObject implements Edible {
         public int getSatietyPoint(){
             return satietyPoint;
         }
-
-        public List<Ingredient> getIngredients(){
-            return ingredients;
-        } 
     }
 
     public CookedFood(String name) {
@@ -83,4 +79,10 @@ public class CookedFood extends GameObject implements Edible {
     public int getSatietyPoint(){
         return myCookedFood.getSatietyPoint();
     }
+
+    public List<Ingredient> getIngredients(){
+        return myCookedFood.ingredients;
+    } 
+
+    
 }
