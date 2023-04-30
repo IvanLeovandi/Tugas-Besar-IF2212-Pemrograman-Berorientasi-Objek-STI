@@ -141,7 +141,16 @@ public class Simplicity {
                         }
                         
                         else if(input.equals("UPGRADE HOUSE")) {
-                            currentSim.upgradeHouse();
+                            if(currentSim.getHouse().getNumberofRoom() == 1){
+                                System.out.println("You have to choose the direction of adding the room");	
+                                System.out.println("You can select top/bottom/left/right");
+                                input = scan.nextLine();
+    
+                                System.out.println("Please create the name of the room");	
+                                String name = scan.nextLine();
+    
+                                currentSim.upgradeHouse(currentSim.getCurrentRoom().get(0), input, name);
+                            }
                         }
                         
                         else if(input.equals("MOVE TO ROOM")) {
