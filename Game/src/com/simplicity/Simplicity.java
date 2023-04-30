@@ -1,6 +1,7 @@
 package com.simplicity;
 
 import com.simplicity.*;
+import com.simplicity.Exceptions.OverlapingRoomObjectException;
 import com.simplicity.Furniture.SingleBed;
 
 import java.util.*;
@@ -116,7 +117,12 @@ public class Simplicity {
                                 System.out.println("What do you want to place?");
                                 currentSim.viewInventory(); 
                                 input = scan.nextLine();
-                                currentSim.setUpObject(new Point(1,1), 0, currentSim.getFurnitureInventory().getFurniture(input));
+                                try {
+                                    currentSim.setUpObject(new Point(1,1), 0, currentSim.getFurnitureInventory().getFurniture(input));
+                                } catch (OverlapingRoomObjectException e) {
+                                    // TODO Auto-generated catch block
+                                    e.printStackTrace();
+                                }
                                 // currentSim.getCurrentRoom().printRoom();
                             }
                             
@@ -149,7 +155,7 @@ public class Simplicity {
                                 System.out.println("Please create the name of the room");	
                                 String name = scan.nextLine();
     
-                                currentSim.upgradeHouse(currentSim.getCurrentRoom().get(0), input, name);
+                                currentSim.upgradeHouse(currentSim.getCurrentRoom().getLocationInHouse() , input, name);
                             }
                         }
                         
@@ -164,11 +170,11 @@ public class Simplicity {
                         }
 
                         else if(input.equals("ADD SIM")) {
-
+                            // simplicity.playgame();
                         }
 
                         else if(input.equals("CHANGE SIM")) {
-
+                            
                         }
 
                         else if(input.equals("LIST OBJECT")){
