@@ -1,30 +1,17 @@
 package com.simplicity;
 
-import javax.swing.Timer;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import com.simplicity.World;
 
-public class GameTimer{
-    private Timer timer;
-    private int duration;  
+
+public class GameTimer{ 
     private int day;
     private int second;
 
     public static int gameTime = 0;
 
     public GameTimer() {
-        this.timer = new Timer(100, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                gameTime++;
-                if (gameTime == duration){
-                    stopTimer();
-                }
-            }
-        });
         this.day = 1;
         this.second = 0;
-
     }
 
     public void setDay() {
@@ -43,28 +30,24 @@ public class GameTimer{
         return second;
     }
 
-    public void startTimer(int gameDuration) {
-        this.duration = gameDuration;
-        int time = gameDuration - gameTime;
-        timer.start();
+    public void startTimer(int duration) {
         try {
-            Thread.sleep(time*110);
+            for (int i = 0; i < duration; i++){
+                Thread.sleep(100);
+                gameTime++;
+            }
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         setDay();
         setSecond();
-    }
-    public void stopTimer() {
-        timer.stop();
-    }
-    
-    // public static void main(String[] args) {
-    //     GameTimer game = new GameTimer();
-    //     game.startTimer(30); // durasi permainan selama 30 detik
+    }    
+    public static void main(String[] args) {
+        GameTimer game = new GameTimer();
+        game.startTimer(30); // durasi permainan selama 30 detik
 
-    //     game.startTimer(40); // durasi permainan selama 10 detik
+        game.startTimer(40); // durasi permainan selama 10 detik
 
-    //     System.out.println("Hasil "  + GameTimer.gameTime);
-    // }
+        System.out.println("Hasil "  + GameTimer.gameTime);
+    }
 }

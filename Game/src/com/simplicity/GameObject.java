@@ -1,5 +1,7 @@
 package com.simplicity;
 
+import java.util.Objects;
+
 public abstract class GameObject {
     private String type;
 
@@ -24,5 +26,10 @@ public abstract class GameObject {
             return false;
         }
         return getType().equals(((GameObject)o).getType());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, GameObject.class);
     }
 }
