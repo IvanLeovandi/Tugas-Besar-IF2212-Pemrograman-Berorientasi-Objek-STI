@@ -10,12 +10,14 @@ public class House implements SimplicityPrintable {
     private int numberofRoom; //Jumlah ruangan di rumah
     private Map<Point,Room> roomList; //List ruangan di rumah
     private JPanel panel;
+    private Sim houseOwner;
 
     //Konstruktor
     public House(Point location,Sim sim)
     {
         this.location = location;
         this.numberofRoom = 1;
+        this.houseOwner = sim;
         this.roomList = new HashMap<Point,Room>();
         roomList.put(new Point(0,0),new Room(numberofRoom,new Point(0,0),"Starting Room"));
         roomList.get(new Point(0,0)).addSim(sim);
@@ -55,6 +57,12 @@ public class House implements SimplicityPrintable {
     public void setLocation(Point location)
     {
         this.location = location;
+    }
+
+    //Getter houseOwner
+    public Sim getHouseOwner()
+    {
+        return this.houseOwner;
     }
 
     //Getter numberOfRoom
