@@ -5,7 +5,6 @@ public class House {
     private Point location; //Lokasi di World
     private int numberofRoom; //Jumlah ruangan di rumah
     private Map<Point,Room> roomList; //List ruangan di rumah
-    private Sim houseOwner;
 
     //Konstruktor
     public House(Point location,Sim sim)
@@ -13,7 +12,6 @@ public class House {
         this.location = location;
         this.numberofRoom = 1;
         this.roomList = new HashMap<Point,Room>();
-        this.houseOwner = sim;
         roomList.put(new Point(0,0),new Room(numberofRoom,new Point(0,0),"Starting Room"));
         roomList.get(new Point(0,0)).addSim(sim);
     }
@@ -64,11 +62,6 @@ public class House {
         this.numberofRoom++;
     }
 
-    //Getter House Owner
-    public Sim getHouseOwner()
-    {
-        return this.houseOwner;
-    }
 
     //Validator untuk mengecek nama ruangan baru
     public Boolean checkName(String name)
@@ -234,6 +227,6 @@ public class House {
             }
         }
     }
-
+    
 
 }
