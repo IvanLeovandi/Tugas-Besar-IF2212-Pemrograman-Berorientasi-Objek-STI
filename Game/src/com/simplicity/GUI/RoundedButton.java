@@ -1,10 +1,9 @@
 package com.simplicity.GUI;
 
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import javax.swing.JButton;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.io.File;
 
 public class RoundedButton extends JButton {
     private static final long serialVersionUID = 1L;
@@ -16,7 +15,8 @@ public class RoundedButton extends JButton {
         setOpaque(false);
         setContentAreaFilled(false);
         setBorderPainted(false);
-        setPreferredSize(new Dimension(100, 30));
+        setAlignmentX(Component.CENTER_ALIGNMENT);
+        setPreferredSize(new Dimension(400, 80));
     }
 
     @Override
@@ -25,7 +25,7 @@ public class RoundedButton extends JButton {
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         if (getModel().isPressed()) {
             g2.setColor(getBackground().darker());
-        } 
+        }
         else {
             g2.setColor(getBackground());
         }

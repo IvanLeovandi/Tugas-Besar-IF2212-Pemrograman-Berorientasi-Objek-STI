@@ -6,8 +6,11 @@ import com.simplicity.Furniture.SingleBed;
 import java.util.*;
 
 public class Simplicity {
-    private static Point lastHouse = new Point(0,0);
+    // private static Point lastHouse = new Point(0,0);
+    private static int x = 0;
+    private static int y = 0;
     private static Sim currentSim;
+    private static ArrayList<Sim> simList = new ArrayList<Sim>();
     // private GameMenu menu = new GameMenu();
 
     private void playGame(){
@@ -17,13 +20,17 @@ public class Simplicity {
         System.out.println("Masukkan nama lengkap untuk sim kamu");
         System.out.print(">> ");
         simName = scan.nextLine();
-        Sim sim = new Sim(simName, lastHouse);
+        Sim sim = new Sim(simName, new Point(x, y));
+        simList.add(sim);
         currentSim = sim;
         
-        if(lastHouse.getX() == 64) {
-            lastHouse.setPoint(0, lastHouse.getY()+1);
+        // for updating house location everytime new sims generated
+        if(x == 64) {
+            x = 0;
+            y += 1;
+        } else {
+            x++;
         }
-        lastHouse.setPoint(lastHouse.getX()+1, lastHouse.getY());
     }
     public static void main(String[] args) {
         Simplicity simplicity = new Simplicity();
@@ -105,12 +112,12 @@ public class Simplicity {
                             
                             else if(input.equals("PLACE ITEM")) {
                                 currentSim.getHouse().printRoomList();
-                                currentSim.getCurrentRoom().printRoom();
+                                // currentSim.getCurrentRoom().printRoom();
                                 System.out.println("What do you want to place?");
                                 currentSim.viewInventory(); 
-                            
-                                currentSim.setUpObject(new Point(1,1), 0, new SingleBed());
-                                currentSim.getCurrentRoom().printRoom();
+                                input = scan.nextLine();
+                                currentSim.setUpObject(new Point(1,1), 0, currentSim.getFurnitureInventory().getFurniture(input));
+                                // currentSim.getCurrentRoom().printRoom();
                             }
                             
                             else if(input.equals("VIEW TIME")) {
@@ -125,12 +132,16 @@ public class Simplicity {
 
                         else if(input.equals("CURRENT LOCATION")){
                             System.out.println("You are now in " + currentSim.getHouse().getLocation() + " house");
-                            System.out.println("You are now in " + currentSim.getCurrentRoom().getName() + " which located in " + currentSim.getCurrentRoom().getLocationInHouse());
-                            System.out.println("And you are now in " + currentSim.getCurrentPosition());
+                            // System.out.println("You are now in " + currentSim.getCurrentRoom().getName() + " which located in " + currentSim.getCurrentRoom().getLocationInHouse());
+                            // System.out.println("And you are now in " + currentSim.getCurrentPosition());
                         }
 
                         else if(input.equals("INVENTORY")) {
                             currentSim.viewInventory();
+                        }
+                        
+                        else if(input.equals("UPGRADE HOUSE")) {
+                            currentSim.upgradeHouse();
                         }
                         
                         else if(input.equals("MOVE TO ROOM")) {
@@ -138,11 +149,30 @@ public class Simplicity {
                             currentSim.getHouse().printRoomList();
                             currentSim.moveToRoom(currentSim.getHouse(), currentSim.getHouse().getRoomList().get(1));
                         } 
-                        
-                        else if(input.equals("UPGRADE HOUSE")) {
-                            currentSim.upgradeHouse();
+
+                        else if(input.equals("EDIT ROOM")){
+
                         }
 
+                        else if(input.equals("ADD SIM")) {
+
+                        }
+
+                        else if(input.equals("CHANGE SIM")) {
+
+                        }
+
+                        else if(input.equals("LIST OBJECT")){
+                            System.out.println(currentSim.getCurrentRoom().getfurnitureList());
+                        }
+
+                        else if(input.equals("GO TO OBJECT")){
+                            System.out.println(currentSim.getCurrentRoom().getfurnitureList());
+                            System.out.println("Which object do you want to go to?");
+                            int idx = scan.nextInt();
+                            currentSim.moveToObject(currentSim.getCurrentRoom().getfurnitureList().get(idx), 1);
+                        }
+                        
                         else if(input.equals("HELP")) {
                             System.out.println("ini help tar diganti method/class");
                         } 

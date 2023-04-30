@@ -1,7 +1,9 @@
 package com.simplicity.GUI;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import java.io.File;
 
 public class Window extends JFrame {
     JButton button;

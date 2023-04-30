@@ -13,14 +13,14 @@ public class Furniture extends GameObject implements Purchasable{
     private final static String type = "Furniture";
     
     public enum MyFurniture {
-        SINGLEBED("Single Bed", new Dimension2D(1,4), 50, 1), 
-        QUEENBED("Queen Bed", new Dimension2D(2,4), 100, 2), 
-        KINGBED("King Bed", new Dimension2D(2,5), 150, 3), 
-        TOILET("Toilet", new Dimension2D(1,1), 50, 4), 
-        GASSTOVE("Gas Stove", new Dimension2D(1,2), 100, 5), 
-        ELECTRICSTOVE("Electric Stove", new Dimension2D(1,1), 200, 6), 
-        TABLEANDCHAIR("Table And Chair", new Dimension2D(3,3), 50, 7), 
-        CLOCK("Clock", new Dimension2D(1,1), 10, 8);
+        SINGLEBED("SINGLE BED", new Dimension2D(1,4), 50, 1), 
+        QUEENBED("QUEEN BED", new Dimension2D(2,4), 100, 2), 
+        KINGBED("KING BED", new Dimension2D(2,5), 150, 3), 
+        TOILET("TOILET", new Dimension2D(1,1), 50, 4), 
+        GASSTOVE("GAS STOVE", new Dimension2D(1,2), 100, 5), 
+        ELECTRICSTOVE("ELECTRIC STOVE", new Dimension2D(1,1), 200, 6), 
+        TABLEANDCHAIR("TABLE AND CHAIR", new Dimension2D(3,3), 50, 7), 
+        CLOCK("CLOCK", new Dimension2D(1,1), 10, 8);
         
         private final String type = "Furniture";
         private final String name;
@@ -58,28 +58,28 @@ public class Furniture extends GameObject implements Purchasable{
     public Furniture(String name) {
         super(type);
         switch (name) {
-            case "Single Bed":
+            case "SINGLE BED":
                 this.myFurniture = MyFurniture.SINGLEBED;
                 break;
-            case "Queen Bed":
+            case "QUEEN BED":
                 this.myFurniture = MyFurniture.QUEENBED;
                 break;
-            case "King Bed":
+            case "KING BED":
                 this.myFurniture = MyFurniture.KINGBED;
                 break;
-            case "Toilet":
+            case "TOILET":
                 this.myFurniture = MyFurniture.TOILET;
                 break;
-            case "Gas Stove":
+            case "GAS STOVE":
                 this.myFurniture = MyFurniture.GASSTOVE;
                 break;
-            case "Electric Stove":
+            case "ELECTRIC STOVE":
                 this.myFurniture = MyFurniture.ELECTRICSTOVE;
                 break;
-            case "Table And Chair":
+            case "TABLE AND CHAIR":
                 this.myFurniture = MyFurniture.TABLEANDCHAIR;
                 break;
-            case "Clock":
+            case "CLOCK":
                 this.myFurniture = MyFurniture.CLOCK;
                 break;
             default:

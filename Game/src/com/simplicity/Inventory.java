@@ -1,6 +1,9 @@
 package com.simplicity;
 
 import java.util.HashMap;
+import java.util.Map.Entry;
+
+import com.simplicity.Furniture.Furniture;
 
 public class Inventory<T> {
     private HashMap<T, Integer> inventory;
@@ -47,6 +50,17 @@ public class Inventory<T> {
 
     public HashMap<T, Integer> getInventory() {
         return inventory;
+    }
+
+    public Furniture getFurniture(String string){
+        for (Entry<T, Integer> furniture : inventory.entrySet())
+        {
+            if(furniture.getKey().equals(string))
+            {
+                    return new Furniture(string);
+            }
+        }
+        return null; 
     }
 
     
