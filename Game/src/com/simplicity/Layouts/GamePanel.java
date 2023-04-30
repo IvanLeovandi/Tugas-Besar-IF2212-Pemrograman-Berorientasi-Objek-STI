@@ -1,10 +1,12 @@
 package com.simplicity.Layouts;
 
 import java.awt.*;
+import java.awt.List;
 import java.awt.event.*;
 import javax.swing.*;
 
 import com.simplicity.Point;
+import com.simplicity.SimplicityManager;
 import com.simplicity.World;
 import com.simplicity.Events.HousePickEvent;
 import com.simplicity.Interfaces.HousePickListener;
@@ -12,6 +14,7 @@ import com.simplicity.Interfaces.HousePickListener;
 import java.util.*;
 
 public class GamePanel extends JPanel implements HousePickListener {
+    SimplicityManager manager = new SimplicityManager();
     SideMenu sideMenu = new SideMenu();
     JPanel currentCenterPanel;
     SideInfo sideInfo = new SideInfo();
@@ -20,7 +23,8 @@ public class GamePanel extends JPanel implements HousePickListener {
     HousePanel housePanel = null;
     World world;
 
-    public GamePanel(World world) {
+    public GamePanel(World world, SimplicityManager manager) {
+        this.manager = manager;
         this.world = world;
         loadingPanel.setBackground(Color.BLACK);
 
@@ -37,17 +41,10 @@ public class GamePanel extends JPanel implements HousePickListener {
         this.add(sideInfo, BorderLayout.EAST);
     }
 
-    private class MenuButton extends JButton {
-        public MenuButton(String text) {
-            this.setPreferredSize(new Dimension(200, 40));
-            this.setText(text);
-            
-        }
-    }
-
     private class SideMenu extends JPanel {
         GridBagConstraints gbc;
         int compNum = 0;
+        java.util.List<java.util.List<String>> buttonLists = new ArrayList<>();
 
         public SideMenu() {
             this.setPreferredSize(new Dimension(280, 720));
@@ -60,52 +57,109 @@ public class GamePanel extends JPanel implements HousePickListener {
             gbc.gridx = compNum;
             gbc.gridy = compNum;
 
-            MenuButton actionButton = new MenuButton("ACTION");
-            actionButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    System.out.println("");
-                }
-            });
-            this.addComponent(actionButton);
+            buttonLists.add(new ArrayList<>());
+            this.addComponent(new MenuButton("ACTION"));
+            this.addComponent(new MenuButton("VIEW INVENTORY"));
+            this.addComponent(new MenuButton("UPGRADE HOUSE"));
+            this.addComponent(new MenuButton("MOVE ROOM"));
+            this.addComponent(new MenuButton("EDIT ROOM"));
+            this.addComponent(new MenuButton("ADD SIM"));
+            this.addComponent(new MenuButton("CHANGE SIM"));
+            this.addComponent(new MenuButton("LIST OBJECT"));
+            this.addComponent(new MenuButton("GO TO OBJECT"));
+            this.addComponent(new MenuButton("BACK TO MAIN MENU"));
+        }
 
-            MenuButton simInfoButton = new MenuButton("VIEW SIM INFO");
-            this.addComponent(simInfoButton);
-
-            MenuButton currentLocationButton = new MenuButton("VIEW CURRENT LOCATION");
-            this.addComponent(currentLocationButton);
-
-            MenuButton inventoryButton = new MenuButton("VIEW INVENTORY");
-            this.addComponent(inventoryButton);
-
-            MenuButton upgradeHouseButton = new MenuButton("UPGRADE HOUSE");
-            this.addComponent(upgradeHouseButton);
-
-            MenuButton moveRoomButton = new MenuButton("MOVE ROOM");
-            this.addComponent(moveRoomButton);
-
-            MenuButton editRoomButton = new MenuButton("EDIT ROOM");
-            this.addComponent(editRoomButton);
-
-            MenuButton addSimButton = new MenuButton("ADD SIM");
-            this.addComponent(addSimButton);
-
-            MenuButton changeSimButton = new MenuButton("CHANGE SIM");
-            this.addComponent(changeSimButton);
-
-            MenuButton listObjectButton = new MenuButton("LIST OBJECT");
-            this.addComponent(listObjectButton);
-
-            MenuButton goToObjectButton = new MenuButton("GO TO OBJECT");
-            this.addComponent(goToObjectButton);
-            
+        public void addComponent(JComponent c, boolean addToPrev) {
+            if (c.getClass().isAssignableFrom(MenuButton.class) && addToPrev) {
+                buttonLists.get(buttonLists.size() - 1).add(((MenuButton) c).getText());
+            }
+            gbc.gridy = compNum;
+            gbc.gridx = 0;
+            this.add(c, gbc);
+            compNum++;
         }
 
         public void addComponent(JComponent c) {
-            gbc.gridy = compNum % 11;
-            gbc.gridx = compNum / 11;
-            this.add(c, gbc);
-            compNum++;
+            addComponent(c, true);
+        }
+
+        public void clearButtons(boolean undoable) {
+            if (undoable) {
+                buttonLists.add(new ArrayList<>());
+            }
+            this.removeAll();
+            compNum = 0;
+            this.repaint();
+            this.revalidate();
+        }
+
+        public void clearButtons() {
+            clearButtons(true);
+        }
+
+        public void printPrevButtons() {
+            buttonLists.remove(buttonLists.size() - 1);
+            int x = buttonLists.get(buttonLists.size() - 1).size();
+
+            for (int i = 0; i < x; i++) {
+                this.addComponent(new MenuButton(buttonLists.get(buttonLists.size() - 1).get(i)), false);
+            }
+
+            this.revalidate();
+            this.repaint();
+        }
+
+        public void onButton(MenuButton e) {
+            switch (e.getText()) {
+                case "ACTION":
+                    this.clearButtons();
+                    this.addComponent(new MenuButton("WORK"));
+                    this.addComponent(new MenuButton("WORKOUT"));
+                    this.addComponent(new MenuButton("SLEEP"));
+                    this.addComponent(new MenuButton("EAT"));
+                    this.addComponent(new MenuButton("COOK"));
+                    this.addComponent(new MenuButton("VISIT"));
+                    this.addComponent(new MenuButton("DEFECATE"));
+                    this.addComponent(new MenuButton("BUY"));
+                    this.addComponent(new MenuButton("PLACE ITEM"));
+                    this.addComponent(new MenuButton("VIEW TIME"));
+                    this.addComponent(new MenuButton("BACK"));
+                    this.revalidate();
+                    this.repaint();
+                    break;
+                case "BACK TO MAIN MENU":
+                    this.clearButtons();
+                    String[] options = { "Leave without saving", "Save progress", "Cancel" };
+                    int responses = JOptionPane.showOptionDialog(null, "Do you want to leave", "Leaving soon?",
+                            JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, 2);
+
+                    if (responses == 0) {
+                        manager.stopPlay();
+                    } else if (responses == 2) {
+                        this.printPrevButtons();
+                    }
+                    break;
+                case "BACK":
+                    this.clearButtons(false);
+                    this.printPrevButtons();
+                    break;
+            }
+        }
+
+        private class MenuButton extends JButton {
+            public MenuButton(String text) {
+                this.setPreferredSize(new Dimension(200, 40));
+                this.setText(text);
+                this.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        Object source = e.getSource();
+                        if (source.getClass().isAssignableFrom(MenuButton.class)) {
+                            onButton((MenuButton) source);
+                        }
+                    }
+                });
+            }
         }
     }
 

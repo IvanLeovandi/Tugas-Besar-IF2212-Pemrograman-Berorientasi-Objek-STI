@@ -3,8 +3,8 @@ package com.simplicity;
 import java.util.*;
 
 import com.simplicity.Exceptions.OverlapingRoomObjectException;
-import com.simplicity.Foods.CookedFood;
-import com.simplicity.Foods.Ingredient;
+import com.simplicity.Foods.CookedFood.CookedFood;
+import com.simplicity.Foods.Ingredients.*;
 import com.simplicity.Furniture.Furniture;
 import com.simplicity.Interfaces.*;
 
