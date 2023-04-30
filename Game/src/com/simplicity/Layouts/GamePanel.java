@@ -6,6 +6,7 @@ import javax.swing.*;
 
 import com.simplicity.Point;
 import com.simplicity.World;
+import com.simplicity.Events.HousePickEvent;
 import com.simplicity.Interfaces.HousePickListener;
 
 import java.util.*;
@@ -13,14 +14,22 @@ import java.util.*;
 public class GamePanel extends JPanel implements HousePickListener {
     SideMenu sideMenu = new SideMenu();
     JPanel currentCenterPanel;
+    SideInfo sideInfo = new SideInfo();
+    JPanel loadingPanel = new JPanel();
     WorldPanel worldPanel;
     HousePanel housePanel = null;
-    SideInfo sideInfo = new SideInfo();
     World world;
 
     public GamePanel(World world) {
         this.world = world;
-        worldPanel = new WorldPanel(64, 64, world, this);
+        loadingPanel.setBackground(Color.BLACK);
+
+        JLabel loadingLabel = new JLabel("Loading...");
+        loadingLabel.setForeground(Color.WHITE);
+        loadingPanel.add(loadingLabel);
+
+        worldPanel = new WorldPanel(64, 64, world);
+        worldPanel.setHousePickListener(this);
         currentCenterPanel = worldPanel;
         this.setLayout(new BorderLayout());
         this.add(sideMenu, BorderLayout.WEST);
@@ -65,9 +74,16 @@ public class GamePanel extends JPanel implements HousePickListener {
 
     public void setCurrentCenterPanel(JPanel newPanel) {
         this.remove(currentCenterPanel);
-        currentCenterPanel = newPanel;
+        currentCenterPanel = loadingPanel;
         this.add(currentCenterPanel);
         this.revalidate();
+
+        SwingUtilities.invokeLater(() -> {
+            this.remove(currentCenterPanel);
+            currentCenterPanel = newPanel;
+            this.add(currentCenterPanel);
+            this.revalidate();
+        });
     }
 
     public SideMenu getSideMenu() {
@@ -79,15 +95,13 @@ public class GamePanel extends JPanel implements HousePickListener {
     }
 
     public void getSidePanelText() {
-                                                                    // TODO: isi
+        // TODO: isi
     }
 
     @Override
-    public void onHousePick(Point location) {
-        if (housePanel == null) {
-            housePanel = new HousePanel(world.getHouse(location));
-        } else {
-            housePanel.setHouse(world.getHouse(location));
-        }
+    public void onHousePick(HousePickEvent e) {
+        Point location = e.getPoint();
+        housePanel = (HousePanel)world.getHouse(location).getPanel();
+        setCurrentCenterPanel(housePanel);
     }
 }

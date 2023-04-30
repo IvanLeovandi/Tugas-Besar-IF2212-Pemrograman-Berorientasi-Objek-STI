@@ -1,16 +1,23 @@
 package com.simplicity;
 import java.util.*;
+import javax.swing.*;
 
-public class House {
+import com.simplicity.Interfaces.SimplicityPrintable;
+import com.simplicity.Layouts.HousePanel;
+
+public class House implements SimplicityPrintable {
     private Point location; //Lokasi di World
     private int numberofRoom; //Jumlah ruangan di rumah
     private Map<Point,Room> roomList; //List ruangan di rumah
+    private JPanel panel;
+    private Sim houseOwner;
 
     //Konstruktor
     public House(Point location,Sim sim)
     {
         this.location = location;
         this.numberofRoom = 1;
+        this.houseOwner = sim;
         this.roomList = new HashMap<Point,Room>();
         roomList.put(new Point(0,0),new Room(numberofRoom,new Point(0,0),"Starting Room"));
         roomList.get(new Point(0,0)).addSim(sim);
@@ -50,6 +57,12 @@ public class House {
     public void setLocation(Point location)
     {
         this.location = location;
+    }
+
+    //Getter houseOwner
+    public Sim getHouseOwner()
+    {
+        return this.houseOwner;
     }
 
     //Getter numberOfRoom
@@ -227,5 +240,17 @@ public class House {
         }
     }
 
+    @Override
+    public JPanel getPanel() {
+        if (panel == null) {
+            panel = new HousePanel();
+        }
 
+        return panel;
+    }
+
+    @Override
+    public void clearPanel() {
+        panel = null;
+    }
 }
