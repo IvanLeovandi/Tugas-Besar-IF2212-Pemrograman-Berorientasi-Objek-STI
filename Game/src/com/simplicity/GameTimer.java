@@ -1,19 +1,30 @@
 package com.simplicity;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import javax.swing.Timer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class GameTimer {
-    private Timer timer;  
+public class GameTimer{
+    private Timer timer;
+    private int duration;  
     private int day;
     private int second;
 
-    public static int gameTime;
+    public static int gameTime = 0;
 
     public GameTimer() {
-        this.timer = new Timer();
+        this.timer = new Timer(100, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameTime++;
+                if (gameTime == duration){
+                    stopTimer();
+                }
+            }
+        });
         this.day = 1;
         this.second = 0;
+
     }
 
     public void setDay() {
@@ -32,24 +43,28 @@ public class GameTimer {
         return second;
     }
 
-    public void start(int gameDuration) {
-        timer.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                GameTimer.gameTime++;
-                if(GameTimer.gameTime == gameDuration) {
-                    stop();
-                }
-            }
-        }, 1000, 1000); // mengatur interval timer untuk 1 detik
+    public void startTimer(int gameDuration) {
+        this.duration = gameDuration;
+        int time = gameDuration - gameTime;
+        timer.start();
+        try {
+            Thread.sleep(time*110);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        setDay();
+        setSecond();
     }
-    
-    public void stop() {
-        timer.cancel();
+    public void stopTimer() {
+        timer.stop();
     }
     
     // public static void main(String[] args) {
     //     GameTimer game = new GameTimer();
-    //     game.start(30); // durasi permainan selama 30 detik
+    //     game.startTimer(30); // durasi permainan selama 30 detik
+
+    //     game.startTimer(40); // durasi permainan selama 10 detik
+
+    //     System.out.println("Hasil "  + GameTimer.gameTime);
     // }
 }

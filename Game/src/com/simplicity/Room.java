@@ -103,6 +103,7 @@ public class Room{
         return this.furnitureList;
     }
 
+    //Getter SimsList
     public ArrayList<Sim> getSimList()
     {
         return this.simsList;

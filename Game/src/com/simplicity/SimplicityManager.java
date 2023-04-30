@@ -60,10 +60,7 @@ public class SimplicityManager implements GameListener {
         loadingTitle.setFont(new Font(null, Font.BOLD, 30));;
         loadingTitle.setPreferredSize(new Dimension(1280, 720));
         loadingPanel.setBackground(Color.BLACK);
-        loadingPanel.setAlignmentX(JLabel.CENTER_ALIGNMENT);
-        loadingPanel.setAlignmentY(JLabel.CENTER_ALIGNMENT);
         loadingTitle.setForeground(Color.WHITE);
-        loadingTitle.setVerticalAlignment(JLabel.CENTER);
         loadingTitle.setHorizontalAlignment(JLabel.CENTER);
 
         loadingPanel.add(loadingTitle);

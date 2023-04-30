@@ -14,13 +14,20 @@ import java.util.*;
 public class GamePanel extends JPanel implements HousePickListener {
     SideMenu sideMenu = new SideMenu();
     JPanel currentCenterPanel;
+    SideInfo sideInfo = new SideInfo();
+    JPanel loadingPanel = new JPanel();
     WorldPanel worldPanel;
     HousePanel housePanel = null;
-    SideInfo sideInfo = new SideInfo();
     World world;
 
     public GamePanel(World world) {
         this.world = world;
+        loadingPanel.setBackground(Color.BLACK);
+
+        JLabel loadingLabel = new JLabel("Loading...");
+        loadingLabel.setForeground(Color.WHITE);
+        loadingPanel.add(loadingLabel);
+
         worldPanel = new WorldPanel(64, 64, world);
         worldPanel.setHousePickListener(this);
         currentCenterPanel = worldPanel;
@@ -116,9 +123,16 @@ public class GamePanel extends JPanel implements HousePickListener {
 
     public void setCurrentCenterPanel(JPanel newPanel) {
         this.remove(currentCenterPanel);
-        currentCenterPanel = newPanel;
+        currentCenterPanel = loadingPanel;
         this.add(currentCenterPanel);
         this.revalidate();
+
+        SwingUtilities.invokeLater(() -> {
+            this.remove(currentCenterPanel);
+            currentCenterPanel = newPanel;
+            this.add(currentCenterPanel);
+            this.revalidate();
+        });
     }
 
     public SideMenu getSideMenu() {
