@@ -11,7 +11,8 @@ public class House implements SimplicityPrintable {
     private Map<Point,Room> roomList; //List ruangan di rumah
     private JPanel panel;
     private Sim houseOwner;
-
+    private UpgradeState<Point, String, String> upgradeState;
+    
     //Konstruktor
     public House(Point location,Sim sim)
     {
@@ -21,6 +22,7 @@ public class House implements SimplicityPrintable {
         this.roomList = new HashMap<Point,Room>();
         roomList.put(new Point(0,0),new Room(numberofRoom,new Point(0,0),"Starting Room"));
         roomList.get(new Point(0,0)).addSim(sim);
+        this.upgradeState = new UpgradeState<>(null, null, null);
     }
 
     public House(Point location)
@@ -29,6 +31,7 @@ public class House implements SimplicityPrintable {
         this.numberofRoom = 1;
         this.roomList = new HashMap<Point,Room>();
         roomList.put(new Point(0,0),new Room(numberofRoom,new Point(0,0),"Starting Room"));
+        this.upgradeState = new UpgradeState<>(null, null, null);
     }
 
     //Getter Room List
@@ -68,6 +71,16 @@ public class House implements SimplicityPrintable {
     //Getter numberOfRoom
     public int getNumberofRoom() {
         return numberofRoom;
+    }
+
+    //Getter upgradeState
+    public UpgradeState<Point, String, String> getUpgradeState() {
+        return upgradeState;
+    }
+
+    //Setter upgradeState
+    public void setUpgradeState(UpgradeState<Point, String, String> upgradeState) {
+        this.upgradeState = upgradeState;
     }
 
     //Meningkatkan numberofRoom

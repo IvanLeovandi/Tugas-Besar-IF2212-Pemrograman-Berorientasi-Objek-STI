@@ -6,7 +6,7 @@ import javax.swing.JFrame;
 public class TestFrame extends JFrame {
     public TestFrame(JComponent c) {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setSize(900, 900);
+        this.setSize(720, 720);
         this.add(c);
     }
 
