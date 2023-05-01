@@ -1,9 +1,9 @@
 package com.simplicity;
 
 public class UpgradeState<T,U,V>{
-    private final T first;
-    private final U second;
-    private final V third;
+    private T first;
+    private U second;
+    private V third;
 
     public UpgradeState(T first, U second, V third) {
         this.first = first;
@@ -21,6 +21,18 @@ public class UpgradeState<T,U,V>{
 
     public V getThird() {
         return third;
+    }
+
+    public void setFirst(T first) {
+        this.first = first;
+    }
+
+    public void setSecond(U second) {
+        this.second = second;
+    }
+
+    public void setThird(V third) {
+        this.third = third;
     }
 
     @Override

@@ -88,7 +88,7 @@ public class World implements SimplicityPrintable {
                     //menyimpan seluruh index yang akan dihapus
                     int x = sim.getDeliveryList().get(i).getThird() - duration;
                     if (x <= 0){
-                        // sim.getDeliveryList().get(i).setThird(0);            // TODO
+                        sim.getDeliveryList().get(i).setThird(0);
                         Purchasable item = sim.getDeliveryList().get(i).getFirst();
                         int quantity = sim.getDeliveryList().get(i).getSecond();
                         if (item instanceof Furniture){
@@ -101,7 +101,7 @@ public class World implements SimplicityPrintable {
                         }
                     }
                     else{
-                        // sim.getDeliveryList().get(i).setThird(x);            // TODO
+                        sim.getDeliveryList().get(i).setThird(x);
                     }
                 }
                 //menghapus dari list item yang delivery time = 0
