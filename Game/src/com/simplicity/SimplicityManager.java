@@ -16,6 +16,8 @@ public class SimplicityManager implements GameListener {
     JPanel mainMenuPanel;
     GamePanel gamePanel;
     World world;
+    JPanel loadingPanel = new JPanel();
+    JLabel loadingTitle = new JLabel("LOADING...");
 
     public void setFrame(SimplicityFrame newFrame) {
         frame = newFrame;
@@ -55,9 +57,7 @@ public class SimplicityManager implements GameListener {
 
     @Override
     public void onPlay() {
-        JPanel loadingPanel = new JPanel();
-        JLabel loadingTitle = new JLabel("LOADING...");
-        loadingTitle.setFont(new Font(null, Font.BOLD, 30));;
+        loadingTitle.setFont(new Font(null, Font.BOLD, 30));
         loadingTitle.setPreferredSize(new Dimension(1280, 720));
         loadingPanel.setBackground(Color.BLACK);
         loadingTitle.setForeground(Color.WHITE);
@@ -65,10 +65,17 @@ public class SimplicityManager implements GameListener {
 
         loadingPanel.add(loadingTitle);
         frame.setCurrentPanel(loadingPanel);
-        gamePanel = new GamePanel(world);
+        if (gamePanel == null) {
+            gamePanel = new GamePanel(world, this);
+        }
 
         SwingUtilities.invokeLater(() -> {
             frame.setCurrentPanel(gamePanel);
         });
+    }
+
+    @Override
+    public void stopPlay() {
+        frame.setCurrentPanel(mainMenuPanel);
     }
 }
