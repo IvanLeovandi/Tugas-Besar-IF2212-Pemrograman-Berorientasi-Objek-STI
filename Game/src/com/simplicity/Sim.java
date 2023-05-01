@@ -26,8 +26,7 @@ public class Sim {
     private int simNumber;
     private Pair<Boolean,Integer> changeJob;
     private Pair<Boolean, Integer> isUpgradeHouse;
-    private HashMap<Pair<Purchasable, Integer>, Integer> deliveryList;
-    private Pair<Boolean, Integer> isBuying;
+    private ArrayList<UpgradeState<Purchasable, Integer, Integer>> deliveryList;
 
     public static int numberOfSims = 0;
 
@@ -51,7 +50,6 @@ public class Sim {
         this.simNumber = numberOfSims;
         this.changeJob = new Pair<Boolean,Integer>(false,0);//<Boolean, Integer> (true/false, day)
         this.isUpgradeHouse = new Pair<Boolean, Integer>(false,0);//<Boolean, Integer> (true/false, day)
-        this.deliveryList = new HashMap<Pair<Purchasable, Integer>, Integer>();
     }
 
     //Getter
@@ -123,11 +121,7 @@ public class Sim {
         return isUpgradeHouse;
     }
 
-    public Pair<Boolean, Integer> getIsBuying() {
-        return isBuying;
-    }
-
-    public HashMap<Pair<Purchasable, Integer>, Integer> getDeliveryList() {
+    public ArrayList<UpgradeState<Purchasable, Integer, Integer>> getDeliveryList() {
         return deliveryList;
     }
 
@@ -212,14 +206,10 @@ public class Sim {
         this.isUpgradeHouse = new Pair<Boolean, Integer>(isUpgradeHouse, duration);
     }
 
-    public void setIsBuying(Boolean isBuying, int duration) {
-        this.isBuying = new Pair<Boolean, Integer>(isBuying, duration);
-    }
-
-    public void setDeliveryList(HashMap<Pair<Purchasable, Integer>, Integer> deliveryList) {
+    public void setDeliveryList(ArrayList<UpgradeState<Purchasable, Integer, Integer>> deliveryList) {
         this.deliveryList = deliveryList;
     }
-
+    
     //Method
     public void changeSatiety(int x) {
         int i = satiety + x;
@@ -525,8 +515,7 @@ public class Sim {
             else{
                 balance -= itemPrice;
                 int deliveryTime = (new Random().nextInt(5) + 1) * 30;
-                deliveryList.put(new Pair<Purchasable, Integer>(item, quantity), deliveryTime);
-                // furnitureInventory.addItem(furniture, quantity);
+                deliveryList.add(new UpgradeState<Purchasable,Integer,Integer>(item, quantity, deliveryTime));
             }
         }
         else if (item instanceof Ingredient){
@@ -538,7 +527,7 @@ public class Sim {
             else{
                 balance -= itemPrice;
                 int deliveryTime = (new Random().nextInt(5) + 1) * 30;
-                deliveryList.put(new Pair<Purchasable, Integer>(item, quantity), deliveryTime);
+                deliveryList.add(new UpgradeState<Purchasable,Integer,Integer>(item, quantity, deliveryTime));
             }
         }
         else {
