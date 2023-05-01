@@ -22,5 +22,6 @@ public class SimplicityFrame extends JFrame {
         currentPanel = newPanel;
         this.add(currentPanel);
         this.revalidate();
+        this.repaint();
     }
 }
