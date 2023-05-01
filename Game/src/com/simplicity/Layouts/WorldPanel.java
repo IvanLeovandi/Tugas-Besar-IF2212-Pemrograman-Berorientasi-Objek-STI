@@ -5,19 +5,22 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import com.simplicity.Interfaces.HousePickListener;
+import com.simplicity.House;
 import com.simplicity.Point;
 import com.simplicity.World;
+import com.simplicity.Events.HousePickEvent;
+import com.simplicity.Events.WorldEvent;
 
 import java.util.*;
 
 public class WorldPanel extends JPanel {
-    Color backgroundColor;
-    World world;
+    private Color backgroundColor;
+    private World world;
+    private HousePickListener housePickListener;
 
-    public WorldPanel(int x, int y, World world, HousePickListener listener) {
-        this.world = world;
-        System.out.println(world.getHouse(32, 32) == null);
+    public WorldPanel(int x, int y, World world) {
         backgroundColor = new Color(0x215e07);
+        this.world = world;
 
         this.setLayout(new GridLayout(x, y, 2, 2));
         this.setBackground(backgroundColor);
@@ -27,10 +30,10 @@ public class WorldPanel extends JPanel {
             for (int j = 0; j < y; j++) {
                 JPanel housePanel;
                 if (world.getHouse(i, j) != null) {
-                    housePanel = new HouseButton(listener, new Point(x, y), true);
+                    housePanel = new HouseButton(new Point(i, j), true);
                 } else {
 
-                    housePanel = new HouseButton(listener, new Point(x, y));
+                    housePanel = new HouseButton(new Point(i, j));
                 }
                 this.add(housePanel);
             }
@@ -45,15 +48,14 @@ public class WorldPanel extends JPanel {
         private HousePickListener listener;
         private Point location;
 
-        public HouseButton(HousePickListener listener, Point location) {
-            this.listener = listener;
+        public HouseButton(Point location) {
             this.setBackground(disabledColor);
             this.location = location;
             this.addMouseListener(this);
         }
 
-        public HouseButton(HousePickListener listener, Point location, boolean isEnabled) {
-            this(listener, location);
+        public HouseButton(Point location, boolean isEnabled) {
+            this(location);
             setEnabled(isEnabled);
         }
 
@@ -67,10 +69,14 @@ public class WorldPanel extends JPanel {
             this.repaint();
         }
 
+        public void setListener(HousePickListener listener) {
+            this.listener = listener;
+        }
+
         @Override
         public void mouseClicked(MouseEvent e) {
-            if (isEnabled) {
-                listener.onHousePick(location);
+            if (isEnabled && listener != null) {
+                listener.onHousePick(new HousePickEvent(this, world, location));
             }
         }
 
@@ -97,5 +103,12 @@ public class WorldPanel extends JPanel {
 
         @Override
         public void mouseReleased(MouseEvent e) {}
+    }
+
+    public void setHousePickListener(HousePickListener listener) {
+        housePickListener = listener;
+        for (Component button : this.getComponents()) {
+            ((HouseButton)button).setListener(listener);
+        }
     }
 }

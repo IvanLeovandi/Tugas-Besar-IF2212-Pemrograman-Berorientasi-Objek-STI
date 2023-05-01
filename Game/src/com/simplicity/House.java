@@ -1,19 +1,28 @@
 package com.simplicity;
 import java.util.*;
+import javax.swing.*;
 
-public class House {
+import com.simplicity.Interfaces.SimplicityPrintable;
+import com.simplicity.Layouts.HousePanel;
+
+public class House implements SimplicityPrintable {
     private Point location; //Lokasi di World
     private int numberofRoom; //Jumlah ruangan di rumah
     private Map<Point,Room> roomList; //List ruangan di rumah
-
+    private JPanel panel;
+    private Sim houseOwner;
+    private UpgradeState<Point, String, String> upgradeState;
+    
     //Konstruktor
     public House(Point location,Sim sim)
     {
         this.location = location;
         this.numberofRoom = 1;
+        this.houseOwner = sim;
         this.roomList = new HashMap<Point,Room>();
         roomList.put(new Point(0,0),new Room(numberofRoom,new Point(0,0),"Starting Room"));
         roomList.get(new Point(0,0)).addSim(sim);
+        this.upgradeState = new UpgradeState<>(null, null, null);
     }
 
     public House(Point location)
@@ -22,6 +31,7 @@ public class House {
         this.numberofRoom = 1;
         this.roomList = new HashMap<Point,Room>();
         roomList.put(new Point(0,0),new Room(numberofRoom,new Point(0,0),"Starting Room"));
+        this.upgradeState = new UpgradeState<>(null, null, null);
     }
 
     //Getter Room List
@@ -52,9 +62,25 @@ public class House {
         this.location = location;
     }
 
+    //Getter houseOwner
+    public Sim getHouseOwner()
+    {
+        return this.houseOwner;
+    }
+
     //Getter numberOfRoom
     public int getNumberofRoom() {
         return numberofRoom;
+    }
+
+    //Getter upgradeState
+    public UpgradeState<Point, String, String> getUpgradeState() {
+        return upgradeState;
+    }
+
+    //Setter upgradeState
+    public void setUpgradeState(UpgradeState<Point, String, String> upgradeState) {
+        this.upgradeState = upgradeState;
     }
 
     //Meningkatkan numberofRoom
@@ -225,5 +251,19 @@ public class House {
                 }
             }
         }
+    }
+
+    @Override
+    public JPanel getPanel() {
+        if (panel == null) {
+            panel = new HousePanel();
+        }
+
+        return panel;
+    }
+
+    @Override
+    public void clearPanel() {
+        panel = null;
     }
 }
