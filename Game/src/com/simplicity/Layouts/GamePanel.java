@@ -128,6 +128,35 @@ public class GamePanel extends JPanel implements HousePickListener {
                     this.revalidate();
                     this.repaint();
                     break;
+
+                case "WORK":
+                    
+                    break;
+
+                case "VIEW INVENTORY":
+                    break;
+
+                case "UPGRADE HOUSE":
+                    break;
+
+                case "MOVE ROOM":
+                    break;
+
+                case "EDIT ROOM":
+                    break;
+
+                case "ADD SIM":
+                    break;
+
+                case "CHANGE SIM":
+                    break;
+
+                case "LIST OBJECT":
+                    break;
+
+                case "GO TO OBJECT":
+                    break;
+
                 case "BACK TO MAIN MENU":
                     this.clearButtons();
                     String[] options = { "Leave without saving", "Save progress", "Cancel" };
@@ -173,6 +202,8 @@ public class GamePanel extends JPanel implements HousePickListener {
             this.setPreferredSize(new Dimension(280, 720));
             this.setBackground(new Color(0x9961f2));
         }
+
+        
     }
 
     public void setCurrentCenterPanel(JPanel newPanel) {
