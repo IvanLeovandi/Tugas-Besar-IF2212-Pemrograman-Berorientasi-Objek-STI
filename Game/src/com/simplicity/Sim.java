@@ -2,6 +2,7 @@ package com.simplicity;
 
 import java.util.*;
 
+import com.simplicity.Exceptions.InvalidSimName;
 import com.simplicity.Exceptions.OverlapingRoomObjectException;
 import com.simplicity.Foods.CookedFood.CookedFood;
 import com.simplicity.Foods.Ingredients.Ingredient;
@@ -30,8 +31,8 @@ public class Sim {
     public static int numberOfSims = 0;
 
     //Konstruktor
-    public Sim(String name, Point location) {
-        this.name = name;
+    public Sim(String name, Point location) throws InvalidSimName {
+        setName(name);
         this.job = new Job();
         this.balance = 100;
         this.furnitureInventory = new Inventory<Furniture>();
@@ -120,8 +121,14 @@ public class Sim {
     }
 
     //Setter
-    public void setName(String name) {
-        this.name = name;
+    public void setName(String name) throws InvalidSimName {
+        if (name.isEmpty()) {
+            throw new InvalidSimName("Name can't be empty!");
+        } else if (name.matches(".*[^a-zA-Z].*")) {
+            throw new InvalidSimName("Name can only contain letters!");
+        } else {
+            this.name = name;
+        }
     }
 
     public void setJob(String jobName) {
@@ -266,7 +273,7 @@ public class Sim {
                 System.out.println("Duration must be multiple of 120 seconds");
             }
             else {
-                World.gameTimer.startTimer(duration);                
+                World.gameTimer.startTimer(duration);
                 int satietyDecrease = (-10)*(duration/30);
                 int moodDecrease = (-10)*(duration/30);
                 changeSatiety(satietyDecrease);
@@ -283,7 +290,7 @@ public class Sim {
                             job.setDurationNotPaid(job.getDurationNotPaid() - (4*60));
                         }
                     }
-                }   
+                }
             }
         }
         else {
@@ -432,7 +439,7 @@ public class Sim {
         //menghitung jarak (waktu) antara titik Sim dan rumah yang dikunjungi
         double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         int duration = (int)distance;
-        World.gameTimer.startTimer(duration);       
+        World.gameTimer.startTimer(duration);
 
         //Efek berkunjung
         int moodIncrease = 10*(int)distance/30;
@@ -487,7 +494,7 @@ public class Sim {
                 this.setIsUpgradeHouse(true, 1080);
                 this.house.setUpgradeState(new UpgradeState<Point,String,String>(upgradeRoom, direction, name));
             }
-        }  
+        }
     }
 
     public void buy(Purchasable item, int quantity) {
