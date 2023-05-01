@@ -4,13 +4,16 @@ import java.util.*;
 
 import com.simplicity.Exceptions.OverlapingRoomObjectException;
 import com.simplicity.Foods.CookedFood.CookedFood;
+
 import com.simplicity.Foods.Ingredients.*;
 import com.simplicity.Furniture.Clock;
 import com.simplicity.Furniture.Furniture;
-import com.simplicity.Furniture.GasStove;
-import com.simplicity.Furniture.SingleBed;
 import com.simplicity.Furniture.TableAndChair;
 import com.simplicity.Furniture.Toilet;
+import com.simplicity.Furniture.Bed.Bed;
+import com.simplicity.Furniture.Bed.SingleBed;
+import com.simplicity.Furniture.Stove.GasStove;
+import com.simplicity.Furniture.Stove.Stove;
 import com.simplicity.Interfaces.*;
 
 public class Sim {
@@ -25,10 +28,12 @@ public class Sim {
     private int health;
     private String status;
     private House house;
+    private House currentHouse;
     private Room currentRoom;
     private Point currentPosition;
     private int simNumber;
     private Pair<Boolean,Integer> changeJob;
+    private Pair<Boolean, Integer> isUpgradeHouse;
 
     public static int numberOfSims = 0;
 
@@ -50,6 +55,7 @@ public class Sim {
         this.health = 80;
         this.status = "Idle";
         this.house = new House(location, this);
+        this.currentHouse = house;
         this.currentRoom = house.getRoomList().get(new Point(0, 0));
         this.currentPosition = new Point(0, 0);
         numberOfSims++;
@@ -102,6 +108,10 @@ public class Sim {
         return house;
     }
 
+    public House getCurrentHouse() {
+        return currentHouse;
+    }
+
     public Room getCurrentRoom() {
         return currentRoom;
     }
@@ -116,6 +126,10 @@ public class Sim {
 
     public Pair<Boolean,Integer> getChangeJob() {
         return changeJob;
+    }
+
+    public Pair<Boolean, Integer> getIsUpgradeHouse() {
+        return isUpgradeHouse;
     }
 
     //Setter
@@ -175,6 +189,10 @@ public class Sim {
         this.house = house;
     }
 
+    public void setCurrentHouse(House currentHouse) {
+        this.currentHouse = currentHouse;
+    }
+
     public void setCurrentRoom(Room currentRoom) {
         this.currentRoom = currentRoom;
     }
@@ -189,6 +207,10 @@ public class Sim {
 
     public void setChangeJob(Boolean changeJob) {
         this.changeJob = new Pair<Boolean,Integer>(changeJob, World.gameTimer.getDay());
+    }
+
+    public void setIsUpgradeHouse(Boolean isUpgradeHouse, int duration) {
+        this.isUpgradeHouse = new Pair<Boolean, Integer>(isUpgradeHouse, duration);
     }
 
     //Method
@@ -257,17 +279,24 @@ public class Sim {
                 System.out.println("Duration must be multiple of 120 seconds");
             }
             else {
-                int durationTimer = GameTimer.gameTime + duration;
-                World.gameTimer.startTimer(durationTimer);                
+                World.gameTimer.startTimer(duration);                
                 int satietyDecrease = (-10)*(duration/30);
                 int moodDecrease = (-10)*(duration/30);
                 changeSatiety(satietyDecrease);
                 changeMood(moodDecrease);
+                job.setDurationOfWork(job.getDurationOfWork() + duration);
 
                 //Penambahan uang
-                int moneyIncrease = job.getSalary();
-                setBalance(getBalance() + moneyIncrease);
-                
+                job.setDurationNotPaid(job.getDurationNotPaid() + duration);
+                if (job.getDurationNotPaid() >= 4*60){
+                    int x = job.getDurationNotPaid()/ (4*60);{
+                        for (int i = 0; i < x; i++){
+                            int moneyIncrease = job.getSalary();
+                            setBalance(getBalance() + moneyIncrease);
+                            job.setDurationNotPaid(job.getDurationNotPaid() - (4*60));
+                        }
+                    }
+                }   
             }
         }
         else {
@@ -281,8 +310,7 @@ public class Sim {
         }
         else {
             setStatus("Working Out");
-            int durationTimer = GameTimer.gameTime + duration;
-            World.gameTimer.startTimer(durationTimer);
+            World.gameTimer.startTimer(duration);
             int satietyDecrease = (-5)*(duration/20);
             int moodIncrease = 10*(duration/20);
             int healthIncrease = 5*(duration/20);
@@ -293,33 +321,41 @@ public class Sim {
         }
     }
 
-    public void sleep(int duration) {
-        if (this.currentObject() != null) {
-            if (this.currentObject().getName().equals("KING BED") || this.currentObject().getName().equals("QUEEN BED") || this.currentObject().getName().equals("SINGLE BED")) {
+    public void sleep(int duration, Sim currentSim) {
+        if (this.currentObject().getName().equals("KING BED") || this.currentObject().getName().equals("QUEEN BED") || this.currentObject().getName().equals("SINGLE BED")) {
 
-                    if (validationDuration(duration, 240) == false){
-                        System.out.println("Duration must be multiple of 4 minutes");
-                    }
-                    else {
-                        setStatus("Sleeping");
-                        int durationTimer = GameTimer.gameTime + duration;
-                        World.gameTimer.startTimer(durationTimer);
-                        int satietyDecrease = (-5)*(duration/240);
-                        int moodIncrease = 10*(duration/240);
-                        int healthIncrease = 5*(duration/240);
-
-                        changeSatiety(satietyDecrease);
-                        changeMood(moodIncrease);
-                        changeHealth(healthIncrease);
-                    }
+                if (validationDuration(duration, 240) == false){
+                    System.out.println("Duration must be multiple of 4 minutes");
                 }
-            else {
-                System.out.println("You can't sleep here");
+                else {
+                    World.gameTimer.startTimer(duration);
+                    int satietyDecrease = (-5)*(duration/240);
+                    int moodIncrease = 10*(duration/240);
+                    int healthIncrease = 5*(duration/240);
+
+                    changeSatiety(satietyDecrease);
+                    changeMood(moodIncrease);
+                    changeHealth(healthIncrease);
+                }
             }
-        }
         else {
             System.out.println("You can't sleep here");
+            System.out.println("You need a bed to sleep.");
+
+            for(Furniture furniture: currentSim.getCurrentRoom().getfurnitureList()){
+                if(Bed.class.isAssignableFrom(furniture.getClass())){
+                    System.out.println("You have a bed, you will automatically moved there to sleep");
+                    currentSim.moveToObject(furniture, 1);
+                    this.sleep(duration,currentSim);
+                    break;
+                }
+            }
         }
+        // if (this.currentObject() != null) {
+        // }
+        // else {
+        //     System.out.println("You can't sleep here");
+        // }
     }
 
     public void notSleep(){
@@ -333,9 +369,7 @@ public class Sim {
                 if(food instanceof CookedFood){
                     CookedFood food1 = (CookedFood) food;
                    if (this.cookedFoodInventory.getInventory().containsKey(food1)){
-                        setStatus("Eating");
-                        int durationTimer = GameTimer.gameTime + 30;
-                        World.gameTimer.startTimer(durationTimer);
+                        World.gameTimer.startTimer(30);
                         changeSatiety(food1.getSatietyPoint());
                         this.cookedFoodInventory.getInventory().remove(food1);
                     }
@@ -347,8 +381,7 @@ public class Sim {
                     Ingredient food1 = (Ingredient) food;
                     if (this.ingredientsInventory.getInventory().containsKey(food1)){
                         setStatus("Eating");
-                        int durationTimer = GameTimer.gameTime + 30;
-                        World.gameTimer.startTimer(durationTimer);
+                        World.gameTimer.startTimer(30);
                         changeSatiety(food1.getSatietyPoint());
                         this.ingredientsInventory.getInventory().remove(food1);
                     }
@@ -370,10 +403,9 @@ public class Sim {
 
     }
 
-    public void cook(CookedFood cookedFood) {
-        if (currentObject() != null) {
-            if (currentObject().getName().equals("GAS STOVE") || currentObject().getName().equals("ELECTRIC STOVE") ){
-                List<Ingredient> ingredients = cookedFood.getIngredients();
+    public void cook(CookedFood cookedFood, Sim currentSim) {
+        if (currentObject().getName().equals("GAS STOVE") || currentObject().getName().equals("ELECTRIC STOVE") ){
+            List<Ingredient> ingredients = cookedFood.getIngredients();
                 Boolean flag = true;
                 for (Ingredient ingredient : ingredients) {
                     if (this.ingredientsInventory.getInventory().containsKey(ingredient)){
@@ -390,8 +422,7 @@ public class Sim {
 
                 if (flag == true){
                     Double duration = 1.5 * cookedFood.getSatietyPoint();
-                    int duration1 = duration.intValue() + GameTimer.gameTime ;
-                    setStatus("Cooking");
+                    int duration1 = duration.intValue();
                     World.gameTimer.startTimer(duration1);
                     for (Ingredient ingredient : ingredients) {
                         this.ingredientsInventory.removeItem(ingredient);
@@ -404,13 +435,25 @@ public class Sim {
                     System.out.println("You can't cook this because you don't have the ingredients");
                 }
             }
-            else{
-                System.out.println("You can't cook here");
+        else{
+            System.out.println("You can't cook here");
+            System.out.println("You need a stove to sleep.");
+
+            for(Furniture furniture: currentSim.getCurrentRoom().getfurnitureList()){
+                if(Stove.class.isAssignableFrom(furniture.getClass())){
+                    System.out.println("You have a stove, you will automatically moved there to cook");
+                    currentSim.moveToObject(furniture, 1);
+                    this.cook(cookedFood,currentSim);
+                    break;
+                }
             }
         }
-        else {
-            System.out.println("You can't cook here");
-        }
+        
+        // if (currentObject() != null) {
+        // }
+        // else {
+        //     System.out.println("You can't cook here");
+        // }
     }
 
     public void visit(House house1, House house2) {
@@ -423,13 +466,13 @@ public class Sim {
         //menghitung jarak (waktu) antara titik Sim dan rumah yang dikunjungi
         double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         int duration = (int)distance;
-        setStatus("Visiting");
-        int durationTimer = GameTimer.gameTime + duration;
-        World.gameTimer.startTimer(durationTimer);       
+        World.gameTimer.startTimer(duration);       
 
         //Efek berkunjung
         int moodIncrease = 10*(int)distance/30;
         int satietyDecrease = -10*(int)distance/30;
+
+        this.currentHouse = house2;
 
         changeMood(moodIncrease);
         changeSatiety(satietyDecrease);
@@ -442,9 +485,7 @@ public class Sim {
                     System.out.println("Duration must be multiple of 10 seconds");
                 }
                 else {
-                    setStatus("Defecating");
-                    int durationTimer = GameTimer.gameTime + duration;
-                    World.gameTimer.startTimer(durationTimer);
+                    World.gameTimer.startTimer(duration);
                     int satietyDecrease = -20;
                     int moodIncrease = 10;
 
@@ -472,8 +513,14 @@ public class Sim {
             System.out.println("You can't upgrade the house");
         }
         else{
-            balance -= 1500;
-            house.upgradeRoom(house.getRoomList().get(upgradeRoom), direction, name);
+            if(!currentHouse.equals(house)){
+                System.out.println("You can't upgrade the house because this is not your house");
+            }
+            else{
+                balance -= 1500;
+                this.setIsUpgradeHouse(true, 1080);
+                this.house.setUpgradeState(new UpgradeState<Point,String,String>(upgradeRoom, direction, name));
+            }
         }  
     }
 
@@ -486,7 +533,7 @@ public class Sim {
             }
             else{
                 balance -= itemPrice;
-                int deliveryTime = (new Random().nextInt(5) + 1) * 30;
+                // int deliveryTime = (new Random().nextInt(5) + 1) * 30;
 
                 furnitureInventory.addItem(furniture, quantity);
             }
@@ -499,7 +546,7 @@ public class Sim {
             }
             else{
                 balance -= itemPrice;
-                int deliveryTime = (new Random().nextInt(5) + 1) * 30;
+                // int deliveryTime = (new Random().nextInt(5) + 1) * 30;
 
                 ingredientsInventory.addItem(ingredient, quantity);
             }
@@ -521,21 +568,21 @@ public class Sim {
         }
     }
 
-    public void setUpObject (Point placement, int rotation, String furniture) throws OverlapingRoomObjectException {
+    public void setUpObject (Point placement, int rotation, int idx) throws OverlapingRoomObjectException {
         //Mengecek apakah furniture yang dipilih ada di inventory
-        if (furnitureInventory.getInventory().containsKey(new Furniture(furniture)) == false){
+        if (furnitureInventory.getInventory().containsKey(furnitureInventory.getInventory().keySet().toArray()[idx]) == false){
             System.out.println("You don't have the furniture");
         }
         else {
             try {
-                currentRoom.placeFurniture(placement, rotation, new Furniture(furniture));
+                currentRoom.placeFurniture(placement, rotation, new Furniture(furnitureInventory.getInventory().keySet().toArray()[idx].toString()));
             } catch (OverlapingRoomObjectException e) {
                 e.printStackTrace();
             }
         }
 
         //Menghapus furniture dari inventory
-        furnitureInventory.removeItem(new Furniture(furniture));
+        furnitureInventory.removeItem(new Furniture(furnitureInventory.getInventory().keySet().toArray()[idx].toString()));
     }
 
     public void viewInventory() {
@@ -593,14 +640,25 @@ public class Sim {
         }
     }
 
-    public void viewTime() {
-        if(currentObject().getName().equals("CLOCK")){
-            //Implementasi
-            
-
+    public void viewTime(Sim currentSim) {
+        if(currentObject().getName().equals("Clock")){
+            System.out.println("The time is : Day " + World.gameTimer.getDay() + " Seconds " + World.gameTimer.getSecond());
+            //Menampilkan sisa waktu yang ada pada hari ini
+            int remainingTime = 720 - World.gameTimer.getSecond();
+            System.out.println("Remaining time : " + remainingTime + " seconds");
         }
         else{
             System.out.println("You can't view the time");
+            System.out.println("You need a clock to sleep.");
+
+            for(Furniture furniture: currentSim.getCurrentRoom().getfurnitureList()){
+                if(Clock.class.isAssignableFrom(furniture.getClass())){
+                    System.out.println("You have a clock, you will automatically moved there to view time");
+                    currentSim.moveToObject(furniture, 1);
+                    this.viewTime(currentSim);
+                    break;
+                }
+            }
         }
     }
 

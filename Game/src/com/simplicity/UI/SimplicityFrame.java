@@ -8,8 +8,8 @@ import com.simplicity.Interfaces.GameListener;
 import com.simplicity.Layouts.GamePanel;
 
 public class SimplicityFrame extends JFrame {
-    JPanel currentPanel;
-    SimplicityFrame(JPanel firstPanel) {
+    private JPanel currentPanel;
+    public SimplicityFrame(JPanel firstPanel) {
         currentPanel = firstPanel;
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(1280, 720);
@@ -22,5 +22,6 @@ public class SimplicityFrame extends JFrame {
         currentPanel = newPanel;
         this.add(currentPanel);
         this.revalidate();
+        this.repaint();
     }
 }
