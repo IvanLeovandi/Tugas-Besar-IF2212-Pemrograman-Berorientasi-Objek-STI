@@ -4,16 +4,17 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import com.simplicity.Interfaces.HousePickListener;
 import com.simplicity.House;
 import com.simplicity.Point;
 import com.simplicity.World;
 import com.simplicity.Events.HousePickEvent;
 import com.simplicity.Events.WorldEvent;
+import com.simplicity.Interfaces.Listeners.HousePickListener;
+import com.simplicity.Interfaces.Listeners.SimplicityListener;
 
 import java.util.*;
 
-public class WorldPanel extends JPanel {
+public class WorldPanel extends SimplicityPanel {
     private Color backgroundColor;
     private World world;
     private HousePickListener housePickListener;
@@ -29,11 +30,11 @@ public class WorldPanel extends JPanel {
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {
                 JPanel housePanel;
-                if (world.getHouse(i, j) != null) {
-                    housePanel = new HouseButton(new Point(i, j), true);
+                if (world.getSim(i, j) != null) {
+                    housePanel = new HouseButton(new Point(j, i), true);
                 } else {
 
-                    housePanel = new HouseButton(new Point(i, j));
+                    housePanel = new HouseButton(new Point(j, i));
                 }
                 this.add(housePanel);
             }
@@ -56,10 +57,10 @@ public class WorldPanel extends JPanel {
 
         public HouseButton(Point location, boolean isEnabled) {
             this(location);
-            setEnabled(isEnabled);
+            setButtonEnabled(isEnabled);
         }
 
-        public void setEnabled(boolean isEnabled) {
+        public void setButtonEnabled(boolean isEnabled) {
             this.isEnabled = isEnabled;
             if (isEnabled) {
                 this.setBackground(enabledColor);
@@ -67,6 +68,14 @@ public class WorldPanel extends JPanel {
                 this.setBackground(disabledColor);
             }
             this.repaint();
+        }
+
+        public Point getPoint() {
+            return location;
+        }
+
+        public boolean getButtonEnabled() {
+            return isEnabled;
         }
 
         public void setListener(HousePickListener listener) {
@@ -110,5 +119,24 @@ public class WorldPanel extends JPanel {
         for (Component button : this.getComponents()) {
             ((HouseButton)button).setListener(listener);
         }
+    }
+
+    @Override
+    public void updateDisplay() {
+        for (Component c: this.getComponents()) {
+            if (c instanceof HouseButton) {
+                HouseButton button = (HouseButton)c;
+                if (world.getSim(button.getPoint()) != null && !button.getButtonEnabled()) {
+                    button.setButtonEnabled(true);
+                } else if (button.getButtonEnabled()) {
+                    button.setButtonEnabled(false);
+                }
+            } else if (c instanceof SimplicityPanel) {
+                ((SimplicityPanel)c).updateDisplay();
+            }
+        }
+
+        this.revalidate();
+        this.repaint();
     }
 }

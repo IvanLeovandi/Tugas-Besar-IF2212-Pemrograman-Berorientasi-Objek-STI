@@ -6,7 +6,7 @@ import javax.swing.*;
 
 import com.simplicity.House;
 
-public class HousePanel extends JPanel {
+public class HousePanel extends SimplicityPanel {
     private House currentHouse = null;
     private Color backgroundColor = Color.ORANGE;
     private JPanel houseLayout = new JPanel();

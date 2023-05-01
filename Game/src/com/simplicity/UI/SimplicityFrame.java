@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import com.simplicity.Interfaces.GameListener;
+import com.simplicity.Interfaces.Listeners.GameListener;
 import com.simplicity.Layouts.GamePanel;
 
 public class SimplicityFrame extends JFrame {

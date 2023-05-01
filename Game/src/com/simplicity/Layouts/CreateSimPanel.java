@@ -4,25 +4,32 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+import com.simplicity.SimplicityManager;
 import com.simplicity.TestFrame;
+import com.simplicity.Events.SimCreateEvent;
+import com.simplicity.Exceptions.InvalidSimName;
+import com.simplicity.Interfaces.Listeners.SimCreateListener;
 
-public class CreateSimPanel extends JPanel {
+public class CreateSimPanel extends SimplicityPanel {
     JLabel titleMessage = new JLabel("Input your sim name");
     JTextField input = new JTextField();
     JButton doneButton = new JButton("Done!");
-    JLabel warningMessage = new JLabel("Invalid name!\nAan1");
+    JLabel warningMessage = new JLabel("Invalid name!");
     Color invisColor = new Color(0x00000000, true);
+    SimplicityManager manager;
 
-    public CreateSimPanel() {
+    public CreateSimPanel(SimplicityManager manager) {
+        this.manager = manager;
         this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String name = input.getText();
-                if () {
-                    onInvalidInput();
-                } else if (name.isEmpty()) {
+                try {
+                    manager.onCreateSim(new SimCreateEvent(this, name));
                     onValidInput();
+                } catch (InvalidSimName e1) {
+                    onInvalidInput(e1.getMessage());
                 }
             }
         });
@@ -67,10 +74,6 @@ public class CreateSimPanel extends JPanel {
         this.add(Box.createVerticalGlue(), gbc);
     }
 
-    public static void main(String[] args) {
-        TestFrame.start(new CreateSimPanel());
-    }
-
     public void showWarningMessage() {
         warningMessage.setForeground(Color.RED);
     }
@@ -85,6 +88,7 @@ public class CreateSimPanel extends JPanel {
     }
 
     public void onInvalidInput(String message) {
+        warningMessage.setText(message);
         warningMessage.setForeground(Color.RED);
     }
 }

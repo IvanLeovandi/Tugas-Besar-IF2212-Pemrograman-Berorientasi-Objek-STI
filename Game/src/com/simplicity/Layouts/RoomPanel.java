@@ -6,7 +6,7 @@ import javax.swing.*;
 
 import com.simplicity.Room;
 
-public class RoomPanel extends JPanel {
+public class RoomPanel extends SimplicityPanel {
     private Room currentRoom = null;
     private JPanel roomLayout = new JPanel();
     private JLayeredPane layeredPane = new JLayeredPane();

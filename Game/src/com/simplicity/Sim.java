@@ -33,7 +33,7 @@ public class Sim {
     public static int numberOfSims = 0;
 
     //Konstruktor
-    public Sim(String name, Point location) throws InvalidSimName {
+    public Sim(String name, Point location) {
         setName(name);
         this.job = new Job();
         this.balance = 100;
@@ -133,14 +133,8 @@ public class Sim {
     }
 
     //Setter
-    public void setName(String name) throws InvalidSimName {
-        if (name.isEmpty()) {
-            throw new InvalidSimName("Name can't be empty!");
-        } else if (name.matches(".*[^a-zA-Z].*")) {
-            throw new InvalidSimName("Name can only contain letters!");
-        } else {
-            this.name = name;
-        }
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setJob(String jobName) {

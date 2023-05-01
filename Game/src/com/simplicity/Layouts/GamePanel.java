@@ -4,44 +4,46 @@ import java.awt.*;
 import java.awt.List;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.table.TableRowSorter;
 
 import com.simplicity.Point;
 import com.simplicity.SimplicityManager;
 import com.simplicity.World;
 import com.simplicity.Events.HousePickEvent;
-import com.simplicity.Interfaces.HousePickListener;
+import com.simplicity.Exceptions.UndefinedHousePanelException;
+import com.simplicity.Interfaces.Listeners.HousePickListener;
 
 import java.util.*;
 
-public class GamePanel extends JPanel implements HousePickListener {
-    SimplicityManager manager = new SimplicityManager();
+public class GamePanel extends SimplicityPanel implements HousePickListener {
+    SimplicityManager manager;
     JPanel sideMenu = new SideMenu();
     JPanel currentCenterPanel;
     JPanel sideInfo = new SideInfo();
-    JPanel loadingPanel = new JPanel();
+    JPanel loadingPanel = new SimplicityPanel();
     WorldPanel worldPanel;
     HousePanel housePanel = null;
-    World world;
+    CreateSimPanel createSimPanel;
 
-    public GamePanel(World world, SimplicityManager manager) {
+    public GamePanel(SimplicityManager manager) {
         this.manager = manager;
-        this.world = world;
+        createSimPanel = new CreateSimPanel(manager);
         loadingPanel.setBackground(Color.BLACK);
 
         JLabel loadingLabel = new JLabel("Loading...");
         loadingLabel.setForeground(Color.WHITE);
         loadingPanel.add(loadingLabel);
 
-        worldPanel = new WorldPanel(64, 64, world);
+        worldPanel = manager.getWorld().getPanel();
         worldPanel.setHousePickListener(this);
-        currentCenterPanel = worldPanel;
+        currentCenterPanel = createSimPanel;
         this.setLayout(new BorderLayout());
         this.add(sideMenu, BorderLayout.WEST);
-        this.add(worldPanel, BorderLayout.CENTER);
+        this.add(currentCenterPanel, BorderLayout.CENTER);
         this.add(sideInfo, BorderLayout.EAST);
     }
 
-    private class SideMenu extends JPanel {
+    private class SideMenu extends SimplicityPanel{
         GridBagConstraints gbc;
         int compNum = 0;
         java.util.List<java.util.List<String>> buttonLists = new ArrayList<>();
@@ -163,7 +165,7 @@ public class GamePanel extends JPanel implements HousePickListener {
         }
     }
 
-    private class SideInfo extends JPanel {
+    private class SideInfo extends SimplicityPanel {
         JLabel context = new JLabel();
 
         public SideInfo() {
@@ -189,6 +191,18 @@ public class GamePanel extends JPanel implements HousePickListener {
         });
     }
 
+    public void displayHouse() throws UndefinedHousePanelException {
+        if (housePanel == null) {
+            throw new UndefinedHousePanelException();
+        } else {
+            setCurrentCenterPanel(housePanel);
+        }
+    }
+
+    public void displayWorld() {
+        setCurrentCenterPanel(worldPanel);
+    }
+
     public JPanel getSideMenu() {
         return sideMenu;
     }
@@ -201,14 +215,14 @@ public class GamePanel extends JPanel implements HousePickListener {
         // TODO: isi
     }
 
-    public void setSideMenu(JPanel newPanel) {
+    public void setSideMenu(SimplicityPanel newPanel) {
         sideMenu = newPanel;
     }
 
     @Override
     public void onHousePick(HousePickEvent e) {
         Point location = e.getPoint();
-        housePanel = (HousePanel) world.getHouse(location).getPanel();
+        housePanel = (HousePanel) manager.getWorld().getSim(location).getHouse().getPanel();
         setCurrentCenterPanel(housePanel);
     }
 }
