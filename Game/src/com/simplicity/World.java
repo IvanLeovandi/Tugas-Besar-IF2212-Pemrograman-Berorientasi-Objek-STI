@@ -15,6 +15,7 @@ public class World implements SimplicityPrintable {
     private Dimension2D size;
     private Map<Point, House> map = new HashMap<>();
     private JPanel panel;
+    private ArrayList<Sim> simList = new ArrayList<>();
 
     public static GameTimer gameTimer = new GameTimer();
 
@@ -50,6 +51,26 @@ public class World implements SimplicityPrintable {
     public House getHouse(Point p) {
         return map.get(p);
     }
+
+    public void checkUpgrade(int duration){
+        for (Sim sim : simList){
+            if (sim.getIsUpgradeHouse().getFirst().equals(true)){
+                int x = sim.getIsUpgradeHouse().getSecond() -  duration;
+                if (x <= 0){                   
+                    sim.setIsUpgradeHouse(false, 0);
+                    Point upgradeRoom = sim.getHouse().getUpgradeState().getFirst();
+                    String direction = sim.getHouse().getUpgradeState().getSecond();
+                    String name = sim.getHouse().getUpgradeState().getThird();
+                    sim.getHouse().upgradeRoom(sim.getHouse().getRoomList().get(upgradeRoom), direction, name);
+                }
+                else{
+                    sim.setIsUpgradeHouse(true, x);   
+                }
+            }
+        }
+    }
+
+    
 
     @Override
     public JPanel getPanel() {

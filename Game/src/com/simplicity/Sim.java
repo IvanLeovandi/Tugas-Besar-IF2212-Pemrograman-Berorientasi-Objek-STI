@@ -27,6 +27,8 @@ public class Sim {
     private int simNumber;
     private Pair<Boolean,Integer> changeJob;
     private Pair<Boolean, Integer> isUpgradeHouse;
+    private HashMap<Pair<Purchasable, Integer>, Integer> deliveryList;
+    private Pair<Boolean, Integer> isBuying;
 
     public static int numberOfSims = 0;
 
@@ -49,6 +51,8 @@ public class Sim {
         numberOfSims++;
         this.simNumber = numberOfSims;
         this.changeJob = new Pair<Boolean,Integer>(false,0);//<Boolean, Integer> (true/false, day)
+        this.isUpgradeHouse = new Pair<Boolean, Integer>(false,0);//<Boolean, Integer> (true/false, day)
+        this.deliveryList = new HashMap<Pair<Purchasable, Integer>, Integer>();
     }
 
     //Getter
@@ -118,6 +122,14 @@ public class Sim {
 
     public Pair<Boolean, Integer> getIsUpgradeHouse() {
         return isUpgradeHouse;
+    }
+
+    public Pair<Boolean, Integer> getIsBuying() {
+        return isBuying;
+    }
+
+    public HashMap<Pair<Purchasable, Integer>, Integer> getDeliveryList() {
+        return deliveryList;
     }
 
     //Setter
@@ -205,6 +217,14 @@ public class Sim {
 
     public void setIsUpgradeHouse(Boolean isUpgradeHouse, int duration) {
         this.isUpgradeHouse = new Pair<Boolean, Integer>(isUpgradeHouse, duration);
+    }
+
+    public void setIsBuying(Boolean isBuying, int duration) {
+        this.isBuying = new Pair<Boolean, Integer>(isBuying, duration);
+    }
+
+    public void setDeliveryList(HashMap<Pair<Purchasable, Integer>, Integer> deliveryList) {
+        this.deliveryList = deliveryList;
     }
 
     //Method
@@ -482,18 +502,23 @@ public class Sim {
 
     //---------Upgrade Action---------
     public void upgradeHouse(Point upgradeRoom, String direction, String name) {
-        if (balance < 1500){
-            System.out.println("You can't upgrade the house");
-        }
-        else{
-            if(!currentHouse.equals(house)){
-                System.out.println("You can't upgrade the house because this is not your house");
+        if (isUpgradeHouse.getFirst() == false){
+            if (balance < 1500){
+                System.out.println("You can't upgrade the house");
             }
             else{
-                balance -= 1500;
-                this.setIsUpgradeHouse(true, 1080);
-                this.house.setUpgradeState(new UpgradeState<Point,String,String>(upgradeRoom, direction, name));
+                if(!currentHouse.equals(house)){
+                    System.out.println("You can't upgrade the house because this is not your house");
+                }
+                else{
+                    balance -= 1500;
+                    this.setIsUpgradeHouse(true, 1080);
+                    this.house.setUpgradeState(new UpgradeState<Point,String,String>(upgradeRoom, direction, name));
+                }
             }
+        }
+        else{
+            System.out.println("You can't upgrade the house because you are upgrading the house");
         }
     }
 
@@ -506,9 +531,9 @@ public class Sim {
             }
             else{
                 balance -= itemPrice;
-                // int deliveryTime = (new Random().nextInt(5) + 1) * 30;
-
-                furnitureInventory.addItem(furniture, quantity);
+                int deliveryTime = (new Random().nextInt(5) + 1) * 30;
+                deliveryList.put(new Pair<Purchasable, Integer>(item, quantity), deliveryTime);
+                // furnitureInventory.addItem(furniture, quantity);
             }
         }
         else if (item instanceof Ingredient){
@@ -519,9 +544,8 @@ public class Sim {
             }
             else{
                 balance -= itemPrice;
-                // int deliveryTime = (new Random().nextInt(5) + 1) * 30;
-
-                ingredientsInventory.addItem(ingredient, quantity);
+                int deliveryTime = (new Random().nextInt(5) + 1) * 30;
+                deliveryList.put(new Pair<Purchasable, Integer>(item, quantity), deliveryTime);
             }
         }
         else {
