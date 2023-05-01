@@ -77,8 +77,8 @@ public class GamePanel extends JPanel implements HousePickListener {
                 button.setVisible(currentButtonVisible);
                 buttonLists.get(buttonLists.size() - 1).add(button.getText());
             }
-            gbc.gridy = compNum;
-            gbc.gridx = 0;
+            gbc.gridy = compNum % 11;
+            gbc.gridx = compNum / 11;
             this.add(c, gbc);
             compNum++;
         }
@@ -133,6 +133,13 @@ public class GamePanel extends JPanel implements HousePickListener {
                     this.addComponent(new MenuButton("COOK"));
                     this.addComponent(new MenuButton("VISIT"));
                     this.addComponent(new MenuButton("DEFECATE"));
+                    this.addComponent(new MenuButton("NUBES"));
+                    this.addComponent(new MenuButton("LISTEN TO MUSIC"));
+                    this.addComponent(new MenuButton("WATCH TV"));
+                    this.addComponent(new MenuButton("BATH"));
+                    this.addComponent(new MenuButton("MEETUP"));
+                    this.addComponent(new MenuButton("MISS YOU"));
+                    this.addComponent(new MenuButton("SAY HELLO"));
                     this.addComponent(new MenuButton("BUY"));
                     this.addComponent(new MenuButton("PLACE ITEM"));
                     this.addComponent(new MenuButton("VIEW TIME"));
