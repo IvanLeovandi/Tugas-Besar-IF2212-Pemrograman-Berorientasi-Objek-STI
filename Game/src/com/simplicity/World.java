@@ -5,6 +5,9 @@ import java.util.*;
 import javax.swing.JPanel;
 
 import com.simplicity.Exceptions.PlacementOutOfBoundException;
+import com.simplicity.Foods.Ingredients.Ingredient;
+import com.simplicity.Furniture.Furniture;
+import com.simplicity.Interfaces.Purchasable;
 import com.simplicity.Interfaces.SimplicityPrintable;
 import com.simplicity.Interfaces.WorldObject;
 import com.simplicity.Layouts.SimplicityPanel;
@@ -76,6 +79,44 @@ public class World implements SimplicityPrintable {
             panel.updateDisplay();
         }
     }
+
+    public void checkBuying(int duration){
+        for (Sim sim : map.values()){
+            if (!sim.getDeliveryList().isEmpty()){
+                int size = sim.getDeliveryList().size();
+                for (int i = 0; i < size; i++){
+                    //menyimpan seluruh index yang akan dihapus
+                    int x = sim.getDeliveryList().get(i).getThird() - duration;
+                    if (x <= 0){
+                        // sim.getDeliveryList().get(i).setThird(0);            // TODO
+                        Purchasable item = sim.getDeliveryList().get(i).getFirst();
+                        int quantity = sim.getDeliveryList().get(i).getSecond();
+                        if (item instanceof Furniture){
+                            Furniture furniture = (Furniture) item;
+                            sim.getFurnitureInventory().addItem(furniture, quantity);
+                        }
+                        else{
+                            Ingredient ingredient = (Ingredient) item;
+                            sim.getIngredientsInventory().addItem(ingredient, quantity);
+                        }
+                    }
+                    else{
+                        // sim.getDeliveryList().get(i).setThird(x);            // TODO
+                    }
+                }
+                //menghapus dari list item yang delivery time = 0
+                for (int i = 0; i < size; i++){
+                    if (sim.getDeliveryList().get(i).getThird() == 0){
+                        sim.getDeliveryList().remove(i);
+                        size--;
+                        i--;
+                    }
+                }
+            }
+        }
+    }
+
+
 
     @Override
     public WorldPanel getPanel() {
