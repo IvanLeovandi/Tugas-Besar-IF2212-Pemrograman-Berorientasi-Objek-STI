@@ -11,7 +11,7 @@ public class GameMenu extends JPanel {
     public static void showSimInfo(Sim sim) {
         System.out.println("Berikut informasi sim,");
         System.out.println("Nama        : " + sim.getName());
-        System.out.println("Pekerjaan   : " + sim.getJob());
+        System.out.println("Pekerjaan   : " + sim.getJob().getJobName());
         System.out.println("Kesehatan   : " + sim.getHealth());
         System.out.println("Kekenyangan : " + sim.getSatiety());
         System.out.println("Mood        : " + sim.getMood());
