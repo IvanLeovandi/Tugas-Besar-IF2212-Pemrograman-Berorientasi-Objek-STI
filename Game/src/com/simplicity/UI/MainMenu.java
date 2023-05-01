@@ -5,7 +5,7 @@ import java.awt.event.*;
 import javax.swing.*;
 
 import com.simplicity.GUI.RoundedButton;
-import com.simplicity.Interfaces.GameListener;
+import com.simplicity.Interfaces.Listeners.GameListener;
 import com.simplicity.Layouts.GamePanel;
 
 import java.io.File;

@@ -2,6 +2,7 @@ package com.simplicity;
 
 import java.util.*;
 
+import com.simplicity.Exceptions.InvalidSimName;
 import com.simplicity.Exceptions.OverlapingRoomObjectException;
 import com.simplicity.Foods.CookedFood.CookedFood;
 import com.simplicity.Foods.Ingredients.Ingredient;
@@ -26,12 +27,13 @@ public class Sim {
     private int simNumber;
     private Pair<Boolean,Integer> changeJob;
     private Pair<Boolean, Integer> isUpgradeHouse;
+    private ArrayList<UpgradeState<Purchasable, Integer, Integer>> deliveryList;
 
     public static int numberOfSims = 0;
 
     //Konstruktor
     public Sim(String name, Point location) {
-        this.name = name;
+        setName(name);
         this.job = new Job();
         this.balance = 100;
         this.furnitureInventory = new Inventory<Furniture>();
@@ -48,6 +50,7 @@ public class Sim {
         numberOfSims++;
         this.simNumber = numberOfSims;
         this.changeJob = new Pair<Boolean,Integer>(false,0);//<Boolean, Integer> (true/false, day)
+        this.isUpgradeHouse = new Pair<Boolean, Integer>(false,0);//<Boolean, Integer> (true/false, day)
     }
 
     //Getter
@@ -117,6 +120,10 @@ public class Sim {
 
     public Pair<Boolean, Integer> getIsUpgradeHouse() {
         return isUpgradeHouse;
+    }
+
+    public ArrayList<UpgradeState<Purchasable, Integer, Integer>> getDeliveryList() {
+        return deliveryList;
     }
 
     //Setter
@@ -200,6 +207,10 @@ public class Sim {
         this.isUpgradeHouse = new Pair<Boolean, Integer>(isUpgradeHouse, duration);
     }
 
+    public void setDeliveryList(ArrayList<UpgradeState<Purchasable, Integer, Integer>> deliveryList) {
+        this.deliveryList = deliveryList;
+    }
+    
     //Method
     public void changeSatiety(int x) {
         int i = satiety + x;
@@ -266,7 +277,7 @@ public class Sim {
                 System.out.println("Duration must be multiple of 120 seconds");
             }
             else {
-                World.gameTimer.startTimer(duration);                
+                World.gameTimer.startTimer(duration);
                 int satietyDecrease = (-10)*(duration/30);
                 int moodDecrease = (-10)*(duration/30);
                 changeSatiety(satietyDecrease);
@@ -283,7 +294,7 @@ public class Sim {
                             job.setDurationNotPaid(job.getDurationNotPaid() - (4*60));
                         }
                     }
-                }   
+                }
             }
         }
         else {
@@ -432,7 +443,7 @@ public class Sim {
         //menghitung jarak (waktu) antara titik Sim dan rumah yang dikunjungi
         double distance = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
         int duration = (int)distance;
-        World.gameTimer.startTimer(duration);       
+        World.gameTimer.startTimer(duration);
 
         //Efek berkunjung
         int moodIncrease = 10*(int)distance/30;
@@ -475,19 +486,24 @@ public class Sim {
 
     //---------Upgrade Action---------
     public void upgradeHouse(Point upgradeRoom, String direction, String name) {
-        if (balance < 1500){
-            System.out.println("You can't upgrade the house");
-        }
-        else{
-            if(!currentHouse.equals(house)){
-                System.out.println("You can't upgrade the house because this is not your house");
+        if (isUpgradeHouse.getFirst() == false){
+            if (balance < 1500){
+                System.out.println("You can't upgrade the house");
             }
             else{
-                balance -= 1500;
-                this.setIsUpgradeHouse(true, 1080);
-                this.house.setUpgradeState(new UpgradeState<Point,String,String>(upgradeRoom, direction, name));
+                if(!currentHouse.equals(house)){
+                    System.out.println("You can't upgrade the house because this is not your house");
+                }
+                else{
+                    balance -= 1500;
+                    this.setIsUpgradeHouse(true, 1080);
+                    this.house.setUpgradeState(new UpgradeState<Point,String,String>(upgradeRoom, direction, name));
+                }
             }
-        }  
+        }
+        else{
+            System.out.println("You can't upgrade the house because you are upgrading the house");
+        }
     }
 
     public void buy(Purchasable item, int quantity) {
@@ -499,9 +515,8 @@ public class Sim {
             }
             else{
                 balance -= itemPrice;
-                // int deliveryTime = (new Random().nextInt(5) + 1) * 30;
-
-                furnitureInventory.addItem(furniture, quantity);
+                int deliveryTime = (new Random().nextInt(5) + 1) * 30;
+                deliveryList.add(new UpgradeState<Purchasable,Integer,Integer>(item, quantity, deliveryTime));
             }
         }
         else if (item instanceof Ingredient){
@@ -512,9 +527,8 @@ public class Sim {
             }
             else{
                 balance -= itemPrice;
-                // int deliveryTime = (new Random().nextInt(5) + 1) * 30;
-
-                ingredientsInventory.addItem(ingredient, quantity);
+                int deliveryTime = (new Random().nextInt(5) + 1) * 30;
+                deliveryList.add(new UpgradeState<Purchasable,Integer,Integer>(item, quantity, deliveryTime));
             }
         }
         else {
