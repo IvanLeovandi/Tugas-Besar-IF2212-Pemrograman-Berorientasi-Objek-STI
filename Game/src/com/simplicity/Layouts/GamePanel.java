@@ -15,9 +15,9 @@ import java.util.*;
 
 public class GamePanel extends JPanel implements HousePickListener {
     SimplicityManager manager = new SimplicityManager();
-    SideMenu sideMenu = new SideMenu();
+    JPanel sideMenu = new SideMenu();
     JPanel currentCenterPanel;
-    SideInfo sideInfo = new SideInfo();
+    JPanel sideInfo = new SideInfo();
     JPanel loadingPanel = new JPanel();
     WorldPanel worldPanel;
     HousePanel housePanel = null;
@@ -189,16 +189,20 @@ public class GamePanel extends JPanel implements HousePickListener {
         });
     }
 
-    public SideMenu getSideMenu() {
+    public JPanel getSideMenu() {
         return sideMenu;
     }
 
-    public SideInfo getSideInfo() {
+    public JPanel getSideInfo() {
         return sideInfo;
     }
 
     public void getSidePanelText() {
         // TODO: isi
+    }
+
+    public void setSideMenu(JPanel newPanel) {
+        sideMenu = newPanel;
     }
 
     @Override
