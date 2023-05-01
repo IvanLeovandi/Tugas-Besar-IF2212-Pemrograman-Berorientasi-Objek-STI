@@ -10,7 +10,7 @@ public class CreateSimPanel extends JPanel {
     JLabel titleMessage = new JLabel("Input your sim name");
     JTextField input = new JTextField();
     JButton doneButton = new JButton("Done!");
-    JLabel warningMessage = new JLabel("Invalid name!");
+    JLabel warningMessage = new JLabel("Invalid name!\nAan1");
     Color invisColor = new Color(0x00000000, true);
 
     public CreateSimPanel() {
@@ -18,9 +18,10 @@ public class CreateSimPanel extends JPanel {
         GridBagConstraints gbc = new GridBagConstraints();
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (input.getText().matches(".*[^a-zA-Z].*")) {
+                String name = input.getText();
+                if () {
                     onInvalidInput();
-                } else {
+                } else if (name.isEmpty()) {
                     onValidInput();
                 }
             }
@@ -83,7 +84,7 @@ public class CreateSimPanel extends JPanel {
         warningMessage.setForeground(invisColor);
     }
 
-    public void onInvalidInput() {
+    public void onInvalidInput(String message) {
         warningMessage.setForeground(Color.RED);
     }
 }
