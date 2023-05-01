@@ -25,6 +25,7 @@ public class Sim {
     private Point currentPosition;
     private int simNumber;
     private Pair<Boolean,Integer> changeJob;
+    private Pair<Boolean, Integer> isUpgradeHouse;
 
     public static int numberOfSims = 0;
 
@@ -114,6 +115,10 @@ public class Sim {
         return changeJob;
     }
 
+    public Pair<Boolean, Integer> getIsUpgradeHouse() {
+        return isUpgradeHouse;
+    }
+
     //Setter
     public void setName(String name) {
         this.name = name;
@@ -189,6 +194,10 @@ public class Sim {
 
     public void setChangeJob(Boolean changeJob) {
         this.changeJob = new Pair<Boolean,Integer>(changeJob, World.gameTimer.getDay());
+    }
+
+    public void setIsUpgradeHouse(Boolean isUpgradeHouse, int duration) {
+        this.isUpgradeHouse = new Pair<Boolean, Integer>(isUpgradeHouse, duration);
     }
 
     //Method
@@ -475,7 +484,8 @@ public class Sim {
             }
             else{
                 balance -= 1500;
-                house.upgradeRoom(house.getRoomList().get(upgradeRoom), direction, name);
+                this.setIsUpgradeHouse(true, 1080);
+                this.house.setUpgradeState(new UpgradeState<Point,String,String>(upgradeRoom, direction, name));
             }
         }  
     }
