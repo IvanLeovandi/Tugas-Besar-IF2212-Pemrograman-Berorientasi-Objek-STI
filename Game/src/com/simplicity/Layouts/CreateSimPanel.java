@@ -13,8 +13,8 @@ import com.simplicity.Interfaces.Listeners.SimCreateListener;
 public class CreateSimPanel extends SimplicityPanel {
     JLabel titleMessage = new JLabel("Input your sim name");
     JTextField input = new JTextField();
-    JButton doneButton = new JButton("Done!");
-    JLabel warningMessage = new JLabel("Invalid name!");
+    JButton doneButton = new JButton("Submit!");
+    JLabel warningMessage = new JLabel("Invalid name! Name only contains of words only");
     Color invisColor = new Color(0x00000000, true);
     SimplicityManager manager;
 
@@ -55,7 +55,7 @@ public class CreateSimPanel extends SimplicityPanel {
         gbc.gridy = 3;
         gbc.weighty = 1;
         warningMessage.setBounds(0, 100, 500, 200);
-        warningMessage.setPreferredSize(new Dimension(200, 30));
+        warningMessage.setPreferredSize(new Dimension(500, 30));
         warningMessage.setForeground(invisColor);
         warningMessage.setHorizontalAlignment(JLabel.CENTER);
         this.add(warningMessage, gbc);
@@ -63,7 +63,6 @@ public class CreateSimPanel extends SimplicityPanel {
         gbc.gridy = 4;
         gbc.weighty = 2;
         this.add(Box.createVerticalGlue(), gbc);
-
 
         gbc.gridy = 5;
         gbc.weighty = 1;
