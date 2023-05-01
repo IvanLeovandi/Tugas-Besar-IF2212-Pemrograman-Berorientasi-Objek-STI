@@ -12,9 +12,9 @@ import com.simplicity.Interfaces.HousePickListener;
 import java.util.*;
 
 public class GamePanel extends JPanel implements HousePickListener {
-    SideMenu sideMenu = new SideMenu();
+    JPanel sideMenu = new SideMenu();
     JPanel currentCenterPanel;
-    SideInfo sideInfo = new SideInfo();
+    JPanel sideInfo = new SideInfo();
     JPanel loadingPanel = new JPanel();
     WorldPanel worldPanel;
     HousePanel housePanel = null;
@@ -96,6 +96,10 @@ public class GamePanel extends JPanel implements HousePickListener {
 
     public void getSidePanelText() {
         // TODO: isi
+    }
+
+    public void setSideMenu(JPanel newPanel) {
+        sideMenu = newPanel;
     }
 
     @Override
