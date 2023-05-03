@@ -2,7 +2,6 @@ package com.simplicity;
 
 import java.util.*;
 
-import com.simplicity.Exceptions.InvalidSimName;
 import com.simplicity.Exceptions.OverlapingRoomObjectException;
 import com.simplicity.Foods.CookedFood.CookedFood;
 import com.simplicity.Foods.Ingredients.Ingredient;
@@ -210,7 +209,7 @@ public class Sim {
     public void setDeliveryList(ArrayList<UpgradeState<Purchasable, Integer, Integer>> deliveryList) {
         this.deliveryList = deliveryList;
     }
-    
+
     //Method
     public void changeSatiety(int x) {
         int i = satiety + x;

@@ -2,11 +2,12 @@ package com.simplicity.UI;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 
 import com.simplicity.GUI.RoundedButton;
 import com.simplicity.Interfaces.Listeners.GameListener;
-import com.simplicity.Layouts.GamePanel;
+import com.simplicity.Util.ImageLoader;
 
 import java.io.File;
 import java.util.*;
@@ -37,9 +38,7 @@ public class MainMenu extends JPanel {
     }
 
     private class MainPanel extends JPanel implements ActionListener {
-        private ImageIcon simplicityIcon = new ImageIcon(new ImageIcon(
-                "Game/src/com/simplicity/Images/sims_diamond.png")
-                .getImage().getScaledInstance(30, 60, Image.SCALE_SMOOTH));
+        private ImageIcon simplicityIcon = new ImageIcon(ImageLoader.loadImage("res/Icons/sims_diamond.png").getScaledInstance(30, 60, Image.SCALE_SMOOTH));
         private JPanel buttonPanel = new JPanel(new GridLayout(0, 1, 0, 20));
         private JPanel titlePanel = new JPanel();
         private JLabel titleLabel = new JLabel("SIMPLICITY");
@@ -131,8 +130,6 @@ public class MainMenu extends JPanel {
     private class HelpPanel extends JPanel implements ActionListener {
         private int currentPage = 1;
         private java.util.List<JPanel> pages = new ArrayList<>();
-
-        private JPanel prevPanel;
 
         private JLabel pageNumLabel;
         private JButton prevButton = new JButton("prev");
@@ -264,3 +261,5 @@ public class MainMenu extends JPanel {
         }
     }
 }
+
+

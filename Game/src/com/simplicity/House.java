@@ -1,10 +1,9 @@
 package com.simplicity;
 import java.util.*;
-import javax.swing.*;
 
+import com.simplicity.Components.HousePanel;
+import com.simplicity.Components.SimplicityPanel;
 import com.simplicity.Interfaces.SimplicityPrintable;
-import com.simplicity.Layouts.HousePanel;
-import com.simplicity.Layouts.SimplicityPanel;
 
 public class House implements SimplicityPrintable {
     private Point location; //Lokasi di World

@@ -1,14 +1,12 @@
-package com.simplicity.Layouts;
+package com.simplicity.Components;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
 import com.simplicity.SimplicityManager;
-import com.simplicity.TestFrame;
 import com.simplicity.Events.SimCreateEvent;
 import com.simplicity.Exceptions.InvalidSimName;
-import com.simplicity.Interfaces.Listeners.SimCreateListener;
 
 public class CreateSimPanel extends SimplicityPanel {
     JLabel titleMessage = new JLabel("Input your sim name");
@@ -19,6 +17,7 @@ public class CreateSimPanel extends SimplicityPanel {
     SimplicityManager manager;
 
     public CreateSimPanel(SimplicityManager manager) {
+        super();
         this.manager = manager;
         this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();

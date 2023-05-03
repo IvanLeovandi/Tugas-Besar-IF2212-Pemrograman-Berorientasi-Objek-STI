@@ -2,40 +2,45 @@ package com.simplicity;
 
 import java.util.*;
 
-import javax.swing.JPanel;
-
-import com.simplicity.Exceptions.PlacementOutOfBoundException;
+import com.simplicity.Components.WorldPanel;
+import com.simplicity.Exceptions.OverlapingHouseException;
 import com.simplicity.Foods.Ingredients.Ingredient;
 import com.simplicity.Furniture.Furniture;
 import com.simplicity.Interfaces.Purchasable;
 import com.simplicity.Interfaces.SimplicityPrintable;
-import com.simplicity.Interfaces.WorldObject;
-import com.simplicity.Layouts.SimplicityPanel;
-import com.simplicity.Layouts.WorldPanel;
 
 
 public class World implements SimplicityPrintable {
     private Dimension2D size;
     private Map<Point, Sim> map = new HashMap<>();
     private WorldPanel panel;
+    private java.util.List<Point> availableLands = new ArrayList<>();
 
     public static GameTimer gameTimer = new GameTimer();
 
-    public World(int width, int length) {
-        size = new Dimension2D(width, length);
+    public World(int width, int height) {
+        size = new Dimension2D(width, height);
         for (int i = 0; i < width; i++) {
-            for (int j = 0; j < length; j++) {
-                map.put(new Point(i, j), null); // butuh perubahan
+            for (int j = 0; j < height; j++) {
+                Point p = new Point(i, j);
+                map.put(p, null);
+                availableLands.add(p);
             }
         }
     }
 
-    public void setSim(int x, int y, Sim sim) {
+    public void setSim(int x, int y, Sim sim) throws OverlapingHouseException {
         setSim(new Point(x, y), sim);
     }
 
-    public void setSim(Point location, Sim sim) {
-        map.put(location, sim);
+    public void setSim(Point location, Sim sim) throws OverlapingHouseException {
+        if (!isLandAvailable(location)) {
+            throw new OverlapingHouseException();
+        }
+
+        Point p = location.clone();
+        map.put(p, sim);
+        availableLands.remove(p);
         updatePanel();
     }
 
@@ -44,7 +49,9 @@ public class World implements SimplicityPrintable {
     }
 
     public void removeSim(Point location) {
-        map.remove(location);
+        Point p = location.clone();
+        map.remove(p);
+        availableLands.add(p);
         updatePanel();
     }
 
@@ -54,6 +61,18 @@ public class World implements SimplicityPrintable {
 
     public Sim getSim(Point p) {
         return map.get(p);
+    }
+
+    public Dimension2D getSize() {
+        return size;
+    }
+
+    public boolean isLandAvailable(Point location) {
+        return availableLands.contains(location);
+    }
+
+    public java.util.List<Point> getAvailableLands() {
+        return availableLands;
     }
 
     public void checkUpgrade(int duration){
@@ -76,7 +95,7 @@ public class World implements SimplicityPrintable {
 
     public void updatePanel() {
         if (this.panel != null) {
-            panel.updateDisplay();
+            panel.onUpdate();
         }
     }
 

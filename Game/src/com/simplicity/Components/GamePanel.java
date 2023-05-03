@@ -1,14 +1,11 @@
-package com.simplicity.Layouts;
+package com.simplicity.Components;
 
 import java.awt.*;
-import java.awt.List;
 import java.awt.event.*;
 import javax.swing.*;
-import javax.swing.table.TableRowSorter;
 
 import com.simplicity.Point;
 import com.simplicity.SimplicityManager;
-import com.simplicity.World;
 import com.simplicity.Events.HousePickEvent;
 import com.simplicity.Exceptions.UndefinedHousePanelException;
 import com.simplicity.Interfaces.Listeners.HousePickListener;
@@ -26,6 +23,7 @@ public class GamePanel extends SimplicityPanel implements HousePickListener {
     CreateSimPanel createSimPanel;
 
     public GamePanel(SimplicityManager manager) {
+        super();
         this.manager = manager;
         createSimPanel = new CreateSimPanel(manager);
         loadingPanel.setBackground(Color.BLACK);
@@ -43,13 +41,15 @@ public class GamePanel extends SimplicityPanel implements HousePickListener {
         this.add(sideInfo, BorderLayout.EAST);
     }
 
-    private class SideMenu extends SimplicityPanel{
+    private class SideMenu extends SimplicityPanel {
         GridBagConstraints gbc;
         int compNum = 0;
         java.util.List<java.util.List<String>> buttonLists = new ArrayList<>();
         boolean currentButtonVisible = true;
 
         public SideMenu() {
+            super();
+            System.out.println("AANNN");
             this.setPreferredSize(new Dimension(280, 720));
             this.setLayout(new GridBagLayout());
             this.setBackground(new Color(0x9961f2));
@@ -79,8 +79,10 @@ public class GamePanel extends SimplicityPanel implements HousePickListener {
                 button.setVisible(currentButtonVisible);
                 buttonLists.get(buttonLists.size() - 1).add(button.getText());
             }
+            gbc.weightx = 1;
             gbc.gridy = compNum % 11;
             gbc.gridx = compNum / 11;
+            gbc.fill = GridBagConstraints.HORIZONTAL;
             this.add(c, gbc);
             compNum++;
         }
@@ -200,6 +202,7 @@ public class GamePanel extends SimplicityPanel implements HousePickListener {
             public MenuButton(String text) {
                 this.setPreferredSize(new Dimension(200, 40));
                 this.setText(text);
+                this.setFocusable(false);
                 this.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         Object source = e.getSource();
@@ -218,6 +221,7 @@ public class GamePanel extends SimplicityPanel implements HousePickListener {
         JButton backToWorldButton = new JButton("BACK TO WORLD");
 
         public SideInfo() {
+            super();
             context.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
             context.setAlignmentY(TOP_ALIGNMENT);
             gbc = new GridBagConstraints();
