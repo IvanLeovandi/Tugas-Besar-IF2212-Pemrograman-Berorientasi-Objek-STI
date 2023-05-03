@@ -28,6 +28,8 @@ public class Sim {
     private Pair<Boolean,Integer> changeJob;
     private Pair<Boolean, Integer> isUpgradeHouse;
     private ArrayList<UpgradeState<Purchasable, Integer, Integer>> deliveryList;
+    private int timeSleep;
+    private Pair <Integer, Integer> timeDefecateEat;
 
     public static int numberOfSims = 0;
 
@@ -49,8 +51,11 @@ public class Sim {
         this.currentPosition = new Point(0, 0);
         numberOfSims++;
         this.simNumber = numberOfSims;
-        this.changeJob = new Pair<Boolean,Integer>(false,0);//<Boolean, Integer> (true/false, day)
-        this.isUpgradeHouse = new Pair<Boolean, Integer>(false,0);//<Boolean, Integer> (true/false, day)
+        this.changeJob = new Pair<Boolean,Integer>(false,0);
+        this.isUpgradeHouse = new Pair<Boolean, Integer>(false,0);
+        this.deliveryList = new ArrayList<UpgradeState<Purchasable, Integer, Integer>>();
+        this.timeSleep = GameTimer.gameTime;
+        this.timeDefecateEat = new Pair<Integer, Integer>(GameTimer.gameTime, GameTimer.gameTime);
     }
 
     //Getter
@@ -124,6 +129,14 @@ public class Sim {
 
     public ArrayList<UpgradeState<Purchasable, Integer, Integer>> getDeliveryList() {
         return deliveryList;
+    }
+
+    public int getTimeSleep() {
+        return timeSleep;
+    }
+
+    public Pair<Integer, Integer> getTimeDefecateEat() {
+        return timeDefecateEat;
     }
 
     //Setter
@@ -210,7 +223,15 @@ public class Sim {
     public void setDeliveryList(ArrayList<UpgradeState<Purchasable, Integer, Integer>> deliveryList) {
         this.deliveryList = deliveryList;
     }
-    
+
+    public void setTimeSleep(int timeSleep) {
+        this.timeSleep = timeSleep;
+    }
+
+    public void setTimeDefecateEat(Pair<Integer, Integer> timeDefecateEat) {
+        this.timeDefecateEat = timeDefecateEat;
+    }
+
     //Method
     public void changeSatiety(int x) {
         int i = satiety + x;
@@ -277,7 +298,7 @@ public class Sim {
                 System.out.println("Duration must be multiple of 120 seconds");
             }
             else {
-                World.gameTimer.startTimer(duration);
+                World.gameTimer.startTimer(duration);                
                 int satietyDecrease = (-10)*(duration/30);
                 int moodDecrease = (-10)*(duration/30);
                 changeSatiety(satietyDecrease);
@@ -307,8 +328,7 @@ public class Sim {
             System.out.println("Duration must be multiple of 20 seconds");
         }
         else {
-            setStatus("Working Out");
-            World.gameTimer.startTimer(duration);
+            World.gameTimer.startTimer(duration);           
             int satietyDecrease = (-5)*(duration/20);
             int moodIncrease = 10*(duration/20);
             int healthIncrease = 5*(duration/20);
@@ -322,19 +342,14 @@ public class Sim {
     public void sleep(int duration) {
         if (this.currentObject() != null) {
             if (this.currentObject().getName().equals("King Bed") || this.currentObject().getName().equals("Single Bed") || this.currentObject().getName().equals("Single Bed")) {
-
-                    if (validationDuration(duration, 240) == false){
-                        System.out.println("Duration must be multiple of 4 minutes");
+                    if (duration < 240){
+                        System.out.println("The minimum duration of sleep is 240 seconds");                        
                     }
                     else {
+                        int x = duration/240;
+                        changeMood(30*x);
+                        changeHealth(20*x);                       
                         World.gameTimer.startTimer(duration);
-                        int satietyDecrease = (-5)*(duration/240);
-                        int moodIncrease = 10*(duration/240);
-                        int healthIncrease = 5*(duration/240);
-
-                        changeSatiety(satietyDecrease);
-                        changeMood(moodIncrease);
-                        changeHealth(healthIncrease);
                     }
                 }
             else {
@@ -358,6 +373,9 @@ public class Sim {
                     CookedFood food1 = (CookedFood) food;
                    if (this.cookedFoodInventory.getInventory().containsKey(food1)){
                         World.gameTimer.startTimer(30);
+                        if (timeDefecateEat.getFirst() > timeDefecateEat.getSecond()){
+                            setTimeDefecateEat(new Pair<Integer, Integer>(timeDefecateEat.getFirst(), GameTimer.gameTime));
+                        }
                         changeSatiety(food1.getSatietyPoint());
                         this.cookedFoodInventory.getInventory().remove(food1);
                     }
@@ -368,8 +386,10 @@ public class Sim {
                 else if(food instanceof Ingredient){
                     Ingredient food1 = (Ingredient) food;
                     if (this.ingredientsInventory.getInventory().containsKey(food1)){
-                        setStatus("Eating");
                         World.gameTimer.startTimer(30);
+                        if (timeDefecateEat.getFirst() > timeDefecateEat.getSecond()){
+                            setTimeDefecateEat(new Pair<Integer, Integer>(timeDefecateEat.getFirst(), GameTimer.gameTime));
+                        }
                         changeSatiety(food1.getSatietyPoint());
                         this.ingredientsInventory.getInventory().remove(food1);
                     }
@@ -462,10 +482,10 @@ public class Sim {
                     System.out.println("Duration must be multiple of 10 seconds");
                 }
                 else {
+                    setTimeDefecateEat(new Pair<Integer,Integer>(GameTimer.gameTime, getTimeDefecateEat().getSecond()));
                     World.gameTimer.startTimer(duration);
                     int satietyDecrease = -20;
                     int moodIncrease = 10;
-
                     changeSatiety(satietyDecrease);
                     changeMood(moodIncrease);
                 }
