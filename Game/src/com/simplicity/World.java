@@ -116,7 +116,65 @@ public class World implements SimplicityPrintable {
         }
     }
 
+    public void updateSleep(int duration){
+        //mengecek waktu saat ini - waktu terakhir sim tidur >= 600
+        for (Sim sim : map.values()){
+            int x = sim.getTimeSleep();
+            if (GameTimer.gameTime - x >= 600){
+                sim.notSleep();
+            }
+        }
 
+        //Sistem reset waktu terakhir tidur
+        //Jika terjadi pergantian hari dan waktu terakhir tidur adalah hari sebelumnya
+        //Maka waktu terakhir tidur direset menjadi detik 0 di hari berikutnya
+        if (World.gameTimer.getDay() != ((GameTimer.gameTime - duration)/720 + 1)){
+            int x = World.gameTimer.getDay() - 1;
+            for (Sim sim : map.values()){
+                sim.setTimeSleep(x*720);
+            }
+        }
+    }
+
+
+    public void updateDefecate(int duration){
+        for (Sim sim : map.values()){
+            int x = sim.getTimeDefecateEat().getFirst();
+            int y = sim.getTimeDefecateEat().getSecond();
+            if (x < y && (GameTimer.gameTime - y > 240)){
+                sim.notDefecate();
+                sim.setTimeDefecateEat(new Pair<Integer, Integer>(x, GameTimer.gameTime));
+            }
+        }
+
+        //Reset saat pergantian hari
+        if (World.gameTimer.getDay() != ((GameTimer.gameTime - duration)/720 + 1)){
+            int x = World.gameTimer.getDay() - 1;
+            for (Sim sim : map.values()){
+                sim.setTimeDefecateEat(new Pair<Integer, Integer>(x*720, x*720));
+            }
+        }
+    }
+
+    //Mengecek apakah ada sim yang mati
+    //Jika ada kembalikan seluruh sim yang saat ini di rumahnya ke tempat aslinya
+    public void updateDead(){
+        for (Sim sim : map.values()){
+            if(sim.getStatus().equals("Die")){
+                for (Room rooms :  sim.getHouse().getRoomList().values()){
+                    for (Sim sim2 : rooms.getSimList()){
+                        if (!sim2.getName().equals(sim.getName())){
+                            sim2.setCurrentHouse(sim2.getHouse());
+                            sim2.setCurrentRoom(sim2.getHouse().getRoomList().get(new Point(0, 0)));
+                            sim2.setCurrentPosition(new Point(0, 0));
+                        }
+                    }
+                }   
+            }
+
+            //Sim dihapus dari world -- belum diimplementasikan
+        }
+    }
 
     @Override
     public WorldPanel getPanel() {
