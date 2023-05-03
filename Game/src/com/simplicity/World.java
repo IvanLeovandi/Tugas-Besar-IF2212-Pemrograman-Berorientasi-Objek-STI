@@ -173,7 +173,7 @@ public class World implements SimplicityPrintable {
             }
 
             Point location = sim.getHouse().getLocation();
-            removeSim(location);
+            map.remove(location, sim);
         }
     }
 
