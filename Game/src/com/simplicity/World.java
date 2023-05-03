@@ -172,7 +172,8 @@ public class World implements SimplicityPrintable {
                 }   
             }
 
-            //Sim dihapus dari world -- belum diimplementasikan
+            Point location = sim.getHouse().getLocation();
+            removeSim(location);
         }
     }
 
