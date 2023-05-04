@@ -1,18 +1,19 @@
 package com.simplicity.UI;
 
-import java.awt.*;
-import java.awt.event.*;
 import javax.swing.*;
 
-import com.simplicity.Interfaces.GameListener;
-import com.simplicity.Layouts.GamePanel;
+import com.simplicity.CurrentEventHandler;
 
 public class SimplicityFrame extends JFrame {
     private JPanel currentPanel;
+
     public SimplicityFrame(JPanel firstPanel) {
         currentPanel = firstPanel;
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(1280, 720);
+        this.addKeyListener(CurrentEventHandler.getInstance());
+        this.setFocusable(true);
+        this.setResizable(false);
 
         this.add(currentPanel);
     }
@@ -22,5 +23,6 @@ public class SimplicityFrame extends JFrame {
         currentPanel = newPanel;
         this.add(currentPanel);
         this.revalidate();
+        this.repaint();
     }
 }

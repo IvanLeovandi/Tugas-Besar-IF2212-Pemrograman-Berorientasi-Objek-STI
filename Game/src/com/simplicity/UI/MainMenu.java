@@ -2,11 +2,12 @@ package com.simplicity.UI;
 
 import java.awt.*;
 import java.awt.event.*;
+
 import javax.swing.*;
 
 import com.simplicity.GUI.RoundedButton;
-import com.simplicity.Interfaces.GameListener;
-import com.simplicity.Layouts.GamePanel;
+import com.simplicity.Interfaces.Listeners.GameListener;
+import com.simplicity.Util.ImageLoader;
 
 import java.io.File;
 import java.util.*;
@@ -37,7 +38,7 @@ public class MainMenu extends JPanel {
     }
 
     private class MainPanel extends JPanel implements ActionListener {
-        private ImageIcon simplicityIcon = new ImageIcon(new ImageIcon("Tugas-Besar-IF2212-Pemrograman-Berorientasi-Objek-STI/Game/src/com/simplicity/Images/sims_diamond.png").getImage().getScaledInstance(30, 60, Image.SCALE_SMOOTH));
+        private ImageIcon simplicityIcon = new ImageIcon(ImageLoader.loadImage("res/Icons/sims_diamond.png").getScaledInstance(30, 60, Image.SCALE_SMOOTH));
         private JPanel buttonPanel = new JPanel(new GridLayout(0, 1, 0, 20));
         private JPanel titlePanel = new JPanel();
         private JLabel titleLabel = new JLabel("SIMPLICITY");
@@ -49,15 +50,16 @@ public class MainMenu extends JPanel {
 
         public MainPanel() {
             this.setLayout(new BorderLayout(10, 10));
-            this.setBackground(Color.BLUE);
+            this.setBackground(new Color(0xa6e329));
 
             titlePanel.setOpaque(false);
             buttonPanel.setOpaque(false);
 
             titleLabel.setIcon(simplicityIcon);
-            titleLabel.setHorizontalTextPosition(JLabel.CENTER);
+            titleLabel.setHorizontalTextPosition(JLabel.RIGHT);
             titleLabel.setVerticalTextPosition(JLabel.TOP);
             titleLabel.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 50));
+            titleLabel.setForeground(Color.WHITE);
 
             playButton.setBackground(buttonBackgroundColor);
             playButton.setFocusable(false);
@@ -113,7 +115,7 @@ public class MainMenu extends JPanel {
                 fileChooser.setCurrentDirectory(new File("."));
 
                 int response = fileChooser.showOpenDialog(null);
-                if(response == JFileChooser.APPROVE_OPTION){
+                if (response == JFileChooser.APPROVE_OPTION) {
                     File file = new File(fileChooser.getSelectedFile().getAbsolutePath());
                     System.out.println(file);
                 }
@@ -128,8 +130,6 @@ public class MainMenu extends JPanel {
     private class HelpPanel extends JPanel implements ActionListener {
         private int currentPage = 1;
         private java.util.List<JPanel> pages = new ArrayList<>();
-
-        private JPanel prevPanel;
 
         private JLabel pageNumLabel;
         private JButton prevButton = new JButton("prev");
@@ -152,24 +152,68 @@ public class MainMenu extends JPanel {
             this.add(headerPanel, BorderLayout.NORTH);
 
             JPanel help1 = new JPanel();
-            JLabel help1Label = new JLabel("ini help 1");
+            help1.setAlignmentX(CENTER_ALIGNMENT);
+            JLabel help1Label = new JLabel(
+                    "<html>" +
+                            "<p>Pada saat pertama kali memulai permainan akan ditampilkan start screen. Pada start screen ini, pemain akan diberikan 4 opsi, yaitu 'Start Game', 'Load', 'Help', dan 'Quit'.<br/>"
+                            +
+                            "Berikut adalah penjelasan untuk setiap opsi yang ada : </p>" +
+                            "<ul><li> Start Game : Pemain akan memulai game dengan world    baru. World hanya memiliki 1 Sims dan 1 Rumah. Sims akan memiliki Inventory yang berisi 'Single Bed', 'Toilet', 'Stove', 'Table and Chair', dan 'Clock'. </li>"
+                            +
+                            "<li>Load : Pemain akan diminta untuk memilih save file yang sudah pernah dibuat. Dunia simplicity akan terbentuk sesuai dengan save file yang sudah dibuat.</li>"
+                            +
+                            "<li>Help  : Pemain akan diberikan tampilan User Manual untuk membantu mengerti cara memainkan Simplicity.</li>"
+                            +
+                            "<li> Quit : Pemain akan keluar dari permainan Simplicity </li></ul></html>.");
+
             help1.add(help1Label);
             pages.add(help1);
 
             JPanel help2 = new JPanel();
-            JLabel help2Label = new JLabel("ini help 2");
+            help2.setAlignmentX(CENTER_ALIGNMENT);
+            JLabel help2Label = new JLabel(
+                    "<html>Waktu dalam Simplicity sedikit berbeda dengan dunia asli. Sehari dalam Simplicity berlangsung selama 12 menit dan waktu hanya berjalan ketika melakukan suatu aksi. Aksi-aksi dalam  dapat dibedakan menjadi : "
+                            +
+                            "<ul><li>Aksi aktif, yaitu aksi yang membutuhkan waktu, tidak bisa ditinggal, dan mempengaruhi kondisi SIM. Contohnya :</li>"
+                            +
+                            "<ul><li>Makan (+x Kekenyangan / 1 siklus makan (30 detik) (x bergantung pada jenis makanan))</li>"
+                            +
+                            "<li> Masak (+10 mood per makanan yang dimasak)</li>" +
+                            "<li> Buang Air (-20 kekenyangan dan + 10 mood / 1 siklus (10 detik))</li></ul>" +
+                            "<li>Aksi  upgrade, yaitu aksi yang membutuhkan waktu, tetapi bisa ditinggal untuk melakukan aksi lain. Contohnya :</li>"
+                            +
+                            "<ul><li> Upgrade rumah</li>" +
+                            "<li>Beli barang</li></ul>" +
+                            "<li>Aksi pasif, yaitu aksi yang dapat dilakukan tanpa menggunakan waktu. Contohnya :</li>"
+                            +
+                            "<ul><li>Pindah ruangan</li>" +
+                            "<li>Memasang baran</li>" +
+                            "<li>Melihat jam </li></ul>" +
+                            "<li>Aksi menambah Sim, yaitu aksi yang dapat digunakan satu hari sekali untuk melahirkan Sims baru</li></ul>"
+                            +
+                            "<br/>Terdapat juga beberapa aturan dalam Simplicity, yaitu :" +
+                            "<ul><li>Sims dapat mengganti pekerjaan jika sudah bekerja 12 menit dan membayar setengah dari gaji baru</li>"
+                            +
+                            "<li>Mood dan kesehatan Sims akan menurun jika tidak tidur minimum 3 menit dalam sehari</li>"
+                            +
+                            "<li>Mood dan kesehatan Sims akan menurun jika tidak buang air 4 menit dari selesai makan</li></ul></html>");
             help2.add(help2Label);
             pages.add(help2);
 
             JPanel help3 = new JPanel();
-            JLabel help3Label = new JLabel("ini help 3");
+            help3.setAlignmentX(CENTER_ALIGNMENT);
+            JLabel help3Label = new JLabel(
+                    "<html>Game Simplicity tidak memiliki tujuan akhir yang menjadi tanda selesainya game. Akan tetapi, game Simplicity dapat selesai dengan 2 cara, yaitu :"
+                            +
+                            "<ul><li>Semua Sims di dunia Simplicity sudah meninggal sehingga tidak ada karakter yang dapat dimainkan.</li>"
+                            +
+                            "<li>Keluar game Simplicity dengan melakukan Save untuk menyimpan progress yang sudah tercapai dan  game dapat dilanjutkan di waktu berikutnya.</html></li></ul>");
             help3.add(help3Label);
             pages.add(help3);
 
             contentPanel.setPreferredSize(new Dimension(800, 700));
             contentPanel.add(pages.get(0));
             this.add(contentPanel, BorderLayout.CENTER);
-
 
             prevButton.setEnabled(false);
             if (pages.size() == 1) {

@@ -6,6 +6,7 @@ public class Job {
     private String jobName;
     private int salary;
     private int durationOfWork;
+    private int durationNotPaid;
 
     private static HashMap <String, Integer> jobList = new HashMap<String, Integer>(){{ 
         put("Badut Sulap", 15); 
@@ -52,12 +53,20 @@ public class Job {
         return durationOfWork;
     }
 
+    public int getDurationNotPaid() {
+        return durationNotPaid;
+    }
+
     public HashMap <String, Integer> getJobList() {
         return jobList;
     }
 
     public void setDurationOfWork(int durationOfWork) {
         this.durationOfWork = durationOfWork;
+    }
+
+    public void setDurationNotPaid(int durationNotPaid) {
+        this.durationNotPaid = durationNotPaid;
     }
 }
 
