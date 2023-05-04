@@ -104,7 +104,6 @@ public class World implements SimplicityPrintable {
             if (!sim.getDeliveryList().isEmpty()){
                 int size = sim.getDeliveryList().size();
                 for (int i = 0; i < size; i++){
-                    //menyimpan seluruh index yang akan dihapus
                     int x = sim.getDeliveryList().get(i).getThird() - duration;
                     if (x <= 0){
                         sim.getDeliveryList().get(i).setThird(0);
