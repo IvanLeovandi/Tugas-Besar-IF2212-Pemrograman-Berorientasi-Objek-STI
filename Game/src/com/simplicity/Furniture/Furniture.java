@@ -13,14 +13,16 @@ public class Furniture extends GameObject implements Purchasable{
     private final static String type = "Furniture";
     
     public enum MyFurniture {
-        SINGLEBED("SINGLE BED", new Dimension2D(1,4), 50, 1), 
-        QUEENBED("QUEEN BED", new Dimension2D(2,4), 100, 2), 
-        KINGBED("KING BED", new Dimension2D(2,5), 150, 3), 
-        TOILET("TOILET", new Dimension2D(1,1), 50, 4), 
-        GASSTOVE("GAS STOVE", new Dimension2D(1,2), 100, 5), 
-        ELECTRICSTOVE("ELECTRIC STOVE", new Dimension2D(1,1), 200, 6), 
-        TABLEANDCHAIR("TABLE AND CHAIR", new Dimension2D(3,3), 50, 7), 
-        CLOCK("CLOCK", new Dimension2D(1,1), 10, 8);
+        SINGLEBED("Single Bed", new Dimension2D(1,4), 50, 1), 
+        QUEENBED("Queen Bed", new Dimension2D(2,4), 100, 2), 
+        KINGBED("King Bed", new Dimension2D(2,5), 150, 3), 
+        TOILET("Toilet", new Dimension2D(1,1), 50, 4), 
+        GASSTOVE("Gas Stove", new Dimension2D(1,2), 100, 5), 
+        ELECTRICSTOVE("Electric Stove", new Dimension2D(1,1), 200, 6), 
+        TABLEANDCHAIR("Table And Chair", new Dimension2D(3,3), 50, 7), 
+        CLOCK("Clock", new Dimension2D(1,1), 10, 8),
+        TV("TV", new Dimension2D(2,1), 100, 9),
+        SHOWER("Shower", new Dimension2D(1,1), 50, 10);
         
         private final String type = "Furniture";
         private final String name;
@@ -81,6 +83,12 @@ public class Furniture extends GameObject implements Purchasable{
                 break;
             case "CLOCK":
                 this.myFurniture = MyFurniture.CLOCK;
+                break;
+            case "TV":
+                this.myFurniture = MyFurniture.TV;
+                break;
+            case "Shower":
+                this.myFurniture = MyFurniture.SHOWER;
                 break;
             default:
                 System.out.println("No Match");

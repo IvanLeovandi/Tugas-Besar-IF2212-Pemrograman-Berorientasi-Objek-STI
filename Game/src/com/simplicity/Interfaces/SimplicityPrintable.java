@@ -1,8 +1,8 @@
 package com.simplicity.Interfaces;
 
-import javax.swing.JPanel;
+import com.simplicity.Components.SimplicityPanel;
 
 public interface SimplicityPrintable {
-    public JPanel getPanel();
+    public SimplicityPanel getPanel();
     public void clearPanel();
 }

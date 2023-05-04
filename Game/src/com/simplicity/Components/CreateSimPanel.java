@@ -1,27 +1,34 @@
-package com.simplicity.Layouts;
+package com.simplicity.Components;
 
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
-import com.simplicity.TestFrame;
+import com.simplicity.SimplicityManager;
+import com.simplicity.Events.SimCreateEvent;
+import com.simplicity.Exceptions.InvalidSimName;
 
-public class CreateSimPanel extends JPanel {
+public class CreateSimPanel extends SimplicityPanel {
     JLabel titleMessage = new JLabel("Input your sim name");
     JTextField input = new JTextField();
-    JButton doneButton = new JButton("Done!");
-    JLabel warningMessage = new JLabel("Invalid name!");
+    JButton doneButton = new JButton("Submit!");
+    JLabel warningMessage = new JLabel("Invalid name! Name only contains of words only");
     Color invisColor = new Color(0x00000000, true);
+    SimplicityManager manager;
 
-    public CreateSimPanel() {
+    public CreateSimPanel(SimplicityManager manager) {
+        super();
+        this.manager = manager;
         this.setLayout(new GridBagLayout());
         GridBagConstraints gbc = new GridBagConstraints();
         doneButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if (input.getText().matches(".*[^a-zA-Z].*")) {
-                    onInvalidInput();
-                } else {
+                String name = input.getText();
+                try {
+                    manager.onCreateSim(new SimCreateEvent(this, name));
                     onValidInput();
+                } catch (InvalidSimName e1) {
+                    onInvalidInput(e1.getMessage());
                 }
             }
         });
@@ -47,7 +54,7 @@ public class CreateSimPanel extends JPanel {
         gbc.gridy = 3;
         gbc.weighty = 1;
         warningMessage.setBounds(0, 100, 500, 200);
-        warningMessage.setPreferredSize(new Dimension(200, 30));
+        warningMessage.setPreferredSize(new Dimension(500, 30));
         warningMessage.setForeground(invisColor);
         warningMessage.setHorizontalAlignment(JLabel.CENTER);
         this.add(warningMessage, gbc);
@@ -56,7 +63,6 @@ public class CreateSimPanel extends JPanel {
         gbc.weighty = 2;
         this.add(Box.createVerticalGlue(), gbc);
 
-
         gbc.gridy = 5;
         gbc.weighty = 1;
         this.add(doneButton, gbc);
@@ -64,10 +70,6 @@ public class CreateSimPanel extends JPanel {
         gbc.gridy = 6;
         gbc.weighty = 5;
         this.add(Box.createVerticalGlue(), gbc);
-    }
-
-    public static void main(String[] args) {
-        TestFrame.start(new CreateSimPanel());
     }
 
     public void showWarningMessage() {
@@ -83,7 +85,8 @@ public class CreateSimPanel extends JPanel {
         warningMessage.setForeground(invisColor);
     }
 
-    public void onInvalidInput() {
+    public void onInvalidInput(String message) {
+        warningMessage.setText(message);
         warningMessage.setForeground(Color.RED);
     }
 }

@@ -1,9 +1,6 @@
 package com.simplicity;
 
-import com.simplicity.World;
-
-
-public class GameTimer{ 
+public class GameTimer{
     private int day;
     private int second;
 
@@ -41,7 +38,7 @@ public class GameTimer{
         }
         setDay();
         setSecond();
-    }    
+    }
     public static void main(String[] args) {
         GameTimer game = new GameTimer();
         game.startTimer(30); // durasi permainan selama 30 detik

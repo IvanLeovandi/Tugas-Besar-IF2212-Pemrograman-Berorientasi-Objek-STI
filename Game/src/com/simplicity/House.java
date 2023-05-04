@@ -1,18 +1,18 @@
 package com.simplicity;
 import java.util.*;
-import javax.swing.*;
 
+import com.simplicity.Components.HousePanel;
+import com.simplicity.Components.SimplicityPanel;
 import com.simplicity.Interfaces.SimplicityPrintable;
-import com.simplicity.Layouts.HousePanel;
 
 public class House implements SimplicityPrintable {
     private Point location; //Lokasi di World
     private int numberofRoom; //Jumlah ruangan di rumah
     private Map<Point,Room> roomList; //List ruangan di rumah
-    private JPanel panel;
+    private SimplicityPanel panel;
     private Sim houseOwner;
     private UpgradeState<Point, String, String> upgradeState;
-    
+
     //Konstruktor
     public House(Point location,Sim sim)
     {
@@ -254,7 +254,7 @@ public class House implements SimplicityPrintable {
     }
 
     @Override
-    public JPanel getPanel() {
+    public SimplicityPanel getPanel() {
         if (panel == null) {
             panel = new HousePanel();
         }
