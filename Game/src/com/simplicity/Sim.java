@@ -349,6 +349,7 @@ public class Sim {
                         changeMood(30*x);
                         changeHealth(20*x);
                         World.gameTimer.startTimer(duration);
+                        setTimeSleep(GameTimer.gameTime);
                     }
                 }
             else {
@@ -376,7 +377,7 @@ public class Sim {
                             setTimeDefecateEat(new Pair<Integer, Integer>(timeDefecateEat.getFirst(), GameTimer.gameTime));
                         }
                         changeSatiety(food1.getSatietyPoint());
-                        this.cookedFoodInventory.getInventory().remove(food1);
+                        this.cookedFoodInventory.removeItem(food1);
                     }
                     else{
                         System.out.println("You don't have this food");
@@ -390,7 +391,7 @@ public class Sim {
                             setTimeDefecateEat(new Pair<Integer, Integer>(timeDefecateEat.getFirst(), GameTimer.gameTime));
                         }
                         changeSatiety(food1.getSatietyPoint());
-                        this.ingredientsInventory.getInventory().remove(food1);
+                        this.ingredientsInventory.removeItem(food1);
                     }
                     else{
                         System.out.println("You don't have this food");
@@ -412,7 +413,7 @@ public class Sim {
 
     public void cook(CookedFood cookedFood) {
         if (currentObject() != null) {
-            if (currentObject().getName().equals("Stove")){
+            if (currentObject().getName().equals("Gas Stove") || currentObject().getName().equals("Electric Stove")){
                 List<Ingredient> ingredients = cookedFood.getIngredients();
                 Boolean flag = true;
                 for (Ingredient ingredient : ingredients) {
@@ -465,8 +466,8 @@ public class Sim {
         World.gameTimer.startTimer(duration);
 
         //Efek berkunjung
-        int moodIncrease = 10*(int)distance/30;
-        int satietyDecrease = -10*(int)distance/30;
+        int moodIncrease = 10*duration/30;
+        int satietyDecrease = -10*duration/30;
 
         this.currentHouse = house2;
 
@@ -474,20 +475,13 @@ public class Sim {
         changeSatiety(satietyDecrease);
     }
 
-    public void defecate(int duration) {
+    public void defecate() {
         if (currentObject() != null) {
             if (currentObject().getName().equals("Toilet")) {
-                if (validationDuration(duration, 10) == false){
-                    System.out.println("Duration must be multiple of 10 seconds");
-                }
-                else {
-                    setTimeDefecateEat(new Pair<Integer,Integer>(GameTimer.gameTime, getTimeDefecateEat().getSecond()));
-                    World.gameTimer.startTimer(duration);
-                    int satietyDecrease = -20;
-                    int moodIncrease = 10;
-                    changeSatiety(satietyDecrease);
-                    changeMood(moodIncrease);
-                }
+                setTimeDefecateEat(new Pair<Integer,Integer>(GameTimer.gameTime, getTimeDefecateEat().getSecond()));
+                World.gameTimer.startTimer(10);
+                changeSatiety(-20);
+                changeMood(10);
             }
             else {
                 System.out.println("You can't defecate here");
@@ -625,9 +619,10 @@ public class Sim {
 
 
     }
+
     public void moveToObject(Furniture furniture, int furnitureX) {
-        if (currentRoom.getfurnitureList().contains(furniture) == false){
-            System.out.println("You can't move to the object");
+        if (!currentRoom.getfurnitureList().contains(furniture)){
+            System.out.println("You can't move to the object because the object is not in the room");
         }
         else{
             Point furniturePosition = currentRoom.getFurnitureLocation(furniture, furnitureX);
@@ -648,9 +643,15 @@ public class Sim {
     }
 
     //Another Action Note : Masih disesuain sama keinginan kelompok
-    public void nubes(){
-        changeMood(-50);
-        changeHealth(-50);
+    public void nubes(int duration){
+        if(duration<20){
+            System.out.println("You have to nubes for at least 20 seconds");
+        }
+        else{
+            World.gameTimer.startTimer(duration);
+            changeMood(-10*(duration/20));
+            changeHealth(-5 *(duration/20));
+        }
     }
 
     public void sayHello(){
@@ -659,26 +660,52 @@ public class Sim {
     }
 
     public void listenMusic(int duration){
+        World.gameTimer.startTimer(duration);
         changeMood(duration/10);
     }
 
     public void watchTV(int duration){
-        changeMood(duration/10);
+        if(currentObject().getName().equals("TV")){
+            World.gameTimer.startTimer(duration);
+            changeMood(5*(duration/10));
+        }
+        else{
+            System.out.println("You can't watch TV because you are not in front of the TV");
+        }
     }
 
     public void bath(int duration){
-        changeMood(duration/10);
-        changeHealth(duration/10);
+        if(currentObject().getName().equals("Shower")){
+            World.gameTimer.startTimer(duration);
+            changeMood(5*(duration/10));
+            changeHealth(5*(duration/10));
+        }
+        else{
+            System.out.println("You can't bath because you are not in front of the shower");
+        }
     }
 
-    public void meetup(int duration){
-        changeMood(duration/10);
-        balance -= duration/10;
+    public void meetup(int duration, Sim sim2){
+        if (this.currentHouse != sim2.currentHouse){
+            System.out.println("You can't meet up with the sim because the sim is not in the same house");
+        }
+        else{
+            if (this.currentRoom != sim2.currentRoom){
+                System.out.println("You can't meet up with the sim because the sim is not in the same room");
+            }
+            else{
+                World.gameTimer.startTimer(duration);
+                changeMood(5*(duration/10));
+                changeHealth(5*(duration/10));
+                sim2.changeMood(5*(duration/10));
+                sim2.changeHealth(5*(duration/10));
+            }
+        }
     }
 
-    public void missyou(int duration){
-        changeMood(-duration/10);
-        changeHealth(-duration/10);
+    public void missyou(){
+        changeMood(-10);
+        changeHealth(-5);
     }
     //------------
     private void die(){
