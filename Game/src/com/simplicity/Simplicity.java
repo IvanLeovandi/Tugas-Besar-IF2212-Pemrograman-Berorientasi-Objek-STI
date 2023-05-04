@@ -173,35 +173,12 @@ public class Simplicity {
                                 currentSim.upgradeHouse(currentSim.getCurrentRoom().getLocationInHouse() , input, name);
                             }
                             else {
-                                System.out.println("Here are the available positions for the new room: ");
-                                if (currentSim.getCurrentRoom().getTop() != null)
-                                {
-                                    System.out.println("TOP");
-                                }
-                                if (currentSim.getCurrentRoom().getBottom() != null)
-                                {
-                                    System.out.println("BOTTOM");
-                                }
-                                if (currentSim.getCurrentRoom().getRight() != null)
-                                {
-                                    System.out.println("RIGHT");
-                                }
-                                if (currentSim.getCurrentRoom().getLeft() != null)
-                                {
-                                    System.out.println("LEFT");
-                                }
+                                currentSim.getCurrentRoom().printUpgradeable();
                                 System.out.println("Please choose the position for the new room!");
                                 input = scan.nextLine();
-                                while (currentSim.getCurrentHouse().checkUpgradeable(currentSim.getCurrentRoom(), input))
+                                while (!(input.equals("BOTTOM")) || !(input.equals("TOP")) || !(input.equals("RIGHT")) || !(input.equals("LEFT")))
                                 {
-                                    if (input.equals("BOTTOM") || input.equals("TOP") || input.equals("RIGHT") || input.equals("LEFT"))
-                                    {
-                                        System.out.println("That is not a valid direction!");
-                                    }
-                                    else
-                                    {
-                                        System.out.println("The current room is already upgraded in that direction!\nPlease chose another direction");
-                                    }
+                                    System.out.println("That is not a valid direction!");
                                     input = scan.nextLine();
                                 }
 
