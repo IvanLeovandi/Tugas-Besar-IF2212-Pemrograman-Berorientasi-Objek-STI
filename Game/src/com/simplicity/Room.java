@@ -354,6 +354,20 @@ public class Room{
                 }
             }
         }
+        else
+        {
+            System.out.println("There is no item there!");
+        }
+    }
+
+    public void moveFurniture(Point startPoint, Point newPoint, int rotation) throws OverlapingRoomObjectException
+    {
+        Furniture furniture= checkPoint(startPoint);
+        if (checkFilled(newPoint, rotation, furniture))
+        {
+            removeFurniture(startPoint);
+            placeFurniture(newPoint, rotation, furniture);
+        }
     }
 
     //Mengecek apakah direction yang dimasukkan valid atau tidak
