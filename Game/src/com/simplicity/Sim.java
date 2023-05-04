@@ -4,8 +4,14 @@ import java.util.*;
 
 import com.simplicity.Exceptions.OverlapingRoomObjectException;
 import com.simplicity.Foods.CookedFood.CookedFood;
-import com.simplicity.Foods.Ingredients.Ingredient;
+
+import com.simplicity.Foods.Ingredients.*;
+import com.simplicity.Furniture.Clock;
 import com.simplicity.Furniture.Furniture;
+import com.simplicity.Furniture.GasStove;
+import com.simplicity.Furniture.SingleBed;
+import com.simplicity.Furniture.TableAndChair;
+import com.simplicity.Furniture.Toilet;
 import com.simplicity.Interfaces.*;
 
 public class Sim {
@@ -36,8 +42,13 @@ public class Sim {
     public Sim(String name, Point location) {
         setName(name);
         this.job = new Job();
-        this.balance = 100;
+        this.balance = 2000;
         this.furnitureInventory = new Inventory<Furniture>();
+        furnitureInventory.addItem(new SingleBed(),1);
+        furnitureInventory.addItem(new Toilet(),1);
+        furnitureInventory.addItem(new GasStove(),1);
+        furnitureInventory.addItem(new TableAndChair(),1);
+        furnitureInventory.addItem(new Clock(),1);
         this.ingredientsInventory = new Inventory<Ingredient>();
         this.cookedFoodInventory = new Inventory<CookedFood>();
         this.satiety = 80;
@@ -567,7 +578,11 @@ public class Sim {
             System.out.println("You don't have the furniture");
         }
         else {
-            currentRoom.placeFurniture(placement, rotation, furniture);
+            try {
+                currentRoom.placeFurniture(placement, rotation, furniture);
+            } catch (OverlapingRoomObjectException e) {
+                e.printStackTrace();
+            }
         }
 
         //Menghapus furniture dari inventory
@@ -586,7 +601,7 @@ public class Sim {
 
         for (Furniture item : furnitureInventory.getInventory().keySet()) {
             int quantity = furnitureInventory.getInventory().get(item);
-            String row = String.format("| %-20s | %-10d |", item.toString(), quantity);
+            String row = String.format("| %-20s | %-10d |", item.getName(), quantity);
             System.out.println(row);
         }
         System.out.println(line);
@@ -599,7 +614,7 @@ public class Sim {
 
         for (CookedFood item : cookedFoodInventory.getInventory().keySet()) {
             int quantity = cookedFoodInventory.getInventory().get(item);
-            String row = String.format("| %-20s | %-10d |", item.toString(), quantity);
+            String row = String.format("| %-20s | %-10d |", item.getName(), quantity);
             System.out.println(row);
         }
         System.out.println(line);
@@ -612,7 +627,7 @@ public class Sim {
 
         for (Ingredient item : ingredientsInventory.getInventory().keySet()) {
             int quantity = ingredientsInventory.getInventory().get(item);
-            String row = String.format("| %-20s | %-10d |", item.toString(), quantity);
+            String row = String.format("| %-20s | %-10d |", item.getName(), quantity);
             System.out.println(row);
         }
         System.out.println(line);

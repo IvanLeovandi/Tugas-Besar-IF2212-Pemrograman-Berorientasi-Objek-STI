@@ -1,5 +1,7 @@
 package com.simplicity.Furniture;
 
+import java.util.Objects;
+
 import com.simplicity.Dimension2D;
 import com.simplicity.GameObject;
 import com.simplicity.Interfaces.Purchasable;
@@ -58,28 +60,28 @@ public class Furniture extends GameObject implements Purchasable{
     public Furniture(String name) {
         super(type);
         switch (name) {
-            case "Single Bed":
+            case "SINGLE BED":
                 this.myFurniture = MyFurniture.SINGLEBED;
                 break;
-            case "Queen Bed":
+            case "QUEEN BED":
                 this.myFurniture = MyFurniture.QUEENBED;
                 break;
-            case "King Bed":
+            case "KING BED":
                 this.myFurniture = MyFurniture.KINGBED;
                 break;
-            case "Toilet":
+            case "TOILET":
                 this.myFurniture = MyFurniture.TOILET;
                 break;
-            case "Gas Stove":
+            case "GAS STOVE":
                 this.myFurniture = MyFurniture.GASSTOVE;
                 break;
-            case "Electric Stove":
+            case "ELECTRIC STOVE":
                 this.myFurniture = MyFurniture.ELECTRICSTOVE;
                 break;
-            case "Table And Chair":
+            case "TABLE AND CHAIR":
                 this.myFurniture = MyFurniture.TABLEANDCHAIR;
                 break;
-            case "Clock":
+            case "CLOCK":
                 this.myFurniture = MyFurniture.CLOCK;
                 break;
             case "TV":
@@ -115,6 +117,22 @@ public class Furniture extends GameObject implements Purchasable{
 
     public int getId(){
         return myFurniture.getId();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || !getClass().isAssignableFrom(o.getClass())) {
+            return false;
+        }
+        return getName() == ((Furniture)o).getName();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 
 }
