@@ -1,28 +1,27 @@
 package com.simplicity;
 
 import java.awt.*;
-import java.awt.event.*;
 import java.util.Random;
 
 import javax.swing.*;
 
-import com.simplicity.House;
-import com.simplicity.Point;
-import com.simplicity.World;
+import com.simplicity.Components.GamePanel;
 import com.simplicity.Events.SimCreateEvent;
 import com.simplicity.Exceptions.InvalidSimName;
+import com.simplicity.Exceptions.OverlapingHouseException;
 import com.simplicity.Interfaces.Listeners.GameListener;
 import com.simplicity.Interfaces.Listeners.SimCreateListener;
-import com.simplicity.Layouts.GamePanel;
 import com.simplicity.UI.SimplicityFrame;
 
 public class SimplicityManager implements GameListener, SimCreateListener {
-    SimplicityFrame frame;
-    JPanel mainMenuPanel;
-    GamePanel gamePanel;
-    World world;
-    JPanel loadingPanel = new JPanel();
-    JLabel loadingTitle = new JLabel("LOADING...");
+    private SimplicityFrame frame;
+    private JPanel mainMenuPanel;
+    private GamePanel gamePanel;
+    private World world;
+    private JPanel loadingPanel = new JPanel();
+    private JLabel loadingTitle = new JLabel("LOADING...");
+    private Sim currentSim = null;
+    private GameHandler gameHandler = new GameHandler();
 
     SimplicityManager(World world) {
         this.world = world;
@@ -83,6 +82,7 @@ public class SimplicityManager implements GameListener, SimCreateListener {
 
         SwingUtilities.invokeLater(() -> {
             frame.setCurrentPanel(gamePanel);
+            gameHandler.startHandler();
         });
     }
 
@@ -94,15 +94,24 @@ public class SimplicityManager implements GameListener, SimCreateListener {
     @Override
     public void onCreateSim(SimCreateEvent e) throws InvalidSimName {
         String name = e.getSimName();
-        Random rand = new Random();
 
         if (name.isEmpty()) {
             throw new InvalidSimName("Name can't be empty!");
         } else if (name.matches(".*[^a-zA-Z].*")) {
             throw new InvalidSimName("Name can only contain letters!");
         } else {
-            Point p = new Point(rand.nextInt(64), rand.nextInt(64));
-            world.setSim(p, new Sim(name, p));
+            Random rand = new Random();
+            java.util.List<Point> availableLands = world.getAvailableLands();
+            int x = availableLands.size();
+            Point p = availableLands.get(rand.nextInt(x));
+            Sim sim = new Sim(name, p);
+
+            try {
+                world.setSim(p, sim);
+            } catch (OverlapingHouseException e1) {
+                e1.printStackTrace();
+            }
+
             gamePanel.displayWorld();
         }
     }

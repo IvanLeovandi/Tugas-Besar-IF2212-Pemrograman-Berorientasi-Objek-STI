@@ -1,4 +1,4 @@
-package com.simplicity.Layouts;
+package com.simplicity.Components;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -10,9 +10,11 @@ public class HousePanel extends SimplicityPanel {
     private House currentHouse = null;
     private Color backgroundColor = Color.ORANGE;
     private JPanel houseLayout = new JPanel();
+    private JPanel simLayout;
     private JLayeredPane layeredPane = new JLayeredPane();
 
     public HousePanel() {
+        super();
         this.setBackground(backgroundColor);
         this.setLayout(new BorderLayout());
 
@@ -35,6 +37,14 @@ public class HousePanel extends SimplicityPanel {
         }
 
         layeredPane.add(houseLayout, Integer.valueOf(0));
+        simLayout = new SimPanel();
+
+        JPanel aan = new JPanel();
+        aan.setBackground(Color.BLUE);
+        aan.setOpaque(true);
+        aan.setBounds(100, 100, 50, 50);
+        layeredPane.add(aan, Integer.valueOf(5));
+        layeredPane.add(simLayout, Integer.valueOf(5));
         this.add(layeredPane, BorderLayout.CENTER);
 
         SwingUtilities.invokeLater(() -> {

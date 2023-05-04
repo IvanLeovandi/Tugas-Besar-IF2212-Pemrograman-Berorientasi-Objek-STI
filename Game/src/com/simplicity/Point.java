@@ -46,4 +46,9 @@ public class Point {
                 ", y= " + y +
                 "}";
     }
+
+    @Override
+    public Point clone() {
+        return new Point(getX(), getY());
+    }
 }

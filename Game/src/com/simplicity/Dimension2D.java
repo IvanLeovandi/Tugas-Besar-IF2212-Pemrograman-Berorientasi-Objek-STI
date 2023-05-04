@@ -2,22 +2,22 @@ package com.simplicity;
 
 public class Dimension2D {
     private int width;
-    private int length;
+    private int height;
 
-    public Dimension2D(int width, int length) {
-        setDimension(width, length);
+    public Dimension2D(int width, int height) {
+        setDimension(width, height);
     }
 
     public int getWidth() {
         return width;
     }
 
-    public int getLength() {
-        return length;
+    public int getHeight() {
+        return height;
     }
 
-    public void setDimension(int width, int length) {
+    public void setDimension(int width, int height) {
         this.width = width;
-        this.length = length;
+        this.height = height;
     }
 }

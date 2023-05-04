@@ -1,8 +1,5 @@
 package com.simplicity;
 
-import java.util.Random;
-
-import com.simplicity.Exceptions.InvalidSimName;
 import com.simplicity.UI.MainMenu;
 import com.simplicity.UI.SimplicityFrame;
 

@@ -1,4 +1,4 @@
-package com.simplicity.Layouts;
+package com.simplicity.Components;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -13,6 +13,7 @@ public class RoomPanel extends SimplicityPanel {
     private Color backgroundColor = Color.BLACK;
 
     public RoomPanel() {
+        super();
         this.setBackground(backgroundColor);
         this.setLayout(new BorderLayout());
 
