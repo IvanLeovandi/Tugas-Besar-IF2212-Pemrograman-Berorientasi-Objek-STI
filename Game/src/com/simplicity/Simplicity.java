@@ -6,12 +6,13 @@ import java.util.Random;
 import com.simplicity.UI.MainMenu;
 import com.simplicity.UI.SimplicityFrame;
 
-public class Simplicity {
-    public static void main(String[] args) {
-        SimplicityManager manager = new SimplicityManager(new World(64, 64));
-        manager.setMainMenuPanel(new MainMenu(manager));
-        manager.setFrame(new SimplicityFrame(manager.getMainMenuPanel()));
-        manager.startWindow();
+// public class Simplicity {
+//     public static void main(String[] args) {
+//         SimplicityManager manager = new SimplicityManager(new World(64, 64));
+//         manager.setMainMenuPanel(new MainMenu(manager));
+//         manager.setFrame(new SimplicityFrame(manager.getMainMenuPanel()));
+//         manager.startWindow();
+        
 
 // cli version
 import com.simplicity.*;
@@ -115,9 +116,9 @@ public class Simplicity {
                             }
     
                             else if(input.equals("DEFECATE")) {
-                                System.out.println("Enter defecate duration: ");
-                                duration = scan.nextInt();
-                                currentSim.defecate(duration);
+                                // System.out.println("Enter defecate duration: ");
+                                // duration = scan.nextInt();
+                                currentSim.defecate();
                             }
      
                             else if(input.equals("BUY")) {
@@ -151,7 +152,7 @@ public class Simplicity {
                         }
 
                         else if(input.equals("CURRENT LOCATION")){
-                            System.out.println("You are now in " + currentSim.getHouse().getLocation() + " house");
+                            System.out.println("You are now in " + currentSim.getHouse().getHouseOwner().getName() + "'s' house");
                             // System.out.println("You are now in " + currentSim.getCurrentRoom().getName() + " which located in " + currentSim.getCurrentRoom().getLocationInHouse());
                             // System.out.println("And you are now in " + currentSim.getCurrentPosition());
                         }
@@ -169,6 +170,49 @@ public class Simplicity {
                                 System.out.println("Please create the name of the room");	
                                 String name = scan.nextLine();
     
+                                currentSim.upgradeHouse(currentSim.getCurrentRoom().getLocationInHouse() , input, name);
+                            }
+                            else {
+                                System.out.println("Here are the available positions for the new room: ");
+                                if (currentSim.getCurrentRoom().getTop() != null)
+                                {
+                                    System.out.println("TOP");
+                                }
+                                if (currentSim.getCurrentRoom().getBottom() != null)
+                                {
+                                    System.out.println("BOTTOM");
+                                }
+                                if (currentSim.getCurrentRoom().getRight() != null)
+                                {
+                                    System.out.println("RIGHT");
+                                }
+                                if (currentSim.getCurrentRoom().getLeft() != null)
+                                {
+                                    System.out.println("LEFT");
+                                }
+                                System.out.println("Please choose the position for the new room!");
+                                input = scan.nextLine();
+                                while (currentSim.getCurrentHouse().checkUpgradeable(currentSim.getCurrentRoom(), input))
+                                {
+                                    if (input.equals("BOTTOM") || input.equals("TOP") || input.equals("RIGHT") || input.equals("LEFT"))
+                                    {
+                                        System.out.println("That is not a valid direction!");
+                                    }
+                                    else
+                                    {
+                                        System.out.println("The current room is already upgraded in that direction!\nPlease chose another direction");
+                                    }
+                                    input = scan.nextLine();
+                                }
+
+                                System.out.println("Please choose a name for the new room!");
+                                String name = scan.nextLine();
+                                while (currentSim.getCurrentHouse().checkName(name) == true)
+                                {
+                                    System.out.println("The house already has a room with that name!");
+                                    System.out.println("Please choose another name!");
+                                    name = scan.nextLine();
+                                }
                                 currentSim.upgradeHouse(currentSim.getCurrentRoom().getLocationInHouse() , input, name);
                             }
                         }
