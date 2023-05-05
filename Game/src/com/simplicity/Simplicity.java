@@ -6,12 +6,13 @@ import java.util.Random;
 import com.simplicity.UI.MainMenu;
 import com.simplicity.UI.SimplicityFrame;
 
-public class Simplicity {
-    public static void main(String[] args) {
-        SimplicityManager manager = new SimplicityManager(new World(64, 64));
-        manager.setMainMenuPanel(new MainMenu(manager));
-        manager.setFrame(new SimplicityFrame(manager.getMainMenuPanel()));
-        manager.startWindow();
+// public class Simplicity {
+//     public static void main(String[] args) {
+//         SimplicityManager manager = new SimplicityManager(new World(64, 64));
+//         manager.setMainMenuPanel(new MainMenu(manager));
+//         manager.setFrame(new SimplicityFrame(manager.getMainMenuPanel()));
+//         manager.startWindow();
+        
 
 // cli version
 import com.simplicity.*;
@@ -47,7 +48,7 @@ public class Simplicity {
             x++;
         }
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception{
         Simplicity simplicity = new Simplicity();
         Scanner scan = new Scanner(System.in);
         String input;
@@ -115,9 +116,9 @@ public class Simplicity {
                             }
     
                             else if(input.equals("DEFECATE")) {
-                                System.out.println("Enter defecate duration: ");
-                                duration = scan.nextInt();
-                                currentSim.defecate(duration);
+                                // System.out.println("Enter defecate duration: ");
+                                // duration = scan.nextInt();
+                                currentSim.defecate();
                             }
      
                             else if(input.equals("BUY")) {
@@ -151,7 +152,7 @@ public class Simplicity {
                         }
 
                         else if(input.equals("CURRENT LOCATION")){
-                            System.out.println("You are now in " + currentSim.getHouse().getLocation() + " house");
+                            System.out.println("You are now in " + currentSim.getHouse().getHouseOwner().getName() + "'s' house");
                             // System.out.println("You are now in " + currentSim.getCurrentRoom().getName() + " which located in " + currentSim.getCurrentRoom().getLocationInHouse());
                             // System.out.println("And you are now in " + currentSim.getCurrentPosition());
                         }
@@ -171,6 +172,26 @@ public class Simplicity {
     
                                 currentSim.upgradeHouse(currentSim.getCurrentRoom().getLocationInHouse() , input, name);
                             }
+                            else {
+                                currentSim.getCurrentRoom().printUpgradeable();
+                                System.out.println("Please choose the position for the new room!");
+                                input = scan.nextLine();
+                                while (!(input.equals("BOTTOM")) && !(input.equals("TOP")) && !(input.equals("RIGHT")) && !(input.equals("LEFT")))
+                                {
+                                    System.out.println("That is not a valid direction!");
+                                    input = scan.nextLine();
+                                }
+
+                                System.out.println("Please choose a name for the new room!");
+                                String name = scan.nextLine();
+                                while (currentSim.getCurrentHouse().checkName(name) == true)
+                                {
+                                    System.out.println("The house already has a room with that name!");
+                                    System.out.println("Please choose another name!");
+                                    name = scan.nextLine();
+                                }
+                                currentSim.upgradeHouse(currentSim.getCurrentRoom().getLocationInHouse() , input, name);
+                            }
                         }
                         
                         else if(input.equals("MOVE TO ROOM")) {
@@ -180,7 +201,34 @@ public class Simplicity {
                         } 
 
                         else if(input.equals("EDIT ROOM")){
-
+                            System.out.println("What do you want to do?");
+                            System.out.println("1. MOVE ITEM");
+                            System.out.println("2. PLACE ITEM");
+                            input = scan.nextLine();
+                            if (input.equals("MOVE ITEM"))
+                            {
+                                currentSim.getCurrentRoom().printRoom();
+                                System.out.println("Please chose the point you want to move");
+                                System.out.println("X: ");
+                                int x = scan.nextInt();
+                                System.out.println("Y: ");
+                                int y = scan.nextInt();
+                                if (currentSim.getCurrentRoom().checkPoint(new Point(x,y)) == null)
+                                {
+                                    System.out.println("There is no object there!");
+                                }
+                                else
+                                {
+                                    System.out.println("Please chose the new point");
+                                    System.out.println("X: ");
+                                    int x2 = scan.nextInt();
+                                    System.out.println("Y: ");
+                                    int y2 = scan.nextInt();
+                                    System.out.println("Please chose the rotation 1/2/3/4!");
+                                    int rotation = scan.nextInt();
+                                    currentSim.getCurrentRoom().moveFurniture(new Point(x,y), new Point(x2,y2), rotation);
+                                }
+                            }
                         }
 
                         else if(input.equals("ADD SIM")) {
@@ -209,7 +257,7 @@ public class Simplicity {
                         else if(input.equals("QUIT GAME")) {
                             System.out.println("Thank you for playing!!");
                             System.exit(0);
-                        }
+                        }   
 
                         else {
                             System.out.println("Wrong command, please input the right command.");

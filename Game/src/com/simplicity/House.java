@@ -251,6 +251,10 @@ public class House implements SimplicityPrintable {
                 }
             }
         }
+        else
+        {
+            System.out.println("That direction is not upgradeable!");
+        }
     }
 
     @Override

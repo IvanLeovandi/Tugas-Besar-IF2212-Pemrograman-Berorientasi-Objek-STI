@@ -128,6 +128,27 @@ public class Room{
         }
     }
 
+    public void printUpgradeable()
+    {
+        System.out.println("Here are the available positions for the new room: ");
+        if (this.getTop() != null)
+        {
+            System.out.println("TOP");
+        }
+        if (this.getBottom() != null)
+        {
+            System.out.println("BOTTOM");
+        }
+        if (this.getRight() != null)
+        {
+            System.out.println("RIGHT");
+        }
+        if (this.getLeft() != null)
+        {
+            System.out.println("LEFT");
+        }
+    }
+
     //Untuk mengecek ada furniture lain di posisi yang akan diletakkan furniture atau mengecek apakah furniture yang akan diletakkan melewati border atau tidak
     public void checkFilled(Point placement, int rotation, Furniture furniture) throws OverlapingRoomObjectException
     {
@@ -332,6 +353,20 @@ public class Room{
                     }
                 }
             }
+        }
+        else
+        {
+            System.out.println("There is no item there!");
+        }
+    }
+
+    public void moveFurniture(Point startPoint, Point newPoint, int rotation) throws OverlapingRoomObjectException
+    {
+        Furniture furniture= checkPoint(startPoint);
+        if (checkFilled(newPoint, rotation, furniture))
+        {
+            removeFurniture(startPoint);
+            placeFurniture(newPoint, rotation, furniture);
         }
     }
 
