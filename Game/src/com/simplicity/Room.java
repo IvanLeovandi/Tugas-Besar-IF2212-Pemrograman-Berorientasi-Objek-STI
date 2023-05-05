@@ -509,4 +509,11 @@ public class Room{
             System.out.println("--------------------------------------------------------------------------");
         }
     }
+
+    // mencetak list furniture di dalam ruangan
+    public void printFurnitureList(){
+        for(int i = 0 ; i < furnitureList.size(); i++){
+            System.out.println(i+1 + ". " + furnitureList.get(i));
+        }
+    }
 }

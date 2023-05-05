@@ -1,4 +1,6 @@
-package com.simplicity.Furniture;
+package com.simplicity.Furniture.Stove;
+
+import com.simplicity.Furniture.Furniture;
 
 public class GasStove extends Furniture {
     boolean isUsed;
