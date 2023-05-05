@@ -128,6 +128,27 @@ public class Room{
         }
     }
 
+    public void printUpgradeable()
+    {
+        System.out.println("Here are the available positions for the new room: ");
+        if (this.getTop() != null)
+        {
+            System.out.println("TOP");
+        }
+        if (this.getBottom() != null)
+        {
+            System.out.println("BOTTOM");
+        }
+        if (this.getRight() != null)
+        {
+            System.out.println("RIGHT");
+        }
+        if (this.getLeft() != null)
+        {
+            System.out.println("LEFT");
+        }
+    }
+
     //Untuk mengecek ada furniture lain di posisi yang akan diletakkan furniture atau mengecek apakah furniture yang akan diletakkan melewati border atau tidak
     public void checkFilled(Point placement, int rotation, Furniture furniture) throws OverlapingRoomObjectException
     {
@@ -333,6 +354,26 @@ public class Room{
                 }
             }
         }
+        else
+        {
+            System.out.println("There is no item there!");
+        }
+    }
+
+    public void moveFurniture(Point startPoint, Point newPoint, int rotation) throws OverlapingRoomObjectException
+    {
+        Furniture furniture= checkPoint(startPoint);
+        try 
+        {
+            checkFilled(newPoint, rotation, furniture);
+        }
+        catch (OverlapingRoomObjectException e)
+        {
+            System.out.println(e.getMessage());
+            return;
+        }
+        removeFurniture(startPoint);
+        placeFurniture(newPoint, rotation, furniture);
     }
 
     //Mengecek apakah direction yang dimasukkan valid atau tidak
@@ -466,6 +507,13 @@ public class Room{
             }
             System.out.println(" ");
             System.out.println("--------------------------------------------------------------------------");
+        }
+    }
+
+    // mencetak list furniture di dalam ruangan
+    public void printFurnitureList(){
+        for(int i = 0 ; i < furnitureList.size(); i++){
+            System.out.println(i+1 + ". " + furnitureList.get(i));
         }
     }
 }

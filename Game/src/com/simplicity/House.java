@@ -46,7 +46,7 @@ public class House implements SimplicityPrintable {
         System.out.println("These are the rooms available in this house: ");
         for (Map.Entry<Point,Room> room : roomList.entrySet())
         {
-            System.out.println(room.getValue().getroomNumber() + ". " + room.getValue().getName());
+            System.out.println(room.getValue().getroomNumber() + ". " + room.getValue().getName() + room.getKey());
         }
     }
 
@@ -250,6 +250,10 @@ public class House implements SimplicityPrintable {
                     tempRoom.setTop(room2.getValue());
                 }
             }
+        }
+        else
+        {
+            System.out.println("That direction is not upgradeable!");
         }
     }
 
