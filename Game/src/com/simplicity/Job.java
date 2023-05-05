@@ -9,11 +9,11 @@ public class Job {
     private int durationNotPaid;
 
     private static HashMap <String, Integer> jobList = new HashMap<String, Integer>(){{ 
-        put("Badut Sulap", 15); 
-        put("Koki", 30); 
-        put("Polisi", 35);  
-        put("Programmer", 45); 
-        put("Dokter", 50);  
+        put("MAGIC CLOWN", 15); 
+        put("CHEF", 30); 
+        put("POLICE", 35);  
+        put("PROGRAMMER", 45); 
+        put("DOCTOR", 50);  
     }};  
     
     public Job() {

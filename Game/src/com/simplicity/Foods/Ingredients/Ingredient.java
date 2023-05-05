@@ -8,19 +8,18 @@ import com.simplicity.Interfaces.Purchasable;
 public class Ingredient extends GameObject implements Purchasable, Edible{
 
     public MyIngredient myIngredient;
-    private final static String type = "Ingredient";
+    private final static String type = "INGREDIENT";
 
     public enum MyIngredient {
-        RICE("Rice", 5, 5),
-        POTATO("Potato", 3, 4),
-        CHICKEN("Chicken", 10, 8),
-        BEEF("Beef", 12, 15),
-        CARROT("Carrot", 3, 2),
-        SPINACH("Spinach", 3, 2),
-        PEANUT("Peanut", 2, 2),
-        MILK("Milk", 2, 1);
+        RICE("RICE", 5, 5),
+        POTATO("POTATO", 3, 4),
+        CHICKEN("CHICKEN", 10, 8),
+        BEEF("BEEF", 12, 15),
+        CARROT("CARROT", 3, 2),
+        SPINACH("SPINACH", 3, 2),
+        PEANUT("PEANUT", 2, 2),
+        MILK("MILK", 2, 1);
 
-        private final String type = "Ingredient";
         private final String name;
         private final int price;
         private final int satietyPoint;
@@ -46,45 +45,33 @@ public class Ingredient extends GameObject implements Purchasable, Edible{
         public int getSatietyPoint(){
             return satietyPoint;
         }
-
-        // public void setPrice(int price){
-        //     this.price = price;
-        // }
-
-        // public boolean getCanBePurchased(){
-        //     return canBePurchased;
-        // }
-        
-        // public void setCanBePurchased(boolean canBePurchased){
-        //     this.canBePurchased=canBePurchased;
-        // }
     }
 
     public Ingredient(String name) {
         super(type);
         switch(name){
-            case "Rice":
+            case "RICE":
                 this.myIngredient = MyIngredient.RICE;
                 break;
-            case "Potato":
+            case "POTATO":
                 this.myIngredient = MyIngredient.POTATO;
                 break;
-            case "Chicken":
+            case "CHICKEN":
                 this.myIngredient = MyIngredient.CHICKEN;
                 break;
-            case "Beef":
+            case "BEEF":
                 this.myIngredient = MyIngredient.BEEF;
                 break;
-            case "Carrot":
+            case "CARROT":
                 this.myIngredient = MyIngredient.CARROT;
                 break;
-            case "Spinach":
+            case "SPINACH":
                 this.myIngredient = MyIngredient.SPINACH;
                 break;
-            case "Peanut":
+            case "PEANUT":
                 this.myIngredient = MyIngredient.PEANUT;
                 break;
-            case "Milk":
+            case "MILK":
                 this.myIngredient = MyIngredient.MILK;
                 break;
             default:

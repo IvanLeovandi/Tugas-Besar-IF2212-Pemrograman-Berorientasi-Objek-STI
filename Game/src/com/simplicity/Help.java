@@ -21,21 +21,6 @@ public class Help {
     ,"1. Semua Sims di dunia Simplicity sudah meninggal sehingga tidak ada karakter yang dapat dimainkan."
     ,"2. Keluar game Simplicity dengan melakukan Save untuk menyimpan progress yang sudah tercapai dan  game dapat dilanjutkan di waktu berikutnya."};
     
-    static String[] Page4 = {"Berikut adalah list pilihan menu dalam game: "
-    ,"1. Start Game"
-    ,"2. Help"
-    ,"3. Exit"
-    ,"4. View Sim Info"
-    ,"5. View Current Location"
-    ,"6. View Inventory"
-    ,"7. Upgrade House"
-    ,"8. Move Room"
-    ,"9. Edit Room"
-    ,"10. Add Sim"
-    ,"11. Change Sim"
-    ,"12. List Object"};
-    
-    static String[] Page5 = {"Berikut adalah list aksi yang dapat dilakukan "};
 
     public static void printMessage(int i)
     {
@@ -60,16 +45,5 @@ public class Help {
                 System.out.println(string);
             } 
         }
-        else if (i == 4)
-        {
-            for (String string :Page4)
-            {
-                System.out.println(string);
-            } 
-        }
-    }
-    public static void main(String[] args)
-    {
-        Help.printMessage(1);
     }
 }

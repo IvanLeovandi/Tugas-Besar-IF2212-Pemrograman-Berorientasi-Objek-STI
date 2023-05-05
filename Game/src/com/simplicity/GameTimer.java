@@ -30,7 +30,7 @@ public class GameTimer{
     public void startTimer(int duration) {
         try {
             for (int i = 0; i < duration; i++){
-                Thread.sleep(100);
+                Thread.sleep(10);
                 gameTime++;
             }
         } catch (InterruptedException e) {
