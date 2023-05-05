@@ -1,6 +1,6 @@
-package com.simplicity.Furniture;
+package com.simplicity.Furniture.Bed;
 
-public class KingBed extends Furniture {
+public class KingBed extends Bed {
     boolean isUsed;
 
     public KingBed(){

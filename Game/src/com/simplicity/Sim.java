@@ -8,10 +8,12 @@ import com.simplicity.Foods.CookedFood.CookedFood;
 import com.simplicity.Foods.Ingredients.*;
 import com.simplicity.Furniture.Clock;
 import com.simplicity.Furniture.Furniture;
-import com.simplicity.Furniture.GasStove;
-import com.simplicity.Furniture.SingleBed;
 import com.simplicity.Furniture.TableAndChair;
 import com.simplicity.Furniture.Toilet;
+import com.simplicity.Furniture.Bed.Bed;
+import com.simplicity.Furniture.Bed.SingleBed;
+import com.simplicity.Furniture.Stove.GasStove;
+import com.simplicity.Furniture.Stove.Stove;
 import com.simplicity.Interfaces.*;
 
 public class Sim {
@@ -349,7 +351,7 @@ public class Sim {
         }
     }
 
-    public void sleep(int duration) {
+    public void sleep(int duration, Sim currentSim) {
         if (this.currentObject() != null) {
             if (this.currentObject().getName().equals("King Bed") || this.currentObject().getName().equals("Single Bed") || this.currentObject().getName().equals("Single Bed")) {
                     if (duration < 240){
@@ -363,13 +365,25 @@ public class Sim {
                         setTimeSleep(GameTimer.gameTime);
                     }
                 }
-            else {
-                System.out.println("You can't sleep here");
             }
-        }
         else {
             System.out.println("You can't sleep here");
+            System.out.println("You need a bed to sleep.");
+
+            for(Furniture furniture: currentSim.getCurrentRoom().getfurnitureList()){
+                if(Bed.class.isAssignableFrom(furniture.getClass())){
+                    System.out.println("You have a bed, you will automatically moved there to sleep");
+                    currentSim.moveToObject(furniture, 1);
+                    this.sleep(duration,currentSim);
+                    break;
+                }
+            }
         }
+        // if (this.currentObject() != null) {
+        // }
+        // else {
+        //     System.out.println("You can't sleep here");
+        // }
     }
 
     public void notSleep(){
@@ -379,7 +393,7 @@ public class Sim {
 
     public void eat(Edible food) {
         if (currentObject() != null) {
-            if (currentObject().getName().equals("Table And Chair")){
+            if (currentObject().getName().equals("TABLE AND CHAIR")){
                 if(food instanceof CookedFood){
                     CookedFood food1 = (CookedFood) food;
                    if (this.cookedFoodInventory.getInventory().containsKey(food1)){
@@ -422,7 +436,7 @@ public class Sim {
 
     }
 
-    public void cook(CookedFood cookedFood) {
+    public void cook(CookedFood cookedFood, Sim currentSim) {
         if (currentObject() != null) {
             if (currentObject().getName().equals("Gas Stove") || currentObject().getName().equals("Electric Stove")){
                 List<Ingredient> ingredients = cookedFood.getIngredients();
@@ -455,13 +469,26 @@ public class Sim {
                     System.out.println("You can't cook this because you don't have the ingredients");
                 }
             }
-            else{
-                System.out.println("You can't cook here");
+        else{
+            System.out.println("You can't cook here");
+            System.out.println("You need a stove to sleep.");
+
+            for(Furniture furniture: currentSim.getCurrentRoom().getfurnitureList()){
+                if(Stove.class.isAssignableFrom(furniture.getClass())){
+                    System.out.println("You have a stove, you will automatically moved there to cook");
+                    currentSim.moveToObject(furniture, 1);
+                    this.cook(cookedFood,currentSim);
+                    break;
+                }
             }
         }
-        else {
-            System.out.println("You can't cook here");
-        }
+    }
+        
+        // if (currentObject() != null) {
+        // }
+        // else {
+        //     System.out.println("You can't cook here");
+        // }
     }
 
     public void visit(House house1, House house2) {
@@ -488,7 +515,7 @@ public class Sim {
 
     public void defecate() {
         if (currentObject() != null) {
-            if (currentObject().getName().equals("Toilet")) {
+            if (currentObject().getName().equals("TOILET")) {
                 setTimeDefecateEat(new Pair<Integer,Integer>(GameTimer.gameTime, getTimeDefecateEat().getSecond()));
                 World.gameTimer.startTimer(10);
                 changeSatiety(-20);
@@ -572,21 +599,21 @@ public class Sim {
         }
     }
 
-    public void setUpObject (Point placement, int rotation, Furniture furniture) throws OverlapingRoomObjectException {
+    public void setUpObject (Point placement, int rotation, int idx) throws OverlapingRoomObjectException {
         //Mengecek apakah furniture yang dipilih ada di inventory
-        if (furnitureInventory.getInventory().containsKey(furniture) == false){
+        if (furnitureInventory.getInventory().containsKey(furnitureInventory.getInventory().keySet().toArray()[idx]) == false){
             System.out.println("You don't have the furniture");
         }
         else {
             try {
-                currentRoom.placeFurniture(placement, rotation, furniture);
+                currentRoom.placeFurniture(placement, rotation, new Furniture(furnitureInventory.getInventory().keySet().toArray()[idx].toString()));
             } catch (OverlapingRoomObjectException e) {
                 e.printStackTrace();
             }
         }
 
         //Menghapus furniture dari inventory
-        furnitureInventory.removeItem(furniture);
+        furnitureInventory.removeItem(new Furniture(furnitureInventory.getInventory().keySet().toArray()[idx].toString()));
     }
 
     public void viewInventory() {
@@ -645,7 +672,7 @@ public class Sim {
         }
     }
 
-    public void viewTime() {
+    public void viewTime(Sim currentSim) {
         if(currentObject().getName().equals("Clock")){
             System.out.println("The time is : Day " + World.gameTimer.getDay() + " Seconds " + World.gameTimer.getSecond());
             //Menampilkan sisa waktu yang ada pada hari ini
@@ -654,6 +681,16 @@ public class Sim {
         }
         else{
             System.out.println("You can't view the time");
+            System.out.println("You need a clock to sleep.");
+
+            for(Furniture furniture: currentSim.getCurrentRoom().getfurnitureList()){
+                if(Clock.class.isAssignableFrom(furniture.getClass())){
+                    System.out.println("You have a clock, you will automatically moved there to view time");
+                    currentSim.moveToObject(furniture, 1);
+                    this.viewTime(currentSim);
+                    break;
+                }
+            }
         }
     }
 

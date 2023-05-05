@@ -46,7 +46,7 @@ public class House implements SimplicityPrintable {
         System.out.println("These are the rooms available in this house: ");
         for (Map.Entry<Point,Room> room : roomList.entrySet())
         {
-            System.out.println(room.getValue().getroomNumber() + ". " + room.getValue().getName());
+            System.out.println(room.getValue().getroomNumber() + ". " + room.getValue().getName() + room.getKey());
         }
     }
 
