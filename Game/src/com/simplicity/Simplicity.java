@@ -20,6 +20,7 @@ package com.simplicity;
 
 // cli version
 import com.simplicity.Exceptions.OverlapingRoomObjectException;
+import com.simplicity.Furniture.*;
 
 import java.util.*;
 
@@ -165,7 +166,7 @@ public class Simplicity {
                                             duration = scan.nextInt();
                                             currentSim.watchTV(duration);
                                             break;
-
+                                            
                                         case 12:
                                             // bath
                                             System.out.println("Enter bath duration: ");
@@ -321,7 +322,47 @@ public class Simplicity {
                                             int rotation = scan.nextInt();
                                             currentSim.getCurrentRoom().moveFurniture(new Point(x,y), new Point(x2,y2), rotation);
                                         }
-                                    }
+                                    } else if(input.equals("MOVE ITEM")){
+                                      currentSim.getCurrentRoom().printRoom();
+                                      System.out.println("Please chose the point you want to move");
+                                      System.out.println("X: ");
+                                      int x = scan.nextInt();
+                                      System.out.println("Y: ");
+                                      int y = scan.nextInt();
+                                      if (currentSim.getCurrentRoom().checkPoint(new Point(x,y)) == null)
+                                      {
+                                          System.out.println("There is no object there!");
+                                      }
+                                      else
+                                      {
+                                          Furniture movedFurniture = currentSim.getCurrentRoom().checkPoint(new Point (x,y));
+                                          currentSim.getCurrentRoom().removeFurniture(new Point(x,y));
+                                          System.out.println("Please chose the new point");
+                                          System.out.println("X: ");
+                                          int x2 = scan.nextInt();
+                                          System.out.println("Y: ");
+                                          int y2 = scan.nextInt();
+                                          System.out.println("Please chose the rotation 1/2/3/4!");
+                                          int rotation = scan.nextInt();
+                                          do 
+                                          {
+                                              try {
+                                                  currentSim.getCurrentRoom().placeFurniture(new Point(x2, y2), rotation, movedFurniture);
+                                                  break;
+                                              }
+                                              catch (OverlapingRoomObjectException e) {
+                                                  System.out.println(e.getMessage());
+                                              }
+                                              System.out.println("Please chose the new point");
+                                              System.out.println("X: ");
+                                              x2 = scan.nextInt();
+                                              System.out.println("Y: ");
+                                              y2 = scan.nextInt();
+                                              System.out.println("Please chose the rotation 1/2/3/4!");
+                                              rotation = scan.nextInt();
+                                          } while (true);
+                                      }
+                                  }
                                     break;
         
                                 case 8:
