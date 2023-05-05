@@ -297,31 +297,11 @@ public class Simplicity {
                                     // TODO:edit room
                                     System.out.println("What do you want to do?");
                                     System.out.println("1. MOVE ITEM");
-                                    System.out.println("2. PLACE ITEM");
+                                    System.out.println("2. BUY ITEM");
                                     input = scan.nextLine();
                                     if (input.equals("MOVE ITEM"))
                                     {
-                                        currentSim.getCurrentRoom().printRoom();
-                                        System.out.println("Please chose the point you want to move");
-                                        System.out.println("X: ");
-                                        int x = scan.nextInt();
-                                        System.out.println("Y: ");
-                                        int y = scan.nextInt();
-                                        if (currentSim.getCurrentRoom().checkPoint(new Point(x,y)) == null)
-                                        {
-                                            System.out.println("There is no object there!");
-                                        }
-                                        else
-                                        {
-                                            System.out.println("Please chose the new point");
-                                            System.out.println("X: ");
-                                            int x2 = scan.nextInt();
-                                            System.out.println("Y: ");
-                                            int y2 = scan.nextInt();
-                                            System.out.println("Please chose the rotation 1/2/3/4!");
-                                            int rotation = scan.nextInt();
-                                            currentSim.getCurrentRoom().moveFurniture(new Point(x,y), new Point(x2,y2), rotation);
-                                        }
+                                        
                                     } else if(input.equals("MOVE ITEM")){
                                       currentSim.getCurrentRoom().printRoom();
                                       System.out.println("Please chose the point you want to move");
