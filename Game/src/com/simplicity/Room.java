@@ -103,6 +103,20 @@ public class Room{
         return this.furnitureList;
     }
 
+    //Getter jumlah x Furniture di ruangan
+    public int getFurnitureCount(Furniture furniturex)
+    {
+        int count = 0;
+        for (Furniture furniture:furnitureList)
+        {   
+            if (furniture.getClass().equals(furniturex.getClass()))
+            {
+                count++;
+            }
+        }
+        return count;
+    }
+
     //Getter SimsList
     public ArrayList<Sim> getSimList()
     {
