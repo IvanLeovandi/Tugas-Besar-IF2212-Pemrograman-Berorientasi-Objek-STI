@@ -2,10 +2,9 @@ package com.simplicity;
 
 import java.util.*;
 import javax.swing.*;
-import java.io.File;
 
+import com.simplicity.Components.HousePanel;
 import com.simplicity.Interfaces.Interactable;
-import com.simplicity.Layouts.HousePanel;
 
 public class GameMenu extends JPanel {
     public static void showSimInfo(Sim sim) {

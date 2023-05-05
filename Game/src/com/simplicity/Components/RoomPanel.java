@@ -1,4 +1,4 @@
-package com.simplicity.Layouts;
+package com.simplicity.Components;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -6,13 +6,14 @@ import javax.swing.*;
 
 import com.simplicity.Room;
 
-public class RoomPanel extends JPanel {
+public class RoomPanel extends SimplicityPanel {
     private Room currentRoom = null;
     private JPanel roomLayout = new JPanel();
     private JLayeredPane layeredPane = new JLayeredPane();
     private Color backgroundColor = Color.BLACK;
 
     public RoomPanel() {
+        super();
         this.setBackground(backgroundColor);
         this.setLayout(new BorderLayout());
 
