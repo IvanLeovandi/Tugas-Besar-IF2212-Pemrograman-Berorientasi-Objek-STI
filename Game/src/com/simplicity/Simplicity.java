@@ -356,7 +356,7 @@ public class Simplicity {
         
                                 case 10:
                                     // TODO:list object
-                                    System.out.println(currentSim.getCurrentRoom().getfurnitureList());
+                                    currentSim.getCurrentRoom().printFurnitureList();
                                     break;
         
                                 case 11:
@@ -366,7 +366,22 @@ public class Simplicity {
                                         System.out.println("Which object do you want to go to?");
                                         System.out.print("\n>> ");
                                         int idx = scan.nextInt();
-                                        currentSim.moveToObject(currentSim.getCurrentRoom().getfurnitureList().get(idx), 1);
+                                        Furniture furniture = currentSim.getCurrentRoom().getfurnitureList().get(idx);
+                                        int idx2 = 1;
+                                        if (currentSim.getCurrentRoom().getFurnitureCount(furniture) > 1)
+                                        {
+                                            System.out.println("There is" + currentSim.getCurrentRoom().getFurnitureCount(furniture) + " " + furniture.getName());
+                                            System.out.println("Please choose which one would you like to go to.");
+                                            System.out.print("\n>>");
+                                            idx2 = scan.nextInt();
+                                            while (idx2 < 1 && idx2 > currentSim.getCurrentRoom().getFurnitureCount(furniture))
+                                            {
+                                                System.out.println("Thats not a valid input!\nPlease choose which one would you like to go to. ");
+                                                System.out.print("\n>>");
+                                                idx2 = scan.nextInt();
+                                            }
+                                        }
+                                        currentSim.moveToObject(currentSim.getCurrentRoom().getfurnitureList().get(idx), idx2);
                                         System.out.println("You have successfully move to desired object in" + currentSim.getCurrentPosition());
                                     } else{
                                         System.out.println("There is no object in current room. Please move to other room or place some items.");
