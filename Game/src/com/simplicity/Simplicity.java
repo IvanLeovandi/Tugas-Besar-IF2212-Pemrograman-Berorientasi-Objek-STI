@@ -17,7 +17,7 @@ import com.simplicity.UI.SimplicityFrame;
 // cli version
 import com.simplicity.*;
 import com.simplicity.Exceptions.OverlapingRoomObjectException;
-import com.simplicity.Furniture.SingleBed;
+import com.simplicity.Furniture.*;
 
 import java.util.*;
 
@@ -200,34 +200,45 @@ public class Simplicity {
                             currentSim.moveToRoom(currentSim.getHouse(), currentSim.getHouse().getRoomList().get(1));
                         } 
 
-                        else if(input.equals("EDIT ROOM")){
-                            System.out.println("What do you want to do?");
-                            System.out.println("1. MOVE ITEM");
-                            System.out.println("2. PLACE ITEM");
-                            input = scan.nextLine();
-                            if (input.equals("MOVE ITEM"))
+                        else if(input.equals("MOVE ITEM")){
+                            currentSim.getCurrentRoom().printRoom();
+                            System.out.println("Please chose the point you want to move");
+                            System.out.println("X: ");
+                            int x = scan.nextInt();
+                            System.out.println("Y: ");
+                            int y = scan.nextInt();
+                            if (currentSim.getCurrentRoom().checkPoint(new Point(x,y)) == null)
                             {
-                                currentSim.getCurrentRoom().printRoom();
-                                System.out.println("Please chose the point you want to move");
+                                System.out.println("There is no object there!");
+                            }
+                            else
+                            {
+                                Furniture movedFurniture = currentSim.getCurrentRoom().checkPoint(new Point (x,y));
+                                currentSim.getCurrentRoom().removeFurniture(new Point(x,y));
+                                System.out.println("Please chose the new point");
                                 System.out.println("X: ");
-                                int x = scan.nextInt();
+                                int x2 = scan.nextInt();
                                 System.out.println("Y: ");
-                                int y = scan.nextInt();
-                                if (currentSim.getCurrentRoom().checkPoint(new Point(x,y)) == null)
+                                int y2 = scan.nextInt();
+                                System.out.println("Please chose the rotation 1/2/3/4!");
+                                int rotation = scan.nextInt();
+                                do 
                                 {
-                                    System.out.println("There is no object there!");
-                                }
-                                else
-                                {
+                                    try {
+                                        currentSim.getCurrentRoom().placeFurniture(new Point(x2, y2), rotation, movedFurniture);
+                                        break;
+                                    }
+                                    catch (OverlapingRoomObjectException e) {
+                                        System.out.println(e.getMessage());
+                                    }
                                     System.out.println("Please chose the new point");
                                     System.out.println("X: ");
-                                    int x2 = scan.nextInt();
+                                    x2 = scan.nextInt();
                                     System.out.println("Y: ");
-                                    int y2 = scan.nextInt();
+                                    y2 = scan.nextInt();
                                     System.out.println("Please chose the rotation 1/2/3/4!");
-                                    int rotation = scan.nextInt();
-                                    currentSim.getCurrentRoom().moveFurniture(new Point(x,y), new Point(x2,y2), rotation);
-                                }
+                                    rotation = scan.nextInt();
+                                } while (true);
                             }
                         }
 
