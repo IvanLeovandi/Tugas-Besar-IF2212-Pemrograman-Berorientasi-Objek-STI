@@ -25,15 +25,6 @@ public class House implements SimplicityPrintable {
         this.upgradeState = new UpgradeState<>(null, null, null);
     }
 
-    public House(Point location)
-    {
-        this.location = location;
-        this.numberofRoom = 1;
-        this.roomList = new HashMap<Point,Room>();
-        roomList.put(new Point(0,0),new Room(numberofRoom,new Point(0,0),"Starting Room"));
-        this.upgradeState = new UpgradeState<>(null, null, null);
-    }
-
     //Getter Room List
     public Map<Point,Room> getRoomList()
     {
@@ -251,19 +242,5 @@ public class House implements SimplicityPrintable {
                 }
             }
         }
-    }
-
-    @Override
-    public SimplicityPanel getPanel() {
-        if (panel == null) {
-            panel = new HousePanel();
-        }
-
-        return panel;
-    }
-
-    @Override
-    public void clearPanel() {
-        panel = null;
     }
 }

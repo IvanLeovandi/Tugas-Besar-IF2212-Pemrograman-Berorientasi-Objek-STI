@@ -2,6 +2,7 @@ package com.simplicity;
 
 import java.util.*;
 
+import com.simplicity.Components.SimPanel;
 import com.simplicity.Exceptions.OverlapingRoomObjectException;
 import com.simplicity.Foods.CookedFood.CookedFood;
 import com.simplicity.Foods.Ingredients.Ingredient;
@@ -29,6 +30,7 @@ public class Sim {
     private ArrayList<UpgradeState<Purchasable, Integer, Integer>> deliveryList;
     private int timeSleep;
     private Pair <Integer, Integer> timeDefecateEat;
+    private SimPanel shape = new SimPanel(null);
 
     public static int numberOfSims = 0;
 
@@ -287,6 +289,10 @@ public class Sim {
 
     public Furniture currentObject(){
         return this.currentRoom.checkPoint(this.currentPosition);
+    }
+
+    public SimPanel getShape() {
+        return shape;
     }
 
 

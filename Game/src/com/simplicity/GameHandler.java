@@ -1,5 +1,7 @@
 package com.simplicity;
 
+import java.awt.event.KeyListener;
+
 import com.simplicity.Components.SimplicityComponentHandler;
 
 public class GameHandler implements Runnable {

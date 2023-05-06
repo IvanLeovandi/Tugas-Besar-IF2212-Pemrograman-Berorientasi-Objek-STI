@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 
+import com.simplicity.Dimension2D;
 import com.simplicity.Point;
 import com.simplicity.World;
 import com.simplicity.Events.HousePickEvent;
@@ -13,27 +14,41 @@ public class WorldPanel extends SimplicityPanel {
     private Color backgroundColor;
     private World world;
 
-    public WorldPanel(int x, int y, World world) {
+    public WorldPanel(World world) {
         super();
         backgroundColor = new Color(0x215e07);
-        this.world = world;
-
-        this.setLayout(new GridLayout(x, y, 2, 2));
         this.setBackground(backgroundColor);
         this.setPreferredSize(new Dimension(720, 720));
         this.setBorder(BorderFactory.createLineBorder(backgroundColor, 10));
-        for (int i = 0; i < x; i++) {
-            for (int j = 0; j < y; j++) {
-                JPanel housePanel;
-                if (world.getSim(i, j) != null) {
-                    housePanel = new HouseButton(new Point(j, i), true);
-                } else {
 
-                    housePanel = new HouseButton(new Point(j, i));
+        setWorld(world);
+    }
+
+    public World getWorld() {
+        return world;
+    }
+
+    public void setWorld(World world) {
+        this.removeAll();
+        this.world = world;
+
+        if (world != null) {
+            Dimension2D worldDimension = world.getDimension();
+            int x = worldDimension.getWidth();
+            int y = worldDimension.getHeight();
+            this.setLayout(new GridLayout(y, x, 2, 2));
+            for (int i = 0; i < y; i++) {
+                for (int j = 0; j < x; j++) {
+                    JPanel housePanel;
+                    housePanel = new HouseButton(new Point(i, j));
+                    this.add(housePanel);
                 }
-                this.add(housePanel);
             }
+        } else {
+            this.setLayout(new GridLayout(0, 0));
         }
+
+        onUpdate();
     }
 
     private class HouseButton extends JPanel implements MouseListener {
@@ -48,11 +63,6 @@ public class WorldPanel extends SimplicityPanel {
             this.setBackground(disabledColor);
             this.location = location;
             this.addMouseListener(this);
-        }
-
-        public HouseButton(Point location, boolean isEnabled) {
-            this(location);
-            setButtonEnabled(isEnabled);
         }
 
         public void setButtonEnabled(boolean isEnabled) {

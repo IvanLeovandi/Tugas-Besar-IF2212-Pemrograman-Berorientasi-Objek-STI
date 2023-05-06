@@ -11,7 +11,7 @@ import com.simplicity.Interfaces.SimplicityPrintable;
 
 
 public class World implements SimplicityPrintable {
-    private Dimension2D size;
+    private Dimension2D dimension;
     private Map<Point, Sim> map = new HashMap<>();
     private WorldPanel panel;
     private java.util.List<Point> availableLands = new ArrayList<>();
@@ -19,7 +19,7 @@ public class World implements SimplicityPrintable {
     public static GameTimer gameTimer = new GameTimer();
 
     public World(int width, int height) {
-        size = new Dimension2D(width, height);
+        dimension = new Dimension2D(width, height);
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
                 Point p = new Point(i, j);
@@ -63,8 +63,8 @@ public class World implements SimplicityPrintable {
         return map.get(p);
     }
 
-    public Dimension2D getSize() {
-        return size;
+    public Dimension2D getDimension() {
+        return dimension;
     }
 
     public boolean isLandAvailable(Point location) {
@@ -188,25 +188,11 @@ public class World implements SimplicityPrintable {
                             sim2.setCurrentPosition(new Point(0, 0));
                         }
                     }
-                }   
+                }
             }
 
             Point location = sim.getHouse().getLocation();
             map.remove(location, sim);
         }
-    }
-
-    @Override
-    public WorldPanel getPanel() {
-        if (panel == null) {
-            panel = new WorldPanel(64, 64, this);
-        }
-
-        return panel;
-    }
-
-    @Override
-    public void clearPanel() {
-        panel = null;
     }
 }

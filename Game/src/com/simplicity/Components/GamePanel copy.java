@@ -6,11 +6,9 @@ import javax.swing.*;
 
 import com.simplicity.Point;
 import com.simplicity.SimplicityManager;
-import com.simplicity.World;
 import com.simplicity.Events.HousePickEvent;
 import com.simplicity.Exceptions.UndefinedHousePanelException;
 import com.simplicity.Interfaces.Listeners.HousePickListener;
-import com.simplicity.Util.SimplicityUtilities;
 
 import java.util.*;
 
@@ -21,10 +19,10 @@ public class GamePanel extends SimplicityPanel implements HousePickListener {
     JPanel sideInfo = new SideInfo();
     JPanel loadingPanel = new SimplicityPanel();
     WorldPanel worldPanel;
-    HousePanel housePanel = new HousePanel(null);
+    HousePanel housePanel = null;
     CreateSimPanel createSimPanel;
 
-    public GamePanel(SimplicityManager manager, World world) {
+    public GamePanel(SimplicityManager manager) {
         super();
         this.manager = manager;
         createSimPanel = new CreateSimPanel(manager);
@@ -34,7 +32,7 @@ public class GamePanel extends SimplicityPanel implements HousePickListener {
         loadingLabel.setForeground(Color.WHITE);
         loadingPanel.add(loadingLabel);
 
-        worldPanel = new WorldPanel(world);
+        worldPanel = manager.getWorld().getPanel();
         worldPanel.setHousePickListener(this);
         currentCenterPanel = createSimPanel;
         this.setLayout(new BorderLayout());
@@ -46,12 +44,13 @@ public class GamePanel extends SimplicityPanel implements HousePickListener {
     private class SideMenu extends SimplicityPanel {
         GridBagConstraints gbc;
         int compNum = 0;
-        java.util.List<java.util.List<String>> buttonLists = new ArrayList<>();
         boolean currentButtonVisible = true;
+        java.util.List<java.util.List<String>> buttonList = new ArrayList<>();
+        int currentButtonLayer = 0;
+        boolean canWork, canWorkout, canSleep, canEat, canCook, canVisit, canDefecate, canNubes, canListenToMusic, canWatchTV, canTakeABath, canMeetup, canMissYou, canSayHello, canBuy, canPlaceItem, canViewItem, canBack, canViewInventory, canUpgradeHouse, canMoveRoom, canEditRoom, canAddSim, canChangeSim, canViewObjectList, canGoToObject, canBackToMainMenu;
 
         public SideMenu() {
             super();
-            System.out.println("AANNN");
             this.setPreferredSize(new Dimension(280, 720));
             this.setLayout(new GridBagLayout());
             this.setBackground(new Color(0x9961f2));
@@ -62,25 +61,20 @@ public class GamePanel extends SimplicityPanel implements HousePickListener {
             gbc.gridx = compNum;
             gbc.gridy = compNum;
 
-            buttonLists.add(new ArrayList<>());
-            this.addComponent(new MenuButton("ACTION"));
-            this.addComponent(new MenuButton("VIEW INVENTORY"));
-            this.addComponent(new MenuButton("UPGRADE HOUSE"));
-            this.addComponent(new MenuButton("MOVE ROOM"));
-            this.addComponent(new MenuButton("EDIT ROOM"));
-            this.addComponent(new MenuButton("ADD SIM"));
-            this.addComponent(new MenuButton("CHANGE SIM"));
-            this.addComponent(new MenuButton("LIST OBJECT"));
-            this.addComponent(new MenuButton("GO TO OBJECT"));
-            this.addComponent(new MenuButton("BACK TO MAIN MENU"));
+
+            addButton("ACTION", 0);
+            addButton("VIEW INVENTORY", 0);
+            addButton("UPGRADE HOUSE", 0);
+            addButton("MOVE ROOM", 0);
+            addButton("EDIT ROOM", 0);
+            addButton("ADD SIM", 0);
+            addButton("CHANGE SIM", 0);
+            addButton("LIST OBJECT", 0);
+            addButton("GO TO OBJECT", 0);
+            addButton("BACK TO MAIN MENU", 0);
         }
 
-        public void addComponent(JComponent c, boolean addToPrev) {
-            if (c.getClass().isAssignableFrom(MenuButton.class) && addToPrev) {
-                MenuButton button = (MenuButton) c;
-                button.setVisible(currentButtonVisible);
-                buttonLists.get(buttonLists.size() - 1).add(button.getText());
-            }
+        public void addComponent(JComponent c) {
             gbc.weightx = 1;
             gbc.gridy = compNum % 11;
             gbc.gridx = compNum / 11;
@@ -89,22 +83,11 @@ public class GamePanel extends SimplicityPanel implements HousePickListener {
             compNum++;
         }
 
-        public void addComponent(JComponent c) {
-            addComponent(c, true);
-        }
-
-        public void clearButtons(boolean undoable) {
-            if (undoable) {
-                buttonLists.add(new ArrayList<>());
-            }
+        public void clearButtons() {
             this.removeAll();
             compNum = 0;
             this.repaint();
             this.revalidate();
-        }
-
-        public void clearButtons() {
-            clearButtons(true);
         }
 
         public void setButtonsVisibility(boolean isVisible) {
@@ -116,40 +99,69 @@ public class GamePanel extends SimplicityPanel implements HousePickListener {
             }
         }
 
-        public void printPrevButtons() {
-            buttonLists.remove(buttonLists.size() - 1);
-            int x = buttonLists.get(buttonLists.size() - 1).size();
-
-            for (int i = 0; i < x; i++) {
-                this.addComponent(new MenuButton(buttonLists.get(buttonLists.size() - 1).get(i)), false);
+        public boolean addButton(String text, int layer) {
+            if (buttonList.size() - 1 < layer) {
+                for (int i = buttonList.size(); i < layer + 1; i++) {
+                    buttonList.add(new ArrayList<String>());
+                }
             }
 
-            this.revalidate();
-            this.repaint();
+            java.util.List<String> currentButtonList = buttonList.get(currentButtonLayer);
+
+            if (!currentButtonList.contains(text)) {
+                MenuButton button = new MenuButton(text);
+                if (!currentButtonVisible) {
+                    button.setVisible(false);
+                }
+                this.addComponent(button);
+                currentButtonList.add(text);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        public boolean removeButton(String text) {
+            java.util.List<String> currentButtonList = buttonList.get(currentButtonLayer);
+
+            if (currentButtonList.contains(text)) {
+                currentButtonList.remove(text);
+                reprintButtons();
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        public void reprintButtons() {
+            clearButtons();
+            for (String text: buttonList.get(currentButtonLayer)) {
+                this.addComponent(new MenuButton(text));
+            }
         }
 
         public void onButton(MenuButton e) {
             switch (e.getText()) {
                 case "ACTION":
                     this.clearButtons();
-                    this.addComponent(new MenuButton("WORK"));
-                    this.addComponent(new MenuButton("WORKOUT"));
-                    this.addComponent(new MenuButton("SLEEP"));
-                    this.addComponent(new MenuButton("EAT"));
-                    this.addComponent(new MenuButton("COOK"));
-                    this.addComponent(new MenuButton("VISIT"));
-                    this.addComponent(new MenuButton("DEFECATE"));
-                    this.addComponent(new MenuButton("NUBES"));
-                    this.addComponent(new MenuButton("LISTEN TO MUSIC"));
-                    this.addComponent(new MenuButton("WATCH TV"));
-                    this.addComponent(new MenuButton("BATH"));
-                    this.addComponent(new MenuButton("MEETUP"));
-                    this.addComponent(new MenuButton("MISS YOU"));
-                    this.addComponent(new MenuButton("SAY HELLO"));
-                    this.addComponent(new MenuButton("BUY"));
-                    this.addComponent(new MenuButton("PLACE ITEM"));
-                    this.addComponent(new MenuButton("VIEW TIME"));
-                    this.addComponent(new MenuButton("BACK"));
+                    addButton("WORK", 1);
+                    addButton("WORKOUT", 1);
+                    addButton("SLEEP", 1);
+                    addButton("EAT", 1);
+                    addButton("COOK", 1);
+                    addButton("VISIT", 1);
+                    addButton("DEFECATE", 1);
+                    addButton("NUBES", 1);
+                    addButton("LISTEN TO MUSIC", 1);
+                    addButton("WATCH TV", 1);
+                    addButton("BATH", 1);
+                    addButton("MEETUP", 1);
+                    addButton("MISS YOU", 1);
+                    addButton("SAY HELLO", 1);
+                    addButton("BUY", 1);
+                    addButton("PLACE ITEM", 1);
+                    addButton("VIEW TIME", 1);
+                    addButton("BACK", 1);
                     this.revalidate();
                     this.repaint();
                     break;
@@ -194,8 +206,7 @@ public class GamePanel extends SimplicityPanel implements HousePickListener {
                     this.setButtonsVisibility(true);
                     break;
                 case "BACK":
-                    this.clearButtons(false);
-                    this.printPrevButtons();
+                    this.clearButtons();
                     break;
             }
         }
@@ -272,7 +283,6 @@ public class GamePanel extends SimplicityPanel implements HousePickListener {
     }
 
     public void setCurrentCenterPanel(JPanel newPanel) {
-        SimplicityUtilities.setActiveCollider(currentCenterPanel, false);
         this.remove(currentCenterPanel);
         currentCenterPanel = loadingPanel;
         this.add(currentCenterPanel);
@@ -285,12 +295,15 @@ public class GamePanel extends SimplicityPanel implements HousePickListener {
             this.add(currentCenterPanel);
             this.revalidate();
             this.repaint();
-            SimplicityUtilities.setActiveCollider(currentCenterPanel, true);
         });
     }
 
     public void displayHouse() throws UndefinedHousePanelException {
-        setCurrentCenterPanel(housePanel);
+        if (housePanel == null) {
+            throw new UndefinedHousePanelException();
+        } else {
+            setCurrentCenterPanel(housePanel);
+        }
     }
 
     public void displayWorld() {
@@ -316,7 +329,7 @@ public class GamePanel extends SimplicityPanel implements HousePickListener {
     @Override
     public void onHousePick(HousePickEvent e) {
         Point location = e.getPoint();
-        housePanel.setHouse(manager.getWorld().getSim(location).getHouse());
+        housePanel = (HousePanel) manager.getWorld().getSim(location).getHouse().getPanel();
         setCurrentCenterPanel(housePanel);
         ((SideInfo) sideInfo).showBackButton();
     }

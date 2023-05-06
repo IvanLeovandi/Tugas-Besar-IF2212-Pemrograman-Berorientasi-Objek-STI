@@ -1,6 +1,7 @@
 package com.simplicity.Components;
 
 import java.util.ArrayList;
+import java.awt.Component;
 import java.awt.LayoutManager;
 
 import java.awt.event.*;

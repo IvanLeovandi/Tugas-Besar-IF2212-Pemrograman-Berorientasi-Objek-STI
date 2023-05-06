@@ -77,7 +77,7 @@ public class SimplicityManager implements GameListener, SimCreateListener {
         loadingPanel.add(loadingTitle);
         frame.setCurrentPanel(loadingPanel);
         if (gamePanel == null) {
-            gamePanel = new GamePanel(this);
+            gamePanel = new GamePanel(this, world);
         }
 
         SwingUtilities.invokeLater(() -> {

@@ -1,9 +1,11 @@
 package com.simplicity;
 
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class CurrentEventHandler implements KeyListener {
+public class CurrentEventHandler implements KeyListener, FocusListener {
     private static CurrentEventHandler instance = new CurrentEventHandler();
     public static boolean upPressed, downPressed, leftPressed, rightPressed;
 
@@ -56,6 +58,17 @@ public class CurrentEventHandler implements KeyListener {
         if (code == KeyEvent.VK_D) {
             rightPressed = false;
         }
+    }
+
+    @Override
+    public void focusGained(FocusEvent e) {}
+
+    @Override
+    public void focusLost(FocusEvent e) {
+        upPressed = false;
+        rightPressed = false;
+        downPressed = false;
+        leftPressed = false;
     }
 
 }

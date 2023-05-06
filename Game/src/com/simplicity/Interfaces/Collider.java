@@ -10,4 +10,5 @@ public interface Collider {
     public void onCollisionEnter(java.util.Set<Collider> contacts);
     public void onCollisionExit(java.util.Set<Collider> contacts);
     public ColliderInfo getColliderInfo();
+    public void setColliderActive(boolean active);
 }

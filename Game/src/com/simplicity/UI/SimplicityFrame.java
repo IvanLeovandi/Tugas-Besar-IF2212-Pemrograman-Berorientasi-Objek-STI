@@ -12,6 +12,7 @@ public class SimplicityFrame extends JFrame {
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setSize(1280, 720);
         this.addKeyListener(CurrentEventHandler.getInstance());
+        this.addFocusListener(CurrentEventHandler.getInstance());
         this.setFocusable(true);
         this.setResizable(false);
 

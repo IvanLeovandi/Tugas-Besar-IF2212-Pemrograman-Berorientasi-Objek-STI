@@ -1,6 +1,8 @@
 package com.simplicity;
 import java.util.ArrayList;
 
+import javax.swing.JPanel;
+
 import com.simplicity.Exceptions.OverlapingRoomObjectException;
 import com.simplicity.Furniture.Furniture;
 import com.simplicity.Furniture.Furniture.*;
@@ -14,6 +16,12 @@ public class Room{
     public Point locationInHouse; //Lokasi di rumah
     private String name; //Nama Ruangan
     private ArrayList<Sim> simsList;
+
+    /* Arah hadap furnitur, rotasi masing masing +90 derajat searah jarum jam. Penggunaan seperti enum */
+    public static int EAST = 0;
+    public static int SOUTH = 1;
+    public static int WEST = 2;
+    public static int NORTH = 3;
 
     //Konstruktor
     public Room(int roomNumber,Point locationInHouse, String name)
@@ -132,11 +140,11 @@ public class Room{
     public void checkFilled(Point placement, int rotation, Furniture furniture) throws OverlapingRoomObjectException
     {
         int x,y;
-        if (rotation == 0 || rotation == 2) //Furniture horizontal
+        if (rotation == EAST || rotation == WEST) //Furniture horizontal
         {
             x = furniture.getSize().getHeight();
             y = furniture.getSize().getWidth();
-            if (rotation == 0) //Furniture menghadap ke arah kanan dari posisi placement awal
+            if (rotation == EAST) //Furniture menghadap ke arah kanan dari posisi placement awal
             {
                 if (placement.getX()+x > 6 || placement.getY()+y > 6) //Mengecek apakah melewati border
                 {
@@ -156,7 +164,7 @@ public class Room{
                     }
                 }
             }
-            else if (rotation == 2) //Furniture menghadap ke arah krii dari posisi placement awal
+            else if (rotation == WEST) //Furniture menghadap ke arah krii dari posisi placement awal
             {
                 if (placement.getX()-x < 0 || placement.getY()+y > 6) //Mengecek apakah melewati border
                 {
@@ -177,11 +185,11 @@ public class Room{
                 }
             }
         }
-        else if (rotation == 1 || rotation == 3) //Furniture vertical
+        else if (rotation == SOUTH || rotation == 3) //Furniture vertical
         {
             x = furniture.getSize().getHeight();
             y = furniture.getSize().getWidth();
-            if (rotation == 1) //Furniture menghadap ke arah bawah dari posisi placement awal
+            if (rotation == SOUTH) //Furniture menghadap ke arah bawah dari posisi placement awal
             {
                 if (placement.getX()+x > 6 || placement.getY()+y > 6) //Mengecek apakah melewati border
                 {
@@ -233,17 +241,16 @@ public class Room{
         } //Melakukan pengecekan mengunakan checkFilled
         catch (OverlapingRoomObjectException e)
         {
-            System.out.println(e.getMessage());
-            return;
+            throw e;
         }
             furnitureCount[furniture.getId()-1]++; //Penambahan jumlah furniture untuk memberikan kode pada furniture yang diletakkan
             furnitureList.add(furniture); //Menambahkan furniture ke furnitureList
             int x,y;
-            if (rotation == 0 || rotation == 2) //Furniture horizontal
+            if (rotation == EAST || rotation == WEST) //Furniture horizontal
             {
                 x = furniture.getSize().getHeight();
                 y = furniture.getSize().getWidth();
-                if (rotation == 0) //Furniture menghadap ke arah kanan dari posisi palcement awal
+                if (rotation == EAST) //Furniture menghadap ke arah kanan dari posisi palcement awal
                 {
                     for (int i=placement.getY();i<placement.getY()+y;i++) //Looping untuk memasukkan furniture pada space
                         {
@@ -254,7 +261,7 @@ public class Room{
                         }
                     }
 
-                else if (rotation == 2) //Furniture menghadap ke arah kiri dari posisi palcement awal
+                else if (rotation == WEST) //Furniture menghadap ke arah kiri dari posisi palcement awal
                 {
                     for (int i=placement.getY();i<placement.getY()+y;i++) //Looping untuk memasukkan furniture pada space
                     {
@@ -265,11 +272,11 @@ public class Room{
                     }
                 }
             }
-            else if (rotation == 1 || rotation == 3) //Furniture vertical
+            else if (rotation == SOUTH || rotation == 3) //Furniture vertical
             {
                 x = furniture.getSize().getHeight();
                 y = furniture.getSize().getWidth();
-                if (rotation == 1) //Furniture menghadap ke arah bawah dari posisi palcement awal
+                if (rotation == SOUTH) //Furniture menghadap ke arah bawah dari posisi palcement awal
                 {
                     for (int i=placement.getY();i<placement.getY()+y;i++) //Looping untuk memasukkan furniture pada space
                     {
