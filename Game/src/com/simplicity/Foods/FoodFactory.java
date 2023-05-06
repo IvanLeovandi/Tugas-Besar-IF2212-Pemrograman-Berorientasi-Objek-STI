@@ -15,18 +15,20 @@ public class FoodFactory {
         try {
             instance.addIngredient("BEEF", 12, 15);
             instance.addIngredient("CARROT", 3, 2);
-            instance.addIngredient("CHIKEN", 10, 8);
+            instance.addIngredient("CHICKEN", 10, 8);
             instance.addIngredient("MILK", 5, 5);
             instance.addIngredient("PEANUT", 5, 5);
             instance.addIngredient("POTATO", 3, 4);
             instance.addIngredient("RICE", 5, 5);
             instance.addIngredient("SPINACH", 5, 5);
-            instance.addCookedFood("CHICKEN RICE", 16, new HashSet<String>(Arrays.asList("")));
-            instance.addCookedFood("CURRY RICE", 30, new HashSet<String>(Arrays.asList("")));
-            instance.addCookedFood("PEANUT MILK", 5, new HashSet<String>(Arrays.asList("")));
-            instance.addCookedFood("STEAK", 22, new HashSet<String>(Arrays.asList("")));
-            instance.addCookedFood("STIR FRY", 5, new HashSet<String>(Arrays.asList("")));
+            instance.addCookedFood("CHICKEN RICE", 16, new HashSet<String>(Arrays.asList("RICE", "CHICKEN")));
+            instance.addCookedFood("CURRY RICE", 30,
+                    new HashSet<String>(Arrays.asList("RICE", "POTATO", "CARROT", "BEEF")));
+            instance.addCookedFood("PEANUT MILK", 5, new HashSet<String>(Arrays.asList("MILK", "PEANUT")));
+            instance.addCookedFood("STEAK", 22, new HashSet<String>(Arrays.asList("POTATO", "BEEF")));
+            instance.addCookedFood("STIR FRY", 5, new HashSet<String>(Arrays.asList("CARROT", "SPINACH")));
         } catch (DuplicateFoodException e) {
+            e.printStackTrace();
         }
     }
 
@@ -47,7 +49,7 @@ public class FoodFactory {
     }
 
     public void addFood(String type, int satietyPoint) throws DuplicateFoodException {
-        String typeC = type.toLowerCase();
+        String typeC = type.toUpperCase();
 
         if (foodMenu.containsKey(typeC)) {
             throw new DuplicateFoodException(type);
@@ -57,17 +59,18 @@ public class FoodFactory {
     }
 
     public void addCookedFood(String type, int satietyPoint, Set<String> ingredients) throws DuplicateFoodException {
-        String typeC = type.toLowerCase();
+        String typeC = type.toUpperCase();
 
         if (foodMenu.containsKey(typeC)) {
             throw new DuplicateFoodException(type);
         } else {
+            foodMenu.put(typeC, satietyPoint);
             cookableMenu.put(typeC, ingredients);
         }
     }
 
     public void addIngredient(String type, int satietyPoint, int price) throws DuplicateFoodException {
-        String typeC = type.toLowerCase();
+        String typeC = type.toUpperCase();
 
         if (foodMenu.containsKey(typeC)) {
             throw new DuplicateFoodException(type);
@@ -78,13 +81,13 @@ public class FoodFactory {
     }
 
     public Set<String> getIngredientsOfFood(String foodType) {
-        String TypeC = foodType.toLowerCase();
+        String TypeC = foodType.toUpperCase();
 
         return cookableMenu.get(TypeC);
     }
 
     public boolean removeFood(String type) {
-        String typeC = type.toLowerCase();
+        String typeC = type.toUpperCase();
 
         if (foodMenu.containsKey(typeC)) {
             if (ingredientMenu.containsKey(typeC)) {
@@ -98,10 +101,25 @@ public class FoodFactory {
         }
     }
 
-    public void printCookableMenu(){
-        for (Map.Entry<String,Set<String>> entry : cookableMenu.entrySet()) {
-            System.out.println("Key = " + entry.getKey() +
-                                ", Value = " + (entry.getValue()));
+    public Map<String, Set<String>> getCookableMenu(){
+        return cookableMenu;
+    }
+
+    public void printCookableMenu() {
+        int num = 1;
+        System.out.println("Cookable Menu");
+        String header = String.format("| %-4s | %-20s | %-30s |", "No", "Cookable Food", "Recipe");
+        String line = "-".repeat(header.length());
+
+        System.out.println(line);
+        System.out.println(header);
+        System.out.println(line);
+
+        for (Map.Entry<String, Set<String>> entry : cookableMenu.entrySet()) {
+            String row = String.format("| %-4s | %-20s | %-10d |", num, entry.getKey(), (entry.getValue()));
+            System.out.println(row);
+            num++;
         }
+        System.out.println(line);
     }
 }

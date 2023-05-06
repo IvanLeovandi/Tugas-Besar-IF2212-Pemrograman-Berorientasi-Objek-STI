@@ -1,6 +1,6 @@
 package com.simplicity.Exceptions;
 
-public class FullWorldException extends Exception {
+public class FullWorldException extends InAppendableSimWorld {
     public FullWorldException() {
         super("World is already full.");
     }

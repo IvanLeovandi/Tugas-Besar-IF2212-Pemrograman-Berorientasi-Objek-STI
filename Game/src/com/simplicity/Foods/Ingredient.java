@@ -1,5 +1,7 @@
 package com.simplicity.Foods;
 
+import java.util.Objects;
+
 import com.simplicity.Interfaces.Purchasable;
 
 public class Ingredient extends Food implements Purchasable {
@@ -25,5 +27,21 @@ public class Ingredient extends Food implements Purchasable {
 
     public void setCanBePurchased(boolean canBePurchased) {
         this.canBePurchased = canBePurchased;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || !getClass().isAssignableFrom(o.getClass())) {
+            return false;
+        }
+        return getType() == ((Ingredient) o).getType();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getType(), Ingredient.class);
     }
 }

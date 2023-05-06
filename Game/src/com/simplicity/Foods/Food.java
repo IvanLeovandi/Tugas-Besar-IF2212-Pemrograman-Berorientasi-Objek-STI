@@ -1,5 +1,7 @@
 package com.simplicity.Foods;
 
+import java.util.Objects;
+
 import com.simplicity.GameObject;
 import com.simplicity.Interfaces.Edible;
 
@@ -17,6 +19,22 @@ public class Food extends GameObject implements Edible {
 
     public void setSatietyPoint(int satietyPoint) {
         this.satietyPoint = satietyPoint;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || !getClass().isAssignableFrom(o.getClass())) {
+            return false;
+        }
+        return getType() == ((Food) o).getType();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getType(), Food.class);
     }
 }
 
@@ -37,10 +55,6 @@ public class Food extends GameObject implements Edible {
 // public String getName() {
 // return name;
 // }
-
-// // public String getType() {
-// // return type;
-// // }
 
 // @Override
 // public boolean equals(Object o) {
