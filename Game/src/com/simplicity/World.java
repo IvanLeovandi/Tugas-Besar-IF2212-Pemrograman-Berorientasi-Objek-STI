@@ -4,19 +4,21 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import com.simplicity.Components.WorldPanel;
+import com.simplicity.Exceptions.InAppendableSimWorld;
 import com.simplicity.Exceptions.OverlapingHouseException;
-import com.simplicity.Foods.Ingredients.Ingredient;
+import com.simplicity.Foods.Ingredient;
 import com.simplicity.Furniture.Furniture;
 import com.simplicity.Interfaces.Purchasable;
 import com.simplicity.Interfaces.SimplicityPrintable;
 
-public class World implements SimplicityPrintable {
+public class World {
     private static World instance = new World(64, 64);
     private Dimension2D size;
     private Map<Point, Sim> map = new HashMap<>();
-    private WorldPanel panel;
+    // private WorldPanel panel;
     private java.util.List<Point> availableLands = new ArrayList<>();
     private GameTimer gameTimer = new GameTimer();
+    private int appendCooldown = 0;
 
     private World(int width, int height) {
         size = new Dimension2D(width, height);
@@ -37,19 +39,31 @@ public class World implements SimplicityPrintable {
         return gameTimer;
     }
 
-    public void setSim(int x, int y, Sim sim) throws OverlapingHouseException {
+    public void setSim(int x, int y, Sim sim) throws OverlapingHouseException, InAppendableSimWorld {
         setSim(new Point(x, y), sim);
     }
 
-    public void setSim(Point location, Sim sim) throws OverlapingHouseException {
+    public void setSim(Point location, Sim sim) throws OverlapingHouseException, InAppendableSimWorld {
+        if (!checkSimAppendable()) {
+            throw new InAppendableSimWorld();
+        }
+
         if (map.get(location) != null) {
             throw new OverlapingHouseException();
+        }
+
+        if (!map.isEmpty()) {
+            appendCooldown = 720;
         }
 
         Point p = location.clone();
         map.put(p, sim);
         // availableLands.remove(p);
-        updatePanel();
+        // updatePanel();
+    }
+
+    public boolean checkSimAppendable() {
+        return appendCooldown == 0;
     }
 
     public void removeSim(int x, int y) {
@@ -60,7 +74,7 @@ public class World implements SimplicityPrintable {
         Point p = location.clone();
         map.remove(p);
         // availableLands.add(p);
-        updatePanel();
+        // updatePanel();
     }
 
     public Sim getSim(int x, int y) {
@@ -109,11 +123,11 @@ public class World implements SimplicityPrintable {
         }
     }
 
-    public void updatePanel() {
-        if (this.panel != null) {
-            panel.onUpdate();
-        }
-    }
+    // public void updatePanel() {
+    // if (this.panel != null) {
+    // panel.onUpdate();
+    // }
+    // }
 
     public void checkBuying(int duration) {
         for (Sim sim : map.values()) {
@@ -174,6 +188,7 @@ public class World implements SimplicityPrintable {
             int y = sim.getTimeDefecateEat().getSecond();
             if (x < y && (GameTimer.gameTime - y > 240)) {
                 sim.notDefecate();
+                System.out.println(sim.getName() + " hasn't defecated for 4 minutes!");
                 sim.setTimeDefecateEat(new Pair<Integer, Integer>(x, GameTimer.gameTime));
             }
         }
@@ -208,7 +223,13 @@ public class World implements SimplicityPrintable {
         }
     }
 
-    public void checkAllSim(int duration) {
+    public void updateWorld(int duration) {
+        if (appendCooldown < duration) {
+            appendCooldown = 0;
+        } else {
+            appendCooldown -= duration;
+        }
+
         checkUpgrade(duration);
         checkBuying(duration);
         updateSleep(duration);
@@ -252,17 +273,17 @@ public class World implements SimplicityPrintable {
         System.out.println(line);
     }
 
-    @Override
-    public WorldPanel getPanel() {
-        if (panel == null) {
-            panel = new WorldPanel(64, 64, this);
-        }
+    // @Override
+    // public WorldPanel getPanel() {
+    // if (panel == null) {
+    // panel = new WorldPanel(64, 64, this);
+    // }
 
-        return panel;
-    }
+    // return panel;
+    // }
 
-    @Override
-    public void clearPanel() {
-        panel = null;
-    }
+    // @Override
+    // public void clearPanel() {
+    // panel = null;
+    // }
 }

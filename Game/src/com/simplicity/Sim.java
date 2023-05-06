@@ -2,10 +2,12 @@ package com.simplicity;
 
 import java.util.*;
 
+import com.simplicity.Exceptions.InvalidDurationException;
+import com.simplicity.Exceptions.MissingFoodTypeException;
 import com.simplicity.Exceptions.OverlapingRoomObjectException;
-import com.simplicity.Foods.CookedFood.CookedFood;
-
-import com.simplicity.Foods.Ingredients.*;
+import com.simplicity.Foods.Food;
+import com.simplicity.Foods.FoodFactory;
+import com.simplicity.Foods.Ingredient;
 import com.simplicity.Furniture.*;
 import com.simplicity.Furniture.Bed.*;
 import com.simplicity.Furniture.Stove.*;
@@ -18,7 +20,7 @@ public class Sim {
     private int balance;
     private Inventory<Furniture> furnitureInventory;
     private Inventory<Ingredient> ingredientsInventory;
-    private Inventory<CookedFood> cookedFoodInventory;
+    private Inventory<Food> cookedFoodInventory;
     private int satiety;
     private int mood;
     private int health;
@@ -41,6 +43,7 @@ public class Sim {
     // Konstruktor
     public Sim(String name, Point location) {
         setName(name);
+        FoodFactory foodFactory = FoodFactory.getInstance();
         this.job = new Job();
         this.balance = 99999;
         this.furnitureInventory = new Inventory<Furniture>();
@@ -50,9 +53,14 @@ public class Sim {
         furnitureInventory.addItem(new TableAndChair(), 1);
         furnitureInventory.addItem(new Clock(), 1);
         this.ingredientsInventory = new Inventory<Ingredient>();
-        ingredientsInventory.addItem(new Rice(), 1);
-        ingredientsInventory.addItem(new Chicken(), 1);
-        this.cookedFoodInventory = new Inventory<CookedFood>();
+        try {
+            ingredientsInventory.addItem((Ingredient) foodFactory.createFood("RICE"), 1);
+            ingredientsInventory.addItem((Ingredient) foodFactory.createFood("CHICKEN"), 1);
+            this.cookedFoodInventory = new Inventory<Food>();
+            this.cookedFoodInventory.addItem(foodFactory.createFood("CURRY RICE"), 1);
+        } catch (MissingFoodTypeException e) {
+            e.printStackTrace();
+        }
         this.satiety = 80;
         this.mood = 80;
         this.health = 80;
@@ -91,7 +99,7 @@ public class Sim {
         return ingredientsInventory;
     }
 
-    public Inventory<CookedFood> getCookedFoodInventory() {
+    public Inventory<Food> getCookedFoodInventory() {
         return cookedFoodInventory;
     }
 
@@ -162,6 +170,7 @@ public class Sim {
             if (this.job.getDurationOfWork() < 12 * 60) {
                 System.out.println("You can't change your job now because you haven't worked for 12 minutes");
             } else {
+                this.balance -= (int) pay;
                 this.job = new Job(jobName);
                 setChangeJob(true);
             }
@@ -182,7 +191,7 @@ public class Sim {
         this.ingredientsInventory = inventory;
     }
 
-    public void setCookedFoodInventory(Inventory<CookedFood> inventory) {
+    public void setCookedFoodInventory(Inventory<Food> inventory) {
         this.cookedFoodInventory = inventory;
     }
 
@@ -294,12 +303,12 @@ public class Sim {
     }
 
     // ---------Active Action---------
-    public void work(int duration) {
+    public void work(int duration) throws InvalidDurationException {
         if (!getStatus().equals("Die")) {
             if (!getChangeJob().getFirst() || (getChangeJob().getFirst()
                     && (currentWorld.gameTimer().getDay() - getChangeJob().getSecond() >= 1))) {
                 if (validationDuration(duration, 120) == false) {
-                    System.out.println("Duration must be multiple of 120 seconds");
+                    throw new InvalidDurationException("Duration must be multiple of 20 seconds");
                 } else {
                     currentWorld.gameTimer().startTimer(duration);
                     int satietyDecrease = (-10) * (duration / 30);
@@ -324,8 +333,7 @@ public class Sim {
                     if (!(getStatus() == "Die")) {
                         System.out.println(getName() + " has worked for " + duration + " seconds");
                     }
-
-                    currentWorld.checkAllSim(duration);
+                    currentWorld.updateWorld(duration);
                 }
             } else {
                 System.out.println("You can't work now because you have changed your job less than 1 day ago");
@@ -350,47 +358,35 @@ public class Sim {
                 if (!(getStatus() == "Die")) {
                     System.out.println(getName() + " has worked out for " + duration + " seconds");
                 }
-                currentWorld.checkAllSim(duration);
+                currentWorld.updateWorld(duration);
             }
         }
     }
 
     public void sleep(int duration, Sim currentSim) {
         if (!getStatus().equals("Die")) {
-            if (currentObject() != null) {
-                if (this.currentObject().getName().equals("KING BED")
-                        || this.currentObject().getName().equals("SINGLE BED")
-                        || this.currentObject().getName().equals("QUEEN BED")) {
-                    if (duration < 240) {
-                        System.out.println("The minimum duration of sleep is 240 seconds");
-                    } else {
-                        int x = duration / 240;
-                        changeMood(30 * x);
-                        changeHealth(20 * x);
-                        currentWorld.gameTimer().startTimer(duration);
-                        setTimeSleep(GameTimer.gameTime);
-                        if (!(getStatus() == "Die")) {
-                            System.out.println(getName() + " has slept for " + duration + " seconds");
-                        }
-                        currentWorld.checkAllSim(duration);
-                    }
+            if (currentObject() != null && (this.currentObject().getName().equals("KING BED")
+                    || this.currentObject().getName().equals("SINGLE BED")
+                    || this.currentObject().getName().equals("QUEEN BED"))) {
+                if (duration < 240) {
+                    System.out.println("The minimum duration of sleep is 240 seconds");
                 } else {
-                    System.out.println("You can't sleep here");
-                    System.out.println("You need a bed to sleep.");
-                    for (Furniture furniture : currentSim.getCurrentRoom().getfurnitureList()) {
-                        if (Bed.class.isAssignableFrom(furniture.getClass())) {
-                            System.out.println("You have a bed, you will automatically moved there to sleep");
-                            currentSim.moveToObject(furniture, 1);
-                            this.sleep(duration, currentSim);
-                            break;
-                        }
+                    int x = duration / 240;
+                    changeMood(30 * x);
+                    changeHealth(20 * x);
+                    currentWorld.gameTimer().startTimer(duration);
+                    setTimeSleep(GameTimer.gameTime);
+                    if (!(getStatus() == "Die")) {
+                        System.out.println(getName() + " has slept for " + duration + " seconds");
                     }
+                    currentWorld.updateWorld(duration);
                 }
             } else {
                 System.out.println("You can't sleep here");
                 System.out.println("You need a bed to sleep.");
                 for (Furniture furniture : currentSim.getCurrentRoom().getfurnitureList()) {
-                    if (Bed.class.isAssignableFrom(furniture.getClass())) {
+                    if (furniture.getName().equals("KING BED") || furniture.getName().equals("SINGLE BED")
+                            || furniture.getName().equals("QUEEN BED")) {
                         System.out.println("You have a bed, you will automatically moved there to sleep");
                         currentSim.moveToObject(furniture, 1);
                         this.sleep(duration, currentSim);
@@ -408,57 +404,44 @@ public class Sim {
 
     public void eat(Edible food) {
         if (!getStatus().equals("Die")) {
-            if (currentObject() != null) {
-                if (currentObject().getName().equals("TABLE AND CHAIR")) {
-                    if (food instanceof CookedFood) {
-                        CookedFood food1 = (CookedFood) food;
-                        if (this.cookedFoodInventory.getInventory().containsKey(food1)) {
-                            currentWorld.gameTimer().startTimer(30);
-                            if (timeDefecateEat.getFirst() > timeDefecateEat.getSecond()) {
-                                setTimeDefecateEat(
-                                        new Pair<Integer, Integer>(timeDefecateEat.getFirst(), GameTimer.gameTime));
-                            }
-                            changeSatiety(food1.getSatietyPoint());
-                            this.cookedFoodInventory.removeItem(food1);
-
-                            if (!(getStatus() == "Die")) {
-                                System.out.println(getName() + " has eaten " + food1.getName());
-                            }
-
-                            currentWorld.checkAllSim(30);
-                        } else {
-                            System.out.println("You don't have this food");
+            if (currentObject() != null && currentObject().getName().equals("TABLE AND CHAIR")) {
+                if (food instanceof Ingredient) {
+                    Ingredient food1 = (Ingredient) food;
+                    if (this.ingredientsInventory.getInventory().containsKey(food1)) {
+                        currentWorld.gameTimer().startTimer(30);
+                        if (timeDefecateEat.getFirst() > timeDefecateEat.getSecond()) {
+                            setTimeDefecateEat(
+                                    new Pair<Integer, Integer>(timeDefecateEat.getFirst(), GameTimer.gameTime));
                         }
-                    } else if (food instanceof Ingredient) {
-                        Ingredient food1 = (Ingredient) food;
-                        if (this.ingredientsInventory.getInventory().containsKey(food1)) {
-                            currentWorld.gameTimer().startTimer(30);
-                            if (timeDefecateEat.getFirst() > timeDefecateEat.getSecond()) {
-                                setTimeDefecateEat(
-                                        new Pair<Integer, Integer>(timeDefecateEat.getFirst(), GameTimer.gameTime));
-                            }
-                            changeSatiety(food1.getSatietyPoint());
-                            this.ingredientsInventory.removeItem(food1);
+                        changeSatiety(food1.getSatietyPoint());
+                        this.ingredientsInventory.removeItem(food1);
 
-                            if (!(getStatus() == "Die")) {
-                                System.out.println(getName() + " has eaten " + food1.getName());
-                            }
-
-                            currentWorld.checkAllSim(30);
-                        } else {
-                            System.out.println("You don't have this food");
+                        if (!(getStatus() == "Die")) {
+                            System.out.println(getName() + " has eaten " + food1.getType());
                         }
+
+                        currentWorld.updateWorld(30);
+                    } else {
+                        System.out.println("You don't have this food");
                     }
-                } else {
-                    System.out.println("You can't eat here");
-                    System.out.println("You need a table and chair to eat.");
-                    for (Furniture furniture : this.currentRoom.getfurnitureList()) {
-                        if (furniture.getName().equals("TABLE AND CHAIR")) {
-                            System.out.println("You have a table and chair, you will automatically moved there to eat");
-                            this.moveToObject(furniture, 1);
-                            this.eat(food);
-                            break;
+                } else if (food instanceof Food) {
+                    Food food1 = (Food) food;
+                    if (this.cookedFoodInventory.getInventory().containsKey(food1)) {
+                        currentWorld.gameTimer().startTimer(30);
+                        if (timeDefecateEat.getFirst() > timeDefecateEat.getSecond()) {
+                            setTimeDefecateEat(
+                                    new Pair<Integer, Integer>(timeDefecateEat.getFirst(), GameTimer.gameTime));
                         }
+                        changeSatiety(food1.getSatietyPoint());
+                        this.cookedFoodInventory.removeItem(food1);
+
+                        if (!(getStatus() == "Die")) {
+                            System.out.println(getName() + " has eaten " + food1.getType());
+                        }
+
+                        currentWorld.updateWorld(30);
+                    } else {
+                        System.out.println("You don't have this food");
                     }
                 }
             } else {
@@ -476,39 +459,46 @@ public class Sim {
         }
     }
 
-    public void cook(CookedFood cookedFood, Sim currentSim) {
+    public void cook(String foodName, Sim currentSim) {
         if (!getStatus().equals("Die")) {
-            if (currentObject() != null) {
-                if (currentObject().getName().equals("GAS STOVE")
-                        || currentObject().getName().equals("ELECTRIC STOVE")) {
-                    List<Ingredient> ingredients = cookedFood.getIngredients();
+            try {
+                if (currentObject() != null && (currentObject().getName().equals("GAS STOVE")
+                        || currentObject().getName().equals("ELECTRIC STOVE"))) {
+                    Set<String> ingredients = FoodFactory.getInstance().getIngredientsOfFood(foodName);
                     Boolean flag = true;
-                    for (Ingredient ingredient : ingredients) {
-                        if (this.ingredientsInventory.getInventory().containsKey(ingredient)) {
-                            if (this.ingredientsInventory.getInventory().get(ingredient) < 1) {
-                                System.out.println("Sorry, " + ingredient.getName() + " is out of stock");
+                    for (String ingredientName : ingredients) {
+                        Ingredient currentIngredient;
+
+                        currentIngredient = (Ingredient) FoodFactory.getInstance().createFood(ingredientName);
+                        if (this.ingredientsInventory.getInventory().containsKey(currentIngredient)) {
+                            if (this.ingredientsInventory.getInventory().get(currentIngredient) < 1) {
+                                System.out.println("Sorry, " + currentIngredient.getType() + " is out of stock");
                                 flag = false;
                             }
+
                         } else {
-                            System.out.println("Sorry, " + ingredient.getName() + " is out of stock");
+                            System.out.println("Sorry, " + currentIngredient.getType() + " is out of stock");
                             flag = false;
                         }
+
                     }
 
                     if (flag == true) {
+                        Food cookedFood = FoodFactory.getInstance().createFood(foodName);
                         Double duration = 1.5 * cookedFood.getSatietyPoint();
                         int duration1 = duration.intValue();
                         currentWorld.gameTimer().startTimer(duration1);
-                        for (Ingredient ingredient : ingredients) {
-                            this.ingredientsInventory.removeItem(ingredient);
+                        for (String ingredientName : ingredients) {
+                            this.ingredientsInventory
+                                    .removeItem((Ingredient) FoodFactory.getInstance().createFood(ingredientName));
                         }
                         this.cookedFoodInventory.addItem(cookedFood, 1);
                         changeMood(10);
                         if (!(getStatus() == "Die")) {
                             System.out
-                                    .println(currentSim.getName() + " has successfully cooked " + cookedFood.getName());
+                                    .println(currentSim.getName() + " has successfully cooked " + cookedFood.getType());
                         }
-                        currentWorld.checkAllSim(duration1);
+                        currentWorld.updateWorld(duration1);
                     } else {
                         System.out.println("You can't cook this because you don't have the ingredients");
                     }
@@ -516,25 +506,16 @@ public class Sim {
                     System.out.println("You can't cook here");
                     System.out.println("You need a stove to cook.");
                     for (Furniture furniture : currentSim.getCurrentRoom().getfurnitureList()) {
-                        if (Stove.class.isAssignableFrom(furniture.getClass())) {
+                        if (furniture.getName().equals("GAS STOVE") || furniture.getName().equals("ELECTRIC STOVE")) {
                             System.out.println("You have a stove, you will automatically moved there to cook");
                             currentSim.moveToObject(furniture, 1);
-                            this.cook(cookedFood, currentSim);
+                            this.cook(foodName, currentSim);
                             break;
                         }
                     }
                 }
-            } else {
-                System.out.println("You can't cook here");
-                System.out.println("You need a stove to cook.");
-                for (Furniture furniture : currentSim.getCurrentRoom().getfurnitureList()) {
-                    if (Stove.class.isAssignableFrom(furniture.getClass())) {
-                        System.out.println("You have a stove, you will automatically moved there to cook");
-                        currentSim.moveToObject(furniture, 1);
-                        this.cook(cookedFood, currentSim);
-                        break;
-                    }
-                }
+            } catch (MissingFoodTypeException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -561,36 +542,22 @@ public class Sim {
                 System.out.println(
                         getName() + " has successfully visited " + house2.getHouseOwner().getName() + "'s house");
             }
-            currentWorld.checkAllSim(duration);
+            currentWorld.updateWorld(duration);
         }
     }
 
     public void defecate() {
         if (!getStatus().equals("Die")) {
-            if (currentObject() != null) {
-                if (currentObject().getName().equals("TOILET")) {
-                    setTimeDefecateEat(
-                            new Pair<Integer, Integer>(GameTimer.gameTime, getTimeDefecateEat().getSecond()));
-                    currentWorld.gameTimer().startTimer(10);
-                    changeSatiety(-20);
-                    changeMood(10);
-                    if (!(getStatus() == "Die")) {
-                        System.out.println(getName() + " has successfully defecated");
-                    }
-                    currentWorld.checkAllSim(10);
-                } else {
-                    System.out.println("You can't defecate here");
-                    System.out.println("You need a toilet to defecate.");
-
-                    for (Furniture furniture : currentRoom.getfurnitureList()) {
-                        if (furniture.getName().equals("TOILET")) {
-                            System.out.println("You have a toilet, you will automatically moved there to defecate");
-                            moveToObject(furniture, 1);
-                            this.defecate();
-                            break;
-                        }
-                    }
+            if (currentObject() != null && (currentObject().getName().equals("TOILET"))) {
+                setTimeDefecateEat(
+                        new Pair<Integer, Integer>(GameTimer.gameTime, getTimeDefecateEat().getSecond()));
+                currentWorld.gameTimer().startTimer(10);
+                changeSatiety(-20);
+                changeMood(10);
+                if (!(getStatus() == "Die")) {
+                    System.out.println(getName() + " has successfully defecated");
                 }
+                currentWorld.updateWorld(10);
             } else {
                 System.out.println("You can't defecate here");
                 System.out.println("You need a toilet to defecate.");
@@ -708,9 +675,9 @@ public class Sim {
 
     public void viewInventory() {
         if (!getStatus().equals("Die")) {
+            int num = 1;
             // Menampilkan inventory furniture
-            System.out.println("Furniture Inventory");
-            String header = String.format("| %-20s | %-10s |", "Item", "Quantity");
+            String header = String.format("| %-4s | %-20s |  %-20s | %-10s |", "No", "Item Name", "Category", "Quantity");
             String line = "-".repeat(header.length());
 
             System.out.println(line);
@@ -719,7 +686,7 @@ public class Sim {
 
             for (Furniture item : furnitureInventory.getInventory().keySet()) {
                 int quantity = furnitureInventory.getInventory().get(item);
-                String row = String.format("| %-20s | %-10d |", item.getName(), quantity);
+                String row = String.format("| %-4s | %-20s | %-20s | %-10d |", num, item.getName(), item.getClass(), quantity);
                 System.out.println(row);
             }
             System.out.println(line);
@@ -730,9 +697,9 @@ public class Sim {
             System.out.println(header);
             System.out.println(line);
 
-            for (CookedFood item : cookedFoodInventory.getInventory().keySet()) {
+            for (Food item : cookedFoodInventory.getInventory().keySet()) {
                 int quantity = cookedFoodInventory.getInventory().get(item);
-                String row = String.format("| %-20s | %-10d |", item.getName(), quantity);
+                String row = String.format("| %-4s | %-20s | %-20s | %-10d |", num, item.getType(), item.getClass(), quantity);
                 System.out.println(row);
             }
             System.out.println(line);
@@ -745,7 +712,7 @@ public class Sim {
 
             for (Ingredient item : ingredientsInventory.getInventory().keySet()) {
                 int quantity = ingredientsInventory.getInventory().get(item);
-                String row = String.format("| %-20s | %-10d |", item.getName(), quantity);
+                String row = String.format("| %-4s | %-20s | %-20s | %-10d |", num, item.getType(), item.getClass(), quantity);
                 System.out.println(row);
             }
             System.out.println(line);
@@ -788,9 +755,9 @@ public class Sim {
             System.out.println(header);
             System.out.println(line);
 
-            for (CookedFood item : cookedFoodInventory.getInventory().keySet()) {
+            for (Food item : cookedFoodInventory.getInventory().keySet()) {
                 int quantity = cookedFoodInventory.getInventory().get(item);
-                String row = String.format("| %-4s | %-20s | %-10d |", num, item.getName(), quantity);
+                String row = String.format("| %-4s | %-20s | %-10d |", num, item.getType(), quantity);
                 System.out.println(row);
                 num++;
             }
@@ -804,7 +771,7 @@ public class Sim {
 
             for (Ingredient item : ingredientsInventory.getInventory().keySet()) {
                 int quantity = ingredientsInventory.getInventory().get(item);
-                String row = String.format("| %-4s | %-20s | %-10d |", num, item.getName(), quantity);
+                String row = String.format("| %-4s | %-20s | %-10d |", num, item.getType(), quantity);
                 System.out.println(row);
                 num++;
             }
@@ -825,48 +792,45 @@ public class Sim {
 
     public void viewTime(Sim currentSim) {
         if (!getStatus().equals("Die")) {
-            if (currentObject() != null) {
-                if (currentObject().getName().equals("CLOCK")) {
-                    System.out.println("The time is : Day " + currentWorld.gameTimer().getDay() + 
-                                                    " Minutes " + currentWorld.gameTimer().getSecond()/60 +
-                                                    " Seconds " + currentWorld.gameTimer().getSecond()%60);
-                    // Menampilkan sisa waktu yang ada pada hari ini
-                    int remainingTime = 720 - currentWorld.gameTimer().getSecond();
-                    System.out.println("Remaining time : " + remainingTime + " seconds");
+            if (currentObject() != null && (currentObject().getName().equals("CLOCK"))) {
+                System.out.println("The time is : Day " + currentWorld.gameTimer().getDay() +
+                        " Minutes " + currentWorld.gameTimer().getSecond() / 60 +
+                        " Seconds " + currentWorld.gameTimer().getSecond() % 60);
+                // Menampilkan sisa waktu yang ada pada hari ini
+                int remainingTime = 720 - currentWorld.gameTimer().getSecond();
+                System.out.println("Remaining time : " + remainingTime + " seconds");
 
-                    //Menampilkan sisa waktu untuk tindakan yang bisa ditinggal
-                    if (isUpgradeHouse.getFirst()){
-                        System.out.println("Remaining time for Upgrade House : " +  isUpgradeHouse.getSecond()/60 + " minutes " + isUpgradeHouse.getSecond()%60 + " seconds");
-                    }
-                    if (!deliveryList.isEmpty()){
-                        for (UpgradeState<Purchasable, Integer, Integer> ingredient : deliveryList){
-                            System.out.println("Remaining time for Delivery " + ingredient.getFirst().getClass().getName() + " : " + ingredient.getThird()/60 + " minutes " + ingredient.getThird()%60 + " seconds");
-                        }
-                    }
-                } else {
-                    System.out.println("You can't view the time");
-                    System.out.println("You need a clock to view time.");
-
-                    for (Furniture furniture : currentSim.getCurrentRoom().getfurnitureList()) {
-                        if (furniture.getName().equals("CLOCK")) {
-                            System.out.println("You have a clock, you will automatically moved there to view time");
-                            currentSim.moveToObject(furniture, 1);
-                            this.viewTime(currentSim);
-                            break;
-                        }
+                // Menampilkan sisa waktu untuk tindakan yang bisa ditinggal
+                if (isUpgradeHouse.getFirst()) {
+                    System.out.println("Remaining time for Upgrade House : " + isUpgradeHouse.getSecond() / 60
+                            + " minutes " + isUpgradeHouse.getSecond() % 60 + " seconds");
+                }
+                if (!deliveryList.isEmpty()) {
+                    for (UpgradeState<Purchasable, Integer, Integer> ingredient : deliveryList) {
+                        System.out.println("Remaining time for Delivery " + ingredient.getFirst().getType()
+                                + " : " + ingredient.getThird() / 60 + " minutes " + ingredient.getThird() % 60
+                                + " seconds");
                     }
                 }
             } else {
                 System.out.println("You can't view the time");
                 System.out.println("You need a clock to view time.");
-
+                Boolean flag = false;
                 for (Furniture furniture : currentSim.getCurrentRoom().getfurnitureList()) {
+                    // if(!furniture.getName().equals("CLOCK")){
+                    //     System.out.println("You dont have clock in this room. Please place it first");
+                    // }
                     if (furniture.getName().equals("CLOCK")) {
                         System.out.println("You have a clock, you will automatically moved there to view time");
                         currentSim.moveToObject(furniture, 1);
                         this.viewTime(currentSim);
+                        flag = true;
                         break;
                     }
+                }
+                if (!flag)
+                {
+                    System.out.println("You dont have clock in this room. Please place it first");
                 }
             }
         }
@@ -875,30 +839,17 @@ public class Sim {
     // Another Action Note : Masih disesuain sama keinginan kelompok
     public void nubes(int duration) {
         if (!getStatus().equals("Die")) {
-            if (currentObject() != null) {
-                if (currentObject().getName().equals("COMPUTER")) {
-                    if (duration < 20) {
-                        System.out.println("You have to nubes for at least 20 seconds");
-                    } else {
-                        currentWorld.gameTimer().startTimer(duration);
-                        changeMood(-10 * (duration / 20));
-                        changeHealth(-5 * (duration / 20));
-                        if (!getStatus().equals("Die")) {
-                            System.out.println("You have nubes for " + duration + " seconds");
-                        }
-                        currentWorld.checkAllSim(duration);
-                    }
+            if (currentObject() != null && currentObject().getName().equals("COMPUTER")) {
+                if (duration < 20) {
+                    System.out.println("You have to nubes for at least 20 seconds");
                 } else {
-                    System.out.println("You can't nubes here");
-                    System.out.println("You need a computer to nubes.");
-                    for (Furniture furniture : currentRoom.getfurnitureList()) {
-                        if (furniture.getName().equals("COMPUTER")) {
-                            System.out.println("You have a computer, you will automatically moved there to nubes");
-                            moveToObject(furniture, 1);
-                            this.nubes(duration);
-                            break;
-                        }
+                    currentWorld.gameTimer().startTimer(duration);
+                    changeMood(-10 * (duration / 20));
+                    changeHealth(-5 * (duration / 20));
+                    if (!getStatus().equals("Die")) {
+                        System.out.println("You have nubes for " + duration + " seconds");
                     }
+                    currentWorld.updateWorld(duration);
                 }
             } else {
                 System.out.println("You can't nubes here");
@@ -917,27 +868,14 @@ public class Sim {
 
     public void playGame(int duration) {
         if (!getStatus().equals("Die")) {
-            if (currentObject() != null) {
-                if (currentObject().getName().equals("COMPUTER")) {
-                    currentWorld.gameTimer().startTimer(duration);
-                    changeMood(10 * (duration / 20));
-                    changeHealth(-1 * (duration / 20));
-                    if (!getStatus().equals("Die")) {
-                        System.out.println("You have play game for " + duration + " seconds");
-                    }
-                    currentWorld.checkAllSim(duration);
-                } else {
-                    System.out.println("You can't play game here");
-                    System.out.println("You need a computer to play game.");
-                    for (Furniture furniture : currentRoom.getfurnitureList()) {
-                        if (furniture.getName().equals("COMPUTER")) {
-                            System.out.println("You have a computer, you will automatically moved there to play game");
-                            moveToObject(furniture, 1);
-                            this.playGame(duration);
-                            break;
-                        }
-                    }
+            if (currentObject() != null && currentObject().getName().equals("COMPUTER")) {
+                currentWorld.gameTimer().startTimer(duration);
+                changeMood(10 * (duration / 20));
+                changeHealth(-1 * (duration / 20));
+                if (!getStatus().equals("Die")) {
+                    System.out.println("You have play game for " + duration + " seconds");
                 }
+                currentWorld.updateWorld(duration);
             } else {
                 System.out.println("You can't play game here");
                 System.out.println("You need a computer to play game.");
@@ -955,28 +893,14 @@ public class Sim {
 
     public void listenMusic(int duration) {
         if (!getStatus().equals("Die")) {
-            if (currentObject() != null) {
-                if (currentObject().getName().equals("COMPUTER") || currentObject().getName().equals("SPEAKER")) {
-                    currentWorld.gameTimer().startTimer(duration);
-                    changeMood(duration / 10);
-                    if (!getStatus().equals("Die")) {
-                        System.out.println("You have listen music for " + duration + " seconds");
-                    }
-                    currentWorld.checkAllSim(duration);
-                } else {
-                    System.out.println("You can't listen music here");
-                    System.out.println("You need a computer or speaker to listen music.");
-                    for (Furniture furniture : currentRoom.getfurnitureList()) {
-                        if (furniture.getName().equals("COMPUTER")
-                                || furniture.getName().equals("SPEAKER")) {
-                            System.out.println("You have a " + furniture.getName()
-                                    + " you will automatically moved there to listen music");
-                            moveToObject(furniture, 1);
-                            this.listenMusic(duration);
-                            break;
-                        }
-                    }
+            if (currentObject() != null
+                    && (currentObject().getName().equals("COMPUTER") || currentObject().getName().equals("SPEAKER"))) {
+                currentWorld.gameTimer().startTimer(duration);
+                changeMood(duration / 10);
+                if (!getStatus().equals("Die")) {
+                    System.out.println("You have listen music for " + duration + " seconds");
                 }
+                currentWorld.updateWorld(duration);
             } else {
                 System.out.println("You can't listen music here");
                 System.out.println("You need a computer or speaker to listen music.");
@@ -996,26 +920,13 @@ public class Sim {
 
     public void watchTV(int duration) {
         if (!getStatus().equals("Die")) {
-            if (currentObject() != null) {
-                if (currentObject().getName().equals("TV")) {
-                    currentWorld.gameTimer().startTimer(duration);
-                    changeMood(5 * (duration / 10));
-                    if (!getStatus().equals("Die")) {
-                        System.out.println("You have watch TV for " + duration + " seconds");
-                    }
-                    currentWorld.checkAllSim(duration);
-                } else {
-                    System.out.println("You can't watch here");
-                    System.out.println("You need a TV to watch.");
-                    for (Furniture furniture : currentRoom.getfurnitureList()) {
-                        if (furniture.getName().equals("TV")) {
-                            System.out.println("You have a TV, you will automatically moved there to watch");
-                            moveToObject(furniture, 1);
-                            this.watchTV(duration);
-                            break;
-                        }
-                    }
+            if (currentObject() != null && currentObject().getName().equals("TV")) {
+                currentWorld.gameTimer().startTimer(duration);
+                changeMood(5 * (duration / 10));
+                if (!getStatus().equals("Die")) {
+                    System.out.println("You have watch TV for " + duration + " seconds");
                 }
+                currentWorld.updateWorld(duration);
             } else {
                 System.out.println("You can't watch here");
                 System.out.println("You need a TV to watch.");
@@ -1033,27 +944,14 @@ public class Sim {
 
     public void bath(int duration) {
         if (!getStatus().equals("Die")) {
-            if (currentObject() != null) {
-                if (currentObject().getName().equals("SHOWER")) {
-                    currentWorld.gameTimer().startTimer(duration);
-                    changeMood(5 * (duration / 10));
-                    changeHealth(5 * (duration / 10));
-                    if (!getStatus().equals("Die")) {
-                        System.out.println("You have bath for " + duration + " seconds");
-                    }
-                    currentWorld.checkAllSim(duration);
-                } else {
-                    System.out.println("You can't bath here");
-                    System.out.println("You need a shower to bath.");
-                    for (Furniture furniture : currentRoom.getfurnitureList()) {
-                        if (furniture.getName().equals("SHOWER")) {
-                            System.out.println("You have a shower, you will automatically moved there to bath");
-                            moveToObject(furniture, 1);
-                            this.bath(duration);
-                            break;
-                        }
-                    }
+            if (currentObject() != null && currentObject().getName().equals("SHOWER")) {
+                currentWorld.gameTimer().startTimer(duration);
+                changeMood(5 * (duration / 10));
+                changeHealth(5 * (duration / 10));
+                if (!getStatus().equals("Die")) {
+                    System.out.println("You have bath for " + duration + " seconds");
                 }
+                currentWorld.updateWorld(duration);
             } else {
                 System.out.println("You can't bath here");
                 System.out.println("You need a shower to bath.");
@@ -1077,32 +975,17 @@ public class Sim {
                 if (this.currentRoom != sim2.currentRoom) {
                     System.out.println("You can't meet up with the sim because the sim is not in the same room");
                 } else {
-                    if (this.currentObject() != null && sim2.currentObject() != null) {
-                        if (sim1.currentObject().getName().equals("SOFA")
-                                && sim2.currentObject().getName().equals("SOFA")) {
-                            currentWorld.gameTimer().startTimer(duration);
-                            sim1.changeMood(5 * (duration / 10));
-                            sim1.changeHealth(5 * (duration / 10));
-                            sim2.changeMood(5 * (duration / 10));
-                            sim2.changeHealth(5 * (duration / 10));
-                            if (!getStatus().equals("Die")) {
-                                System.out.println(
-                                        "You have meet up with " + sim2.getName() + " for " + duration + " seconds");
-                            }
-                            currentWorld.checkAllSim(duration);
-                        } else {
-                            System.out.println("You can't meet up here");
-                            System.out.println("You need a sofa to meet up.");
-                            for (Furniture furniture : sim1.getCurrentRoom().getfurnitureList()) {
-                                if (furniture.getName().equals("SOFA")) {
-                                    System.out
-                                            .println("You have a sofa, you will automatically moved there to meet up");
-                                    sim1.moveToObject(furniture, 1);
-                                    sim2.moveToObject(furniture, 1);
-                                    this.meetup(duration, sim1, sim2);
-                                    break;
-                                }
-                            }
+                    if (this.currentObject() != null && sim2.currentObject() != null
+                            && sim1.currentObject().getName().equals("SOFA")
+                            && sim2.currentObject().getName().equals("SOFA")) {
+                        currentWorld.gameTimer().startTimer(duration);
+                        sim1.changeMood(5 * (duration / 10));
+                        sim1.changeHealth(5 * (duration / 10));
+                        sim2.changeMood(5 * (duration / 10));
+                        sim2.changeHealth(5 * (duration / 10));
+                        if (!getStatus().equals("Die")) {
+                            System.out.println(
+                                    "You have meet up with " + sim2.getName() + " for " + duration + " seconds");
                         }
                     } else {
                         System.out.println("You can't meet up here");
@@ -1124,27 +1007,14 @@ public class Sim {
 
     public void call(int duration) {
         if (!getStatus().equals("Die")) {
-            if (currentObject() != null) {
-                if (currentObject().getName().equals("Telephone")) {
-                    currentWorld.gameTimer().startTimer(duration);
-                    changeMood(5 * (duration / 10));
-                    balance -= 5 * (duration / 30);
-                    if (!getStatus().equals("Die")) {
-                        System.out.println("You have call for " + duration + " seconds");
-                    }
-                    currentWorld.checkAllSim(duration);
-                } else {
-                    System.out.println("You can't call here");
-                    System.out.println("You need a telephone to call.");
-                    for (Furniture furniture : currentRoom.getfurnitureList()) {
-                        if (furniture.getName().equals("Telephone")) {
-                            System.out.println("You have a telephone, you will automatically moved there to call");
-                            moveToObject(furniture, 1);
-                            this.call(duration);
-                            break;
-                        }
-                    }
+            if (currentObject() != null && currentObject().getName().equals("Telephone")) {
+                currentWorld.gameTimer().startTimer(duration);
+                changeMood(5 * (duration / 10));
+                balance -= 5 * (duration / 30);
+                if (!getStatus().equals("Die")) {
+                    System.out.println("You have call for " + duration + " seconds");
                 }
+                currentWorld.updateWorld(duration);
             } else {
                 System.out.println("You can't call here");
                 System.out.println("You need a telephone to call.");

@@ -401,8 +401,16 @@ public class Room {
                 for (Sim sim : copySimList) {
                     if (sim.getCurrentPosition().getX() == j && sim.getCurrentPosition().getY() == i) {
                         if (space[i][j] != null) {
+                            if (space[i][j].getX() >= 10)
+                            {
+                                System.out.print(" " + space[i][j].getX() + "," + space[i][j].getY() + " ("
+                                    + sim.getSimNumber() + ")" + "  |");
+                            }
+                            else
+                            {
                             System.out.print("  " + space[i][j].getX() + "," + space[i][j].getY() + " ("
                                     + sim.getSimNumber() + ")" + "  |");
+                            }
                         } else {
                             System.out.print("     " + sim.getSimNumber() + "     |");
                         }
@@ -410,7 +418,14 @@ public class Room {
                         if (space[i][j] == null) {
                             System.out.print("    0,0    |");
                         } else {
-                            System.out.print("    " + space[i][j].getX() + "," + space[i][j].getY() + "    |");
+                            if (space[i][j].getX() >=10)
+                            {
+                                System.out.print("   " + space[i][j].getX() + "," + space[i][j].getY() + "    |");
+                            }
+                            else
+                            {
+                                System.out.print("    " + space[i][j].getX() + "," + space[i][j].getY() + "    |");
+                            }
                         }
                     }
                 }
