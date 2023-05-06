@@ -8,17 +8,16 @@ import com.simplicity.Interfaces.Edible;
 public class CookedFood extends GameObject implements Edible {
 
     private MyCookedFood myCookedFood;
-    private final static String type = "CookedFood";
-
+    private final static String type = "COOKEDFOOD";
+    
     public enum MyCookedFood {
         
-        CHICKENRICE("Chicken Rice", Arrays.asList(new Ingredient("Rice"), new Ingredient("Chicken")), 16),
-        CURRYRICE("Curry Rice", Arrays.asList(new Ingredient("Rice"), new Ingredient("Potato"), new Ingredient("Carrot"), new Ingredient("Beef")), 30),
-        PEANUTMILK("Peanut Milk", Arrays.asList(new Ingredient("Milk"), new Ingredient("Peanut")), 5),
-        STIRFRY("Stir Fry", Arrays.asList(new Ingredient("Carrot"), new Ingredient("Spinach")), 5),
-        STEAK("Steak", Arrays.asList(new Ingredient("Potato"), new Ingredient("Beef")), 22);
+        CHICKENRICE("CHICKEN RICE", Arrays.asList(new Ingredient("Rice"), new Ingredient("Chicken")), 16),
+        CURRYRICE("CURRY RICE", Arrays.asList(new Ingredient("Rice"), new Ingredient("Potato"), new Ingredient("Carrot"), new Ingredient("Beef")), 30),
+        PEANUTMILK("PEANUT MILK", Arrays.asList(new Ingredient("Milk"), new Ingredient("Peanut")), 5),
+        STIRFRY("STIR FRY", Arrays.asList(new Ingredient("Carrot"), new Ingredient("Spinach")), 5),
+        STEAK("STEAK", Arrays.asList(new Ingredient("Potato"), new Ingredient("Beef")), 22);
 
-        private final String type = "CookedFood";
         private final String name;
         private final List<Ingredient> ingredients;
         private final int satietyPoint;
@@ -44,19 +43,19 @@ public class CookedFood extends GameObject implements Edible {
     public CookedFood(String name) {
         super(type);
         switch(name) {
-            case "Chicken Rice":
+            case "CHICKEN RICE":
                 this.myCookedFood = MyCookedFood.CHICKENRICE;
                 break;
-            case "Curry Rice":
+            case "CURRY RICE":
                 this.myCookedFood = MyCookedFood.CURRYRICE;
                 break;
-            case "Peanut Milk":
+            case "PEANUT MILK":
                 this.myCookedFood = MyCookedFood.PEANUTMILK;
                 break;
-            case "Stir Fry":
+            case "STIR FRY":
                 this.myCookedFood = MyCookedFood.STIRFRY;
                 break;
-            case "Steak":
+            case "STEAK":
                 this.myCookedFood = MyCookedFood.STEAK;
                 break;
             default:
@@ -83,6 +82,4 @@ public class CookedFood extends GameObject implements Edible {
     public List<Ingredient> getIngredients(){
         return myCookedFood.ingredients;
     } 
-
-    
 }

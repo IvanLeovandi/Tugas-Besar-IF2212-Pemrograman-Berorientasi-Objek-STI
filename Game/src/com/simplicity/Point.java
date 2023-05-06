@@ -7,20 +7,20 @@ public class Point {
     private int y;
 
     public Point(int x, int y) {
-        setPoint(x, y);
+        setPoint(Integer.valueOf(x), Integer.valueOf(y));
     }
 
     public int getX() {
-        return x;
+        return Integer.valueOf(x);
     }
 
     public int getY() {
-        return y;
+        return Integer.valueOf(y);
     }
 
     public void setPoint(int x, int y) {
-        this.x = x;
-        this.y = y;
+        this.x = Integer.valueOf(x);
+        this.y = Integer.valueOf(y);
     }
 
     @Override
@@ -31,7 +31,7 @@ public class Point {
         if (o == null || !getClass().isAssignableFrom(o.getClass())) {
             return false;
         }
-        return getX() == ((Point)o).getX() && getY() == ((Point)o).getY();
+        return getX() == ((Point) o).getX() && getY() == ((Point) o).getY();
     }
 
     @Override
@@ -41,7 +41,7 @@ public class Point {
 
     @Override
     public String toString() {
-        return  "Point{" +
+        return "Point{" +
                 "x= " + x +
                 ", y= " + y +
                 "}";

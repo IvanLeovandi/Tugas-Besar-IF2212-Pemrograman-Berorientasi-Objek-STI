@@ -14,6 +14,7 @@ import com.simplicity.Interfaces.Listeners.SimCreateListener;
 import com.simplicity.UI.SimplicityFrame;
 
 public class SimplicityManager implements GameListener, SimCreateListener {
+    private static final SimplicityManager instance = new SimplicityManager(World.getInstance());
     private SimplicityFrame frame;
     private JPanel mainMenuPanel;
     private GamePanel gamePanel;
@@ -23,8 +24,12 @@ public class SimplicityManager implements GameListener, SimCreateListener {
     private Sim currentSim = null;
     private GameHandler gameHandler = new GameHandler();
 
-    SimplicityManager(World world) {
+    private SimplicityManager(World world) {
         this.world = world;
+    }
+
+    public static SimplicityManager getInstance() {
+        return instance;
     }
 
     public void setFrame(SimplicityFrame newFrame) {
@@ -66,7 +71,7 @@ public class SimplicityManager implements GameListener, SimCreateListener {
     @Override
     public void onPlay() {
         if (world == null) {
-            world = new World(64, 64);
+            world = World.getInstance();
         }
         loadingTitle.setFont(new Font(null, Font.BOLD, 30));
         loadingTitle.setPreferredSize(new Dimension(1280, 720));
