@@ -30,7 +30,7 @@ public class GameTimer{
     public void startTimer(int duration) {
         try {
             for (int i = 0; i < duration; i++){
-                Thread.sleep(0);
+                Thread.sleep(100);
                 gameTime++;
             }
         } catch (InterruptedException e) {
@@ -38,13 +38,5 @@ public class GameTimer{
         }
         setDay();
         setSecond();
-    }
-    public static void main(String[] args) {
-        GameTimer game = new GameTimer();
-        game.startTimer(30); // durasi permainan selama 30 detik
-
-        game.startTimer(40); // durasi permainan selama 10 detik
-
-        System.out.println("Hasil "  + GameTimer.gameTime);
     }
 }

@@ -4,30 +4,9 @@ import com.simplicity.Exceptions.InAppendableSimWorld;
 import com.simplicity.Exceptions.InvalidDurationException;
 import com.simplicity.Exceptions.MissingFoodTypeException;
 import com.simplicity.Exceptions.OverlapingHouseException;
-
-// // gui version
-// import java.util.Random;
-
-// import com.simplicity.UI.MainMenu;
-// import com.simplicity.UI.SimplicityFrame;
-
-// public class Simplicity {
-//     public static void main(String[] args) {
-//         Random rand = new Random();
-
-//         SimplicityManager manager = new SimplicityManager();
-//         Point p = new Point(rand.nextInt(64), rand.nextInt(64));
-//         manager.setWorld(new World(64, 64));
-//         manager.getWorld().setHouse(p, new House(p));
-//         manager.setMainMenuPanel(new MainMenu(manager));
-//         manager.setFrame(new SimplicityFrame(manager.getMainMenuPanel()));
-//         manager.startWindow();
-
-// cli version
 import com.simplicity.Exceptions.OverlapingRoomObjectException;
 import com.simplicity.Foods.*;
 import com.simplicity.Furniture.*;
-import com.simplicity.Interfaces.Edible;
 
 import java.util.*;
 
@@ -36,8 +15,9 @@ public class Simplicity {
 
     // private static int x = 0;
     // private static int y = 0;
-    private static Sim currentSim;
-    private static ArrayList<Sim> simList = new ArrayList<Sim>();
+    private static Sim currentSim; 
+    
+    private static ArrayList<Sim> simList =  new ArrayList<>();
     private static final String[] mainMenu = { "ACTION", "SIM INFO", "CURRENT LOCATION", "VIEW INVENTORY",
             "UPGRADE HOUSE", "MOVE ROOM", "EDIT ROOM", "ADD SIM", "CHANGE SIM", "LIST OBJECT", "GO TO OBJECT", "HELP",
             "QUIT GAME" };
@@ -126,24 +106,31 @@ public class Simplicity {
                         System.out.println("\nHalo " + currentSim.getName());
 
                         while (play) {
-                            // TODO: update dead
+                            // update dead
                             if (currentSim.getStatus().equals("Die")) {
-                                if (simList.size() > 1) {
+                                if (World.getInstance().getMap().size() >= 1) {
                                     simList.remove(currentSim);
                                     System.out.println("Sorry, your current sim has died");
                                     System.out.println("Do you want to play with other sim?");
                                     System.out.println("1. Yes");
                                     System.out.println("2. No");
                                     choice = promptInt();
-                                    switch (choice) {
-                                        case 1:
-                                            simplicity.printSimsList();
-                                            choice = promptInt("Which Sim do you want to play with?");
-                                            currentSim = simList.get(choice - 1);
-                                            break;
-                                        case 2:
-                                            System.exit(0);
-                                            break;
+                                    try{
+                                        switch (choice) {
+                                            case 1:
+                                                simplicity.printSimsList();
+                                                choice = promptInt("Which Sim do you want to play with?");
+                                                currentSim = simList.get(choice - 1);
+                                                break;
+                                            case 2:
+                                                System.exit(0);
+                                                break;
+                                            default:
+                                                System.out.println("Please enter either 1 or 2");
+                                                break;
+                                        }
+                                    }   catch (InputMismatchException e) {
+                                        System.out.println("Wrong input, please input a number");
                                     }
                                 } else {
                                     System.out.println("You don't have any sim left. Game Over...");
@@ -158,7 +145,7 @@ public class Simplicity {
                                 case 1:
                                     simplicity.printActionMenu();
                                     actionMenuChoice = promptInt();
-
+                                try {
                                     switch (actionMenuChoice) {
                                         case 1:
                                             doneInput = false;
@@ -187,7 +174,7 @@ public class Simplicity {
                                             break;
 
                                         case 4:
-                                            // TODO: eat
+                                            // eat
                                             currentSim.printFoodInventory();
                                             System.out.println("What do you want to eat?");
                                             System.out.println("1. Cooked Food");
@@ -200,41 +187,58 @@ public class Simplicity {
                                                         System.out.println(
                                                                 "You don't have any cooked food. Please cook some first before you eat");
                                                     } else {
-                                                        doneInput = false;
-                                                        while (!doneInput) {
-                                                            choice = promptInt("Which cooked food do you want to eat?");
-                                                            String food = currentSim.getCookedFoodInventory()
-                                                                    .getInventory()
-                                                                    .keySet().toArray()[choice - 1].toString();
-                                                            try {
-                                                                currentSim.eat(
+                                                        String food = null;
+                                                        choice = promptInt("Which cooked food do you want to eat?");
+                                                        for (Food item : currentSim.getCookedFoodInventory().getInventory().keySet())
+                                                        {
+                                                            choice--;
+                                                            if (choice == 0)
+                                                            {
+                                                                food = item.getType();
+                                                                break;
+                                                            }
+                                                        }
+                                                        try {
+                                                            currentSim.eat(
                                                                         FoodFactory.getInstance().createFood(food));
                                                             } catch (MissingFoodTypeException e) {
                                                                 System.out.println(e.getMessage());
                                                             }
                                                         }
-                                                    }
                                                     break;
                                                 case 2:
-                                                    if (currentSim.getCookedFoodInventory().getInventory()
+                                                    if (currentSim.getIngredientsInventory().getInventory()
                                                             .size() == 0) {
                                                         System.out.println(
-                                                                "You don't have any cooked food. Please cook some first before you eat");
+                                                                "You don't have ingredients. Please buy some before you eat");
                                                     } else {
-                                                        System.out.println();
-                                                        choice = promptInt("Which cooked food do you want to eat?");
-                                                        String food = currentSim.getCookedFoodInventory().getInventory()
-                                                                .keySet().toArray()[choice - 1].toString();
-                                                        // currentSim.eat(foodFactory.createFood(food));
-                                                    }
+                                                        String food = null;
+                                                        choice = promptInt("Which ingredient do you want to eat?");
+                                                        for (Food item : currentSim.getIngredientsInventory().getInventory().keySet())
+                                                        {
+                                                            choice--;
+                                                            if (choice == 0)
+                                                            {
+                                                                food = item.getType();
+                                                                break;
+                                                            }
+                                                        }
+                                                        try {
+                                                            currentSim.eat(
+                                                                        FoodFactory.getInstance().createFood(food));
+                                                            } catch (MissingFoodTypeException e) {
+                                                                System.out.println(e.getMessage());
+                                                            }
+                                                        }
+                                                    break;
+                                                default:
+                                                    System.out.println("Please enter either 1 or 2");
                                                     break;
                                             }
-                                            // currentSim.eat(foodFactory.createFood(choice));
-
                                             break;
 
                                         case 5:
-                                            // TODO: cook
+                                            // cook
                                             FoodFactory.getInstance().printCookableMenu();
                                             int cookedFoodChoice = promptInt("What do you want to cook?");
                                             currentSim.cook(FoodFactory.getInstance().getCookableMenu().keySet()
@@ -242,13 +246,13 @@ public class Simplicity {
                                             break;
 
                                         case 6:
-                                            // TODO: visit
+                                            // visit
                                             System.out.println(
                                                     "You are now in " + currentSim.getHouse().getLocation() + "house");
                                             world.printHouseList();
                                             choice = promptInt("Which house do you want to visit?");
                                             currentSim.visit(currentSim.getCurrentHouse(),
-                                                    (House) (world.getMap().keySet().toArray()[choice - 1]));
+                                                    ((Sim)(world.getMap().values().toArray()[choice-1])).getHouse());
                                             break;
 
                                         case 7:
@@ -307,7 +311,7 @@ public class Simplicity {
                                             break;
 
                                         case 15:
-                                            // TODO: buy
+                                            // buy
                                             System.out.println("What kind of item do you want to buy?");
                                             System.out.println("1. INGREDIENT");
                                             System.out.println("2. FURNITURE");
@@ -413,6 +417,9 @@ public class Simplicity {
                                             System.out.println("Please input the correct menu number");
                                             break;
                                     }
+                                } catch (InputMismatchException e) {
+                                    System.out.println("Wrong input, please input a number");
+                                }
                                     break;
 
                                 case 2:
@@ -490,7 +497,7 @@ public class Simplicity {
                                     break;
 
                                 case 7:
-                                    // TODO:edit room
+                                    // edit room
                                     System.out.println("What do you want to do?");
                                     System.out.println("1. BUY ITEM");
                                     System.out.println("2. MOVE ITEM");
@@ -517,36 +524,43 @@ public class Simplicity {
                                             currentSim.buy(new Furniture(furnitureMenu[playMenuChoice - 1]), amount);
                                             break;
                                         case 2:
-                                            // TODO:
-                                            currentSim.getCurrentRoom().printRoom();
-                                            System.out.println("Please chose the point you want to move");
-                                            System.out.println();
-                                            int x = promptInt("X");
-                                            System.out.println();
-                                            int y = promptInt("Y");
-                                            if (currentSim.getCurrentRoom().checkPoint(new Point(x, y)) == null) {
-                                                System.out.println("There is no object there!");
-                                            } else {
-                                                Furniture movedFurniture = currentSim.getCurrentRoom()
-                                                        .checkPoint(new Point(x, y));
-                                                currentSim.getCurrentRoom().removeFurniture(new Point(x, y));
-                                                System.out.println("Please chose the new point");
-                                                int x2 = promptInt("X");
-                                                int y2 = promptInt("Y");
-                                                int rotation = promptInt("Please chose the rotation 1/2/3/4!");
-                                                do {
-                                                    try {
-                                                        currentSim.getCurrentRoom().placeFurniture(new Point(x2, y2),
-                                                                rotation, movedFurniture);
-                                                        break;
-                                                    } catch (OverlapingRoomObjectException e) {
-                                                        System.out.println(e.getMessage());
-                                                    }
+                                            if (currentSim.getCurrentRoom().getfurnitureList().size() == 0)
+                                            {
+                                                System.out.println("There is nothing to move!");
+                                            }
+                                            else
+                                            {
+                                                currentSim.getCurrentRoom().printRoom();
+                                                System.out.println("Please chose the point you want to move");
+                                                System.out.println();
+                                                int x = promptInt("X");
+                                                System.out.println();
+                                                int y = promptInt("Y");
+                                                if (currentSim.getCurrentRoom().checkPoint(new Point(x, y)) == null) {
+                                                    System.out.println("There is no object there!");
+                                                } else {
+                                                    Furniture movedFurniture = currentSim.getCurrentRoom()
+                                                            .checkPoint(new Point(x, y));
+                                                    currentSim.getCurrentRoom().removeFurniture(new Point(x, y));
+                                                    // currentSim.getCurrentRoom().printRoom();
                                                     System.out.println("Please chose the new point");
-                                                    x2 = promptInt("X");
-                                                    y2 = promptInt("Y");
-                                                    rotation = promptInt("Please chose the rotation 1/2/3/4!");
-                                                } while (true);
+                                                    int x2 = promptInt("X");
+                                                    int y2 = promptInt("Y");
+                                                    int rotation = promptInt("Please chose the rotation 1/2/3/4!");
+                                                    do {
+                                                        try {
+                                                            currentSim.getCurrentRoom().placeFurniture(new Point(x2, y2),
+                                                                    rotation, movedFurniture);
+                                                            break;
+                                                        } catch (OverlapingRoomObjectException e) {
+                                                            System.out.println(e.getMessage());
+                                                        }
+                                                        System.out.println("Please chose the new point");
+                                                        x2 = promptInt("X");
+                                                        y2 = promptInt("Y");
+                                                        rotation = promptInt("Please chose the rotation 1/2/3/4!");
+                                                    } while (true);
+                                                }
                                             }
                                             break;
                                         default:
@@ -556,7 +570,7 @@ public class Simplicity {
                                     break;
 
                                 case 8:
-                                    // TODO: add sim
+                                    // add sim
                                     System.out.println("Enter your sim name");
                                     System.out.print("\n>> ");
                                     input = scan.nextLine();
@@ -569,7 +583,7 @@ public class Simplicity {
                                     break;
 
                                 case 9:
-                                    // TODO: change sim
+                                    // change sim
                                     simplicity.printSimsList();
                                     choice = promptInt("Which Sim do you want to play with?");
                                     if (choice > simList.size()) {
@@ -580,7 +594,7 @@ public class Simplicity {
                                     break;
 
                                 case 10:
-                                    // TODO:list object
+                                    // list object
                                     if (currentSim.getCurrentRoom().getfurnitureList().size() > 0) {
                                         currentSim.getCurrentRoom().printFurnitureList();
                                     } else {
@@ -591,8 +605,8 @@ public class Simplicity {
                                 case 11:
                                     // go to object
                                     if (currentSim.getCurrentRoom().getfurnitureList().size() != 0) {
-                                        System.out.println(currentSim.getCurrentRoom().getfurnitureList().toArray());
-                                        int idx = promptInt("Which object do you want to go to?");
+                                        currentSim.getCurrentRoom().printFurnitureList();
+                                        int idx = promptInt("Which object do you want to go to?") - 1;
                                         Furniture furniture = currentSim.getCurrentRoom().getfurnitureList().get(idx);
                                         int idx2 = 1;
                                         if (currentSim.getCurrentRoom().getFurnitureCount(furniture) > 1) {
@@ -657,32 +671,9 @@ public class Simplicity {
                                     break;
                             }
                         }
-                        // if (currentSim.getStatus().equals("Die")) {
-                        //     if (simList.size() > 1) {
-                        //         simList.remove(currentSim);
-                        //         System.out.println("Sorry, your current sim has died");
-                        //         System.out.println("Do you want to play with other sim?");
-                        //         System.out.println("1. Yes");
-                        //         System.out.println("2. No");
-                        //         choice = promptInt();
-                        //         switch (choice) {
-                        //             case 1:
-                        //                 simplicity.printSimsList();
-                        //                 choice = promptInt("Which Sim do you want to play with?");
-                        //                 currentSim = simList.get(choice - 1);
-                        //                 break;
-                        //             case 2:
-                        //                 System.exit(0);
-                        //                 break;
-                        //         }
-                        //     } else {
-                        //         System.out.println("You don't have any sim left. Game Over...");
-                        //         System.exit(0);
-                        //     }
-                        // }
                         break;
                     case 2:
-                        // TODO:
+                        // help:
                         int help = 1;
                         Help.printMessage(help);
                         System.out.println("BACK/NEXT/EXIT");
@@ -727,7 +718,8 @@ public class Simplicity {
     }
 
     public void newSim(String name, Point house) {
-        Sim sim = new Sim(name, house);
+        simList.add(new Sim (name,house));
+        Sim sim = simList.get(simList.size()-1);
         try {
             World.getInstance().setSim(house, sim);
         } catch (OverlapingHouseException e) {
@@ -735,7 +727,6 @@ public class Simplicity {
         } catch (InAppendableSimWorld e) {
             System.out.println(e.getMessage());
         }
-        simList.add(sim);
         currentSim = sim;
     }
 

@@ -204,6 +204,7 @@ public class World {
     public void updateDead() {
         for (Sim sim : map.values()) {
             if (sim.getStatus().equals("Die")) {
+                System.out.println(sim.getName() + " has died!");
                 for (Room rooms : sim.getHouse().getRoomList().values()) {
                     for (Sim sim2 : rooms.getSimList()) {
                         if (!sim2.getName().equals(sim.getName())) {
@@ -213,10 +214,11 @@ public class World {
                         }
                     }
                 }
+                Point location = sim.getHouse().getLocation();
+                map.remove(location, sim);
+                break;
             }
-
-            Point location = sim.getHouse().getLocation();
-            map.remove(location, sim);
+            
         }
     }
 
