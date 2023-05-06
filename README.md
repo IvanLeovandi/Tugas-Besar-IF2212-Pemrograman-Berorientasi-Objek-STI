@@ -16,3 +16,9 @@ Cara memainkan game Simplicity:
 ```
 git clone https://github.com/IvanLeovandi/Tugas-Besar-IF2212-Pemrograman-Berorientasi-Objek-STI.git
 ```
+
+Cara menjalankan program
+##### Masukkan command berikut di terminal
+```
+java -XX:+ShowCodeDetailsInExceptionMessages -cp bin com.simplicity.Simplicity
+```
