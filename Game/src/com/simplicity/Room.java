@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import com.simplicity.Exceptions.OverlapingRoomObjectException;
 import com.simplicity.Furniture.Furniture;
-import com.simplicity.Furniture.Furniture.*;
 
 public class Room {
     public int roomNumber; // Nomor ruangan di rumah
@@ -95,7 +94,7 @@ public class Room {
     public int getFurnitureCount(Furniture furniturex) {
         int count = 0;
         for (Furniture furniture : furnitureList) {
-            if (furniture.getClass().equals(furniturex.getClass())) {
+            if (furniture.getName().equals(furniturex.getName())) {
                 count++;
             }
         }
@@ -173,7 +172,7 @@ public class Room {
                     for (int i = placement.getY(); i < placement.getY() + y; i++) // Looping mengecek ada furniture lain
                                                                                   // atau tidak
                     {
-                        for (int j = placement.getX() + x - 1; j >= placement.getY(); j--) {
+                        for (int j = placement.getX() - x + 1; j <= placement.getX(); j++) {
                             if (space[i][j] != null) {
                                 throw new OverlapingRoomObjectException("Theres already an object there!");
                             }
@@ -207,7 +206,7 @@ public class Room {
                 {
                     throw new OverlapingRoomObjectException("Out of Bounds!");
                 } else {
-                    for (int i = placement.getY() + y - 1; i >= placement.getY(); i--) // Looping mengecek ada furniture
+                    for (int i = placement.getY() - y + 1; i <= placement.getY(); i++) // Looping mengecek ada furniture
                                                                                        // lain atau tidak
                     {
                         for (int j = placement.getX(); j < placement.getX() + x; j++) {
@@ -254,7 +253,7 @@ public class Room {
                 for (int i = placement.getY(); i < placement.getY() + y; i++) // Looping untuk memasukkan furniture pada
                                                                               // space
                 {
-                    for (int j = placement.getX() + x - 1; j >= placement.getY(); j--) {
+                    for (int j = placement.getX() - x + 1; j <= placement.getX(); j++) {
                         space[i][j] = new Point(furniture.getId(), furnitureCount[furniture.getId() - 1]);
                     }
                 }
@@ -274,7 +273,7 @@ public class Room {
                 }
             } else if (rotation == 3) // Furniture menghadap ke arah atas dari posisi palcement awal
             {
-                for (int i = placement.getY() + y - 1; i >= placement.getY(); i--) // Looping untuk memasukkan furniture
+                for (int i = placement.getY() - y + 1; i <= placement.getY(); i++) // Looping untuk memasukkan furniture
                                                                                    // pada space
                 {
                     for (int j = placement.getX(); j < placement.getX() + x; j++) {
@@ -302,6 +301,7 @@ public class Room {
                         furnitureX--;
                     }
                 }
+                break;
             }
             for (int i = 0; i < 6; i++) // Looping untuk menghilangkan furniture dari space
             {
