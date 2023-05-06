@@ -1,15 +1,10 @@
 package com.simplicity;
 import java.util.*;
 
-import com.simplicity.Components.HousePanel;
-import com.simplicity.Components.SimplicityPanel;
-import com.simplicity.Interfaces.SimplicityPrintable;
-
-public class House implements SimplicityPrintable {
+public class House {
     private Point location; //Lokasi di World
     private int numberofRoom; //Jumlah ruangan di rumah
     private Map<Point,Room> roomList; //List ruangan di rumah
-    private SimplicityPanel panel;
     private Sim houseOwner;
     private UpgradeState<Point, String, String> upgradeState;
 
@@ -255,19 +250,5 @@ public class House implements SimplicityPrintable {
         {
             System.out.println("That direction is not upgradeable!");
         }
-    }
-
-    @Override
-    public SimplicityPanel getPanel() {
-        if (panel == null) {
-            panel = new HousePanel();
-        }
-
-        return panel;
-    }
-
-    @Override
-    public void clearPanel() {
-        panel = null;
     }
 }

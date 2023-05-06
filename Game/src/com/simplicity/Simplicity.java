@@ -60,6 +60,17 @@ public class Simplicity {
     private static boolean play = false;
     private static boolean doneInput;
 
+    public static void showSimInfo(Sim sim) {
+        System.out.println("Berikut informasi sim,");
+        System.out.println("Nama        : " + sim.getName());
+        System.out.println("Pekerjaan   : " + sim.getJob().getJobName());
+        System.out.println("Kesehatan   : " + sim.getHealth());
+        System.out.println("Kekenyangan : " + sim.getSatiety());
+        System.out.println("Mood        : " + sim.getMood());
+        System.out.println("Uang        : " + sim.getBalance());
+        System.out.println("");
+    }
+
     private static int promptInt(String message) {
         int ret;
         String input;
@@ -111,13 +122,6 @@ public class Simplicity {
                         input = scan.nextLine();
                         Random random = new Random();
                         simplicity.newSim(input, new Point(random.nextInt(64), random.nextInt(64)));
-                        try {
-                            world.setSim(currentSim.getHouse().getLocation(), currentSim);
-                        } catch (OverlapingHouseException e) {
-                            e.printStackTrace();
-                        } catch (InAppendableSimWorld e) {
-                            System.out.println(e.getMessage());
-                        }
 
                         System.out.println("\nHalo " + currentSim.getName());
 
@@ -413,7 +417,7 @@ public class Simplicity {
 
                                 case 2:
                                     // sim info
-                                    GameMenu.showSimInfo(currentSim);
+                                    showSimInfo(currentSim);
                                     break;
 
                                 case 3:
@@ -729,7 +733,7 @@ public class Simplicity {
         } catch (OverlapingHouseException e) {
             e.printStackTrace();
         } catch (InAppendableSimWorld e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
         simList.add(sim);
         currentSim = sim;

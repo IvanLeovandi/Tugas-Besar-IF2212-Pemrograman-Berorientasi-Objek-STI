@@ -3,20 +3,17 @@ package com.simplicity;
 import java.util.*;
 import java.util.Map.Entry;
 
-import com.simplicity.Components.WorldPanel;
 import com.simplicity.Exceptions.InAppendableSimWorld;
 import com.simplicity.Exceptions.OverlapingHouseException;
 import com.simplicity.Foods.Ingredient;
 import com.simplicity.Furniture.Furniture;
 import com.simplicity.Interfaces.Purchasable;
-import com.simplicity.Interfaces.SimplicityPrintable;
 
 public class World {
     private static World instance = new World(64, 64);
     private Dimension2D size;
     private Map<Point, Sim> map = new HashMap<>();
     // private WorldPanel panel;
-    private java.util.List<Point> availableLands = new ArrayList<>();
     private GameTimer gameTimer = new GameTimer();
     private int appendCooldown = 0;
 
