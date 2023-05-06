@@ -52,6 +52,7 @@ public class Simplicity {
     public static void main(String[] args) throws Exception {
         Simplicity simplicity = new Simplicity();
         World world = World.getInstance();
+        FoodFactory foodFactory = FoodFactory.getInstance();
         // SimplicityManager manager = SimplicityManager.getInstance();
         // manager.setWorld(new World(64, 64));
         // manager.getWorld().setHouse(p, new House(p));
@@ -76,13 +77,16 @@ public class Simplicity {
                 switch (mainMenuChoice) {
                     case 1:
                         play = true;
-
-                        simplicity.newSim();
+                        System.out.println("Enter your sim name");
+                        System.out.print("\n>> ");
+                        scan.nextLine();
+                        input = scan.nextLine();
+                        simplicity.newSim(input);
                         world.setSim(currentSim.getHouse().getLocation(), currentSim);
 
                         System.out.println("\nHalo " + currentSim.getName());
 
-                        while (play) {
+                        while (play && !currentSim.getStatus().equals("Die")) {
                             simplicity.printMainMenu();
                             System.out.print(">> ");
                             playMenuChoice = scan.nextInt();
@@ -117,22 +121,35 @@ public class Simplicity {
 
                                         case 4:
                                             // TODO: eat
+                                            currentSim.printFoodInventory();
                                             System.out.println("What do you want to eat?");
-                                            currentSim.viewInventory();
-                                            String food = scan.nextLine();
-                                            // currentSim.eat(new FoodFactory());
+                                            System.out.println("1. Cooked Food");
+                                            System.out.println("2. Ingredients");
+                                            choice = scan.nextInt();
+                                            switch(choice) {
+                                                case 1:
+                                                    if(currentSim.getCookedFoodInventory().getInventory().size() == 0) {
+                                                        System.out.println("You don't have any cooked food. Please cook some first before you eat");
+                                                    } else {
+                                                        System.out.println("Which cooked food do you want to eat?");
+                                                        choice = scan.nextInt();
+                                                        String food = currentSim.getCookedFoodInventory().getInventory().keySet().toArray()[choice-1].toString();
+                                                        currentSim.eat(foodFactory.createFood(food));
+                                                    }
+                                                    break;
+                                                case 2:
+                                                    break;
+                                            }
+                                            // currentSim.eat(foodFactory.createFood(choice));
 
                                             break;
 
                                         case 5:
                                             // TODO: cook
                                             System.out.println("What do you want to cook?");
-                                            CookedFood.printListCookedFood();
+                                            foodFactory.printCookableMenu();
                                             int cookedFoodChoice = scan.nextInt();
-                                            currentSim.cook(new CookedFood(
-                                                    CookedFood.getCookedFoodList().keySet().toArray()[cookedFoodChoice]
-                                                            .toString()),
-                                                    currentSim);
+                                            // currentSim.cook();
                                             break;
 
                                         case 6:
@@ -222,7 +239,7 @@ public class Simplicity {
                                             System.out.println("2. FURNITURE");
                                             System.out.print("\n>> ");
                                             playMenuChoice = scan.nextInt();
-                                            int i;
+                                            // int i;
                                             if (playMenuChoice == 1) {
                                                 System.out.println("What ingredient do you want to buy?");
                                                 simplicity.printIngredientPrice();
@@ -246,21 +263,18 @@ public class Simplicity {
                                                 playMenuChoice = scan.nextInt();
                                                 while (playMenuChoice < 1 || playMenuChoice > furnitureMenu.length) {
                                                     System.out.println("Your input is out of range!");
-                                                    System.out.println("What ingredient do you want to buy?");
+                                                    System.out.println("What furniture do you want to buy?");
                                                     simplicity.printFurniturePrice();
                                                     playMenuChoice = scan.nextInt();
                                                 }
                                                 System.out.println("How many would you like to buy?");
                                                 System.out.print("\n>> ");
                                                 int amount = scan.nextInt();
-                                                currentSim.buy(new Ingredient(furnitureMenu[playMenuChoice - 1]),
+                                                currentSim.buy(new Furniture(furnitureMenu[playMenuChoice - 1]),
                                                         amount);
                                             } else {
                                                 System.out.println("That is not a valid input!");
                                             }
-
-                                            // list purchaseable item
-                                            // currentSim.buy(null, duration);
                                             break;
 
                                         case 16:
@@ -413,91 +427,106 @@ public class Simplicity {
                                 case 7:
                                     // TODO:edit room
                                     System.out.println("What do you want to do?");
-                                    System.out.println("1. MOVE ITEM");
-                                    System.out.println("2. BUY ITEM");
-                                    input = scan.nextLine();
-                                    if (input.equals("BUY ITEM")) {
-                                        int i;
-                                        System.out.println("What furniture would you like to buy?");
-                                        for (i = 0; i < furnitureMenu.length; i++) {
-                                            System.out.println(i + 1 + ". " + furnitureMenu[i]);
-                                        }
-                                        System.out.print("\n>> ");
-                                        playMenuChoice = scan.nextInt();
-                                        while (playMenuChoice < 1 || playMenuChoice > furnitureMenu.length) {
-                                            System.out.println("Your input is out of range!");
-                                            System.out.println("What ingredient do you want to buy?");
+                                    System.out.println("1. BUY ITEM");
+                                    System.out.println("2. MOVE ITEM");
+                                    System.out.print("\n>> ");
+                                    choice = scan.nextInt();
+
+                                    switch (choice) {
+                                        case 1:
+                                            int i;
+                                            System.out.println("What furniture would you like to buy?");
                                             for (i = 0; i < furnitureMenu.length; i++) {
                                                 System.out.println(i + 1 + ". " + furnitureMenu[i]);
                                             }
+                                            System.out.print("\n>> ");
                                             playMenuChoice = scan.nextInt();
-                                        }
-                                        System.out.println("How many would you like to buy?");
-                                        System.out.print("\n>> ");
-                                        int amount = scan.nextInt();
-                                        currentSim.buy(new Ingredient(furnitureMenu[playMenuChoice - 1]), amount);
-
-                                    } else if (input.equals("MOVE ITEM")) {
-                                        currentSim.getCurrentRoom().printRoom();
-                                        System.out.println("Please chose the point you want to move");
-                                        System.out.println("X: ");
-                                        int x = scan.nextInt();
-                                        System.out.println("Y: ");
-                                        int y = scan.nextInt();
+                                            while (playMenuChoice < 1 || playMenuChoice > furnitureMenu.length) {
+                                                System.out.println("Your input is out of range!");
+                                                System.out.println("What ingredient do you want to buy?");
+                                                for (i = 0; i < furnitureMenu.length; i++) {
+                                                    System.out.println(i + 1 + ". " + furnitureMenu[i]);
+                                                }
+                                                playMenuChoice = scan.nextInt();
+                                            }
+                                            System.out.println("How many would you like to buy?");
+                                            System.out.print("\n>> ");
+                                            int amount = scan.nextInt();
+                                            currentSim.buy(new Furniture(furnitureMenu[playMenuChoice - 1]), amount);
+                                            break;
+                                        case 2:
                                         if (currentSim.getCurrentRoom().checkPoint(new Point(x, y)) == null) {
                                             System.out.println("There is no object there!");
                                         } else {
-                                            Furniture movedFurniture = currentSim.getCurrentRoom()
-                                                    .checkPoint(new Point(x, y));
-                                            currentSim.getCurrentRoom().removeFurniture(new Point(x, y));
-                                            System.out.println("Please chose the new point");
-                                            System.out.println("X: ");
-                                            int x2 = scan.nextInt();
-                                            System.out.println("Y: ");
-                                            int y2 = scan.nextInt();
-                                            System.out.println("Please chose the rotation 1/2/3/4!");
-                                            int rotation = scan.nextInt();
-                                            do {
-                                                try {
-                                                    currentSim.getCurrentRoom().placeFurniture(new Point(x2, y2),
-                                                            rotation, movedFurniture);
-                                                    break;
-                                                } catch (OverlapingRoomObjectException e) {
-                                                    System.out.println(e.getMessage());
-                                                }
+                                                currentSim.getCurrentRoom().printRoom();
+                                                System.out.println("Please chose the point you want to move");
+                                                System.out.println("X: ");
+                                                int x = scan.nextInt();
+                                                System.out.println("Y: ");
+                                                int y = scan.nextInt();
+                                                Furniture movedFurniture = currentSim.getCurrentRoom()
+                                                        .checkPoint(new Point(x, y));
+                                                currentSim.getCurrentRoom().removeFurniture(new Point(x, y));
                                                 System.out.println("Please chose the new point");
                                                 System.out.println("X: ");
-                                                x2 = scan.nextInt();
+                                                int x2 = scan.nextInt();
                                                 System.out.println("Y: ");
-                                                y2 = scan.nextInt();
+                                                int y2 = scan.nextInt();
                                                 System.out.println("Please chose the rotation 1/2/3/4!");
-                                                rotation = scan.nextInt();
-                                            } while (true);
-                                        }
-                                    } else {
-                                        System.out.println("That is a not a valid input!");
+                                                int rotation = scan.nextInt();
+                                                do {
+                                                    try {
+                                                        currentSim.getCurrentRoom().placeFurniture(new Point(x2, y2),
+                                                                rotation, movedFurniture);
+                                                        break;
+                                                    } catch (OverlapingRoomObjectException e) {
+                                                        System.out.println(e.getMessage());
+                                                    }
+                                                    System.out.println("Please chose the new point");
+                                                    System.out.println("X: ");
+                                                    x2 = scan.nextInt();
+                                                    System.out.println("Y: ");
+                                                    y2 = scan.nextInt();
+                                                    System.out.println("Please chose the rotation 1/2/3/4!");
+                                                    rotation = scan.nextInt();
+                                                } while (true);
+                                            }
+                                            break;
+                                        default:
+                                            System.out.println("That is not a valid input");
+                                            break;
                                     }
                                     break;
 
                                 case 8:
                                     // TODO: add sim
-                                    simplicity.newSim();
+                                    System.out.println("Enter your sim name");
+                                    System.out.print("\n>> ");
+                                    scan.nextLine();
+                                    input = scan.nextLine();
+                                    simplicity.newSim(input);
                                     break;
 
                                 case 9:
                                     // TODO: change sim
-                                    System.out.println("Here is the list of Sim that has been generated");
-                                    for (int i = 0; i < simList.size(); i++) {
-                                        System.out.println(i + 1 + ". " + simList.get(i).getName());
-                                    }
+                                    simplicity.printSimsList();
                                     System.out.println("Which Sim do you want to play with?");
+                                    System.out.print("\n>> ");
                                     choice = scan.nextInt();
-                                    currentSim = simList.get(choice-1);
+                                    if(choice > simList.size()){
+                                        System.out.println("Input out of range! Please input number in range");
+                                    } else {
+                                        currentSim = simList.get(choice-1);
+                                    }
                                     break;
 
                                 case 10:
                                     // TODO:list object
-                                    currentSim.getCurrentRoom().printFurnitureList();
+                                    if(currentSim.getCurrentRoom().getfurnitureList().size() > 0){
+                                        currentSim.getCurrentRoom().printFurnitureList();
+                                    } else {
+                                        System.out.println("There is no object in this room.");
+                                    }
                                     break;
 
                                 case 11:
@@ -571,8 +600,34 @@ public class Simplicity {
                                     break;
 
                                 default:
-                                    System.out.println("Wrong command, please input the right number.");
+                                    System.out.println("Input out of range!");
                                     break;
+                            }
+                        }
+                        if(currentSim.getStatus().equals("Die")){
+                            if(simList.size() > 1){
+                                simList.remove(currentSim);
+                                System.out.println("Sorry, your current sim has died");
+                                System.out.println("Do you want to play with other sim?");
+                                System.out.println("1. Yes");
+                                System.out.println("2. No");
+                                choice = scan.nextInt();
+                                switch (choice) {
+                                    case 1:
+                                        simplicity.printSimsList();
+                                        System.out.println("Which Sim do you want to play with?");
+                                        choice = scan.nextInt();
+                                        currentSim = simList.get(choice-1);
+                                        break;
+                                    case 2:
+                                        System.exit(0);
+                                        break;
+                                }
+                            } 
+                            else 
+                            {
+                                System.out.println("You don't have any sim left. Game Over...");
+                                System.exit(0);
                             }
                         }
                         break;
@@ -614,21 +669,15 @@ public class Simplicity {
                         break;
                 }
             } catch (InputMismatchException e) {
-                System.out.println("Wrong input, please input integer number");
+                System.out.println("Wrong input, please input a number");
             }
         }
 
         scan.close();
     }
 
-    public void newSim() {
-        String simName;
-        Scanner scan = new Scanner(System.in);
-
-        System.out.println("Masukkan nama lengkap untuk sim kamu");
-        System.out.print(">> ");
-        simName = scan.nextLine();
-        Sim sim = new Sim(simName, new Point(x, y));
+    public void newSim(String name) {
+        Sim sim = new Sim(name, new Point(x, y));
         simList.add(sim);
         currentSim = sim;
 
@@ -693,5 +742,12 @@ public class Simplicity {
             num++;
         }
         System.out.println(line);
+    }
+
+    public void printSimsList(){
+        System.out.println("Here is the list of Sim that has been generated");
+        for (int i = 0; i < simList.size(); i++) {
+            System.out.println(i + 1 + ". " + simList.get(i).getName());
+        }
     }
 }

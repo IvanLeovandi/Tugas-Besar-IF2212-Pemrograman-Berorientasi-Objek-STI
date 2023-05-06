@@ -21,8 +21,9 @@ public class Inventory<T> {
         } else {
             if(inventory.size() == capacity){
                 System.out.println("Inventory sudah penuh, mohon untuk menghapus barang atau mengeluarkannya dari inventory.");
+            } else {
+                inventory.put(itemName, quantity);
             }
-            inventory.put(itemName, quantity);
         }
     }
 

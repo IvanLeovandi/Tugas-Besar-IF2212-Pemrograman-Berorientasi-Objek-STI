@@ -321,10 +321,10 @@ public class Sim {
                         }
                     }
 
-                    if (!(getStatus() == "Die")){
+                    if (!(getStatus() == "Die")) {
                         System.out.println(getName() + " has worked for " + duration + " seconds");
                     }
-                    
+
                     currentWorld.checkAllSim(duration);
                 }
             } else {
@@ -347,7 +347,7 @@ public class Sim {
                 changeMood(moodIncrease);
                 changeHealth(healthIncrease);
 
-                if(!(getStatus() == "Die")){
+                if (!(getStatus() == "Die")) {
                     System.out.println(getName() + " has worked out for " + duration + " seconds");
                 }
                 currentWorld.checkAllSim(duration);
@@ -369,7 +369,7 @@ public class Sim {
                         changeHealth(20 * x);
                         currentWorld.gameTimer().startTimer(duration);
                         setTimeSleep(GameTimer.gameTime);
-                        if(!(getStatus() == "Die")){
+                        if (!(getStatus() == "Die")) {
                             System.out.println(getName() + " has slept for " + duration + " seconds");
                         }
                         currentWorld.checkAllSim(duration);
@@ -421,10 +421,10 @@ public class Sim {
                             changeSatiety(food1.getSatietyPoint());
                             this.cookedFoodInventory.removeItem(food1);
 
-                            if(!(getStatus() == "Die")){
+                            if (!(getStatus() == "Die")) {
                                 System.out.println(getName() + " has eaten " + food1.getName());
                             }
-                           
+
                             currentWorld.checkAllSim(30);
                         } else {
                             System.out.println("You don't have this food");
@@ -440,7 +440,7 @@ public class Sim {
                             changeSatiety(food1.getSatietyPoint());
                             this.ingredientsInventory.removeItem(food1);
 
-                            if(!(getStatus() == "Die")){
+                            if (!(getStatus() == "Die")) {
                                 System.out.println(getName() + " has eaten " + food1.getName());
                             }
 
@@ -504,8 +504,9 @@ public class Sim {
                         }
                         this.cookedFoodInventory.addItem(cookedFood, 1);
                         changeMood(10);
-                        if(!(getStatus() == "Die")){
-                            System.out.println(currentSim.getName() + " has successfully cooked " + cookedFood.getName());
+                        if (!(getStatus() == "Die")) {
+                            System.out
+                                    .println(currentSim.getName() + " has successfully cooked " + cookedFood.getName());
                         }
                         currentWorld.checkAllSim(duration1);
                     } else {
@@ -552,12 +553,13 @@ public class Sim {
             currentWorld.gameTimer().startTimer(duration);
 
             // Efek berkunjung
-            int x = duration/30;
-            changeMood(10*x);
-            changeSatiety(-10*x);
+            int x = duration / 30;
+            changeMood(10 * x);
+            changeSatiety(-10 * x);
             this.currentHouse = house2;
-            if (!(getStatus() == "Die")){
-                System.out.println(getName() + " has successfully visited " + house2.getHouseOwner().getName() + "'s house");
+            if (!(getStatus() == "Die")) {
+                System.out.println(
+                        getName() + " has successfully visited " + house2.getHouseOwner().getName() + "'s house");
             }
             currentWorld.checkAllSim(duration);
         }
@@ -567,11 +569,12 @@ public class Sim {
         if (!getStatus().equals("Die")) {
             if (currentObject() != null) {
                 if (currentObject().getName().equals("TOILET")) {
-                    setTimeDefecateEat(new Pair<Integer, Integer>(GameTimer.gameTime, getTimeDefecateEat().getSecond()));
+                    setTimeDefecateEat(
+                            new Pair<Integer, Integer>(GameTimer.gameTime, getTimeDefecateEat().getSecond()));
                     currentWorld.gameTimer().startTimer(10);
                     changeSatiety(-20);
                     changeMood(10);
-                    if(!(getStatus() == "Die")){
+                    if (!(getStatus() == "Die")) {
                         System.out.println(getName() + " has successfully defecated");
                     }
                     currentWorld.checkAllSim(10);
@@ -621,7 +624,8 @@ public class Sim {
                     } else {
                         balance -= 1500;
                         this.setIsUpgradeHouse(true, 1080);
-                        this.house.setUpgradeState(new UpgradeState<Point, String, String>(upgradeRoom, direction, name));
+                        this.house
+                                .setUpgradeState(new UpgradeState<Point, String, String>(upgradeRoom, direction, name));
                     }
                 }
             } else {
@@ -640,6 +644,7 @@ public class Sim {
                 } else {
                     balance -= itemPrice;
                     int deliveryTime = (new Random().nextInt(5) + 1) * 30;
+                    System.out.println("Delivery time: " + deliveryTime);
                     deliveryList.add(new UpgradeState<Purchasable, Integer, Integer>(item, quantity, deliveryTime));
                 }
             } else if (item instanceof Ingredient) {
@@ -650,6 +655,7 @@ public class Sim {
                 } else {
                     balance -= itemPrice;
                     int deliveryTime = (new Random().nextInt(5) + 1) * 30;
+                    System.out.println("Delivery time: " + deliveryTime);
                     deliveryList.add(new UpgradeState<Purchasable, Integer, Integer>(item, quantity, deliveryTime));
                 }
             } else {
@@ -768,6 +774,44 @@ public class Sim {
         }
     }
 
+    public void printFoodInventory() {
+        if (!getStatus().equals("Die")) {
+            // Menampilkan inventory food
+            int num = 1;
+            System.out.println("Food Inventory");
+            String header = String.format("| %-4s | %-20s | %-10s |", "No", "Item", "Quantity");
+            String line = "-".repeat(header.length());
+
+            // Menampilkan inventory cooked food
+            System.out.println("Cooked Food Inventory");
+            System.out.println(line);
+            System.out.println(header);
+            System.out.println(line);
+
+            for (CookedFood item : cookedFoodInventory.getInventory().keySet()) {
+                int quantity = cookedFoodInventory.getInventory().get(item);
+                String row = String.format("| %-4s | %-20s | %-10d |", num, item.getName(), quantity);
+                System.out.println(row);
+                num++;
+            }
+            System.out.println(line);
+
+            // Menampilkan inventory ingredients
+            System.out.println("Ingredients Inventory");
+            System.out.println(line);
+            System.out.println(header);
+            System.out.println(line);
+
+            for (Ingredient item : ingredientsInventory.getInventory().keySet()) {
+                int quantity = ingredientsInventory.getInventory().get(item);
+                String row = String.format("| %-4s | %-20s | %-10d |", num, item.getName(), quantity);
+                System.out.println(row);
+                num++;
+            }
+            System.out.println(line);
+        }
+    }
+
     public void moveToObject(Furniture furniture, int furnitureX) {
         if (!getStatus().equals("Die")) {
             if (!currentRoom.getfurnitureList().contains(furniture)) {
@@ -783,11 +827,22 @@ public class Sim {
         if (!getStatus().equals("Die")) {
             if (currentObject() != null) {
                 if (currentObject().getName().equals("CLOCK")) {
-                    System.out.println("The time is : Day " + currentWorld.gameTimer().getDay() + " Seconds "
-                            + currentWorld.gameTimer().getSecond());
+                    System.out.println("The time is : Day " + currentWorld.gameTimer().getDay() + 
+                                                    " Minutes " + currentWorld.gameTimer().getSecond()/60 +
+                                                    " Seconds " + currentWorld.gameTimer().getSecond()%60);
                     // Menampilkan sisa waktu yang ada pada hari ini
                     int remainingTime = 720 - currentWorld.gameTimer().getSecond();
                     System.out.println("Remaining time : " + remainingTime + " seconds");
+
+                    //Menampilkan sisa waktu untuk tindakan yang bisa ditinggal
+                    if (isUpgradeHouse.getFirst()){
+                        System.out.println("Remaining time for Upgrade House : " +  isUpgradeHouse.getSecond()/60 + " minutes " + isUpgradeHouse.getSecond()%60 + " seconds");
+                    }
+                    if (!deliveryList.isEmpty()){
+                        for (UpgradeState<Purchasable, Integer, Integer> ingredient : deliveryList){
+                            System.out.println("Remaining time for Delivery " + ingredient.getFirst().getClass().getName() + " : " + ingredient.getThird()/60 + " minutes " + ingredient.getThird()%60 + " seconds");
+                        }
+                    }
                 } else {
                     System.out.println("You can't view the time");
                     System.out.println("You need a clock to view time.");
@@ -828,7 +883,7 @@ public class Sim {
                         currentWorld.gameTimer().startTimer(duration);
                         changeMood(-10 * (duration / 20));
                         changeHealth(-5 * (duration / 20));
-                        if(!getStatus().equals("Die")){
+                        if (!getStatus().equals("Die")) {
                             System.out.println("You have nubes for " + duration + " seconds");
                         }
                         currentWorld.checkAllSim(duration);
@@ -867,7 +922,7 @@ public class Sim {
                     currentWorld.gameTimer().startTimer(duration);
                     changeMood(10 * (duration / 20));
                     changeHealth(-1 * (duration / 20));
-                    if(!getStatus().equals("Die")){
+                    if (!getStatus().equals("Die")) {
                         System.out.println("You have play game for " + duration + " seconds");
                     }
                     currentWorld.checkAllSim(duration);
@@ -904,7 +959,7 @@ public class Sim {
                 if (currentObject().getName().equals("COMPUTER") || currentObject().getName().equals("SPEAKER")) {
                     currentWorld.gameTimer().startTimer(duration);
                     changeMood(duration / 10);
-                    if(!getStatus().equals("Die")){
+                    if (!getStatus().equals("Die")) {
                         System.out.println("You have listen music for " + duration + " seconds");
                     }
                     currentWorld.checkAllSim(duration);
@@ -945,7 +1000,7 @@ public class Sim {
                 if (currentObject().getName().equals("TV")) {
                     currentWorld.gameTimer().startTimer(duration);
                     changeMood(5 * (duration / 10));
-                    if(!getStatus().equals("Die")){ 
+                    if (!getStatus().equals("Die")) {
                         System.out.println("You have watch TV for " + duration + " seconds");
                     }
                     currentWorld.checkAllSim(duration);
@@ -983,7 +1038,7 @@ public class Sim {
                     currentWorld.gameTimer().startTimer(duration);
                     changeMood(5 * (duration / 10));
                     changeHealth(5 * (duration / 10));
-                    if(!getStatus().equals("Die")){
+                    if (!getStatus().equals("Die")) {
                         System.out.println("You have bath for " + duration + " seconds");
                     }
                     currentWorld.checkAllSim(duration);
@@ -1030,8 +1085,9 @@ public class Sim {
                             sim1.changeHealth(5 * (duration / 10));
                             sim2.changeMood(5 * (duration / 10));
                             sim2.changeHealth(5 * (duration / 10));
-                            if(!getStatus().equals("Die")){
-                                System.out.println("You have meet up with " + sim2.getName() + " for " + duration + " seconds");
+                            if (!getStatus().equals("Die")) {
+                                System.out.println(
+                                        "You have meet up with " + sim2.getName() + " for " + duration + " seconds");
                             }
                             currentWorld.checkAllSim(duration);
                         } else {
@@ -1039,7 +1095,8 @@ public class Sim {
                             System.out.println("You need a sofa to meet up.");
                             for (Furniture furniture : sim1.getCurrentRoom().getfurnitureList()) {
                                 if (furniture.getName().equals("SOFA")) {
-                                    System.out.println("You have a sofa, you will automatically moved there to meet up");
+                                    System.out
+                                            .println("You have a sofa, you will automatically moved there to meet up");
                                     sim1.moveToObject(furniture, 1);
                                     sim2.moveToObject(furniture, 1);
                                     this.meetup(duration, sim1, sim2);
@@ -1072,7 +1129,7 @@ public class Sim {
                     currentWorld.gameTimer().startTimer(duration);
                     changeMood(5 * (duration / 10));
                     balance -= 5 * (duration / 30);
-                    if(!getStatus().equals("Die")){
+                    if (!getStatus().equals("Die")) {
                         System.out.println("You have call for " + duration + " seconds");
                     }
                     currentWorld.checkAllSim(duration);

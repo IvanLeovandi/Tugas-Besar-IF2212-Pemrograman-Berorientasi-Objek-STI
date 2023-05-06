@@ -9,8 +9,7 @@ public class CookedFood extends GameObject implements Edible {
 
     private MyCookedFood myCookedFood;
     private final static String type = "COOKEDFOOD";
-    private static Map<CookedFood, List<Ingredient>> cookedFoodList = new HashMap<>();
-
+    
     public enum MyCookedFood {
         
         CHICKENRICE("CHICKEN RICE", Arrays.asList(new Ingredient("Rice"), new Ingredient("Chicken")), 16),
@@ -80,26 +79,7 @@ public class CookedFood extends GameObject implements Edible {
         return myCookedFood.getSatietyPoint();
     }
 
-    private void addListCookedFood(){
-        cookedFoodList.put(new CookedFood("CHICKEN RICE"), Arrays.asList(new Ingredient("Rice"), new Ingredient("Chicken")));
-        cookedFoodList.put(new CookedFood("CURRY RICE"), Arrays.asList(new Ingredient("Rice"), new Ingredient("Potato"), new Ingredient("Carrot"), new Ingredient("Beef")));
-        cookedFoodList.put(new CookedFood("PEANUT MILK"), Arrays.asList(new Ingredient("Milk"), new Ingredient("Peanut")));
-        cookedFoodList.put(new CookedFood("STIR FRY"), Arrays.asList(new Ingredient("Carrot"), new Ingredient("Spinach")));
-        cookedFoodList.put(new CookedFood("STEAK"), Arrays.asList(new Ingredient("Potato"), new Ingredient("Beef")));
-    }
-
     public List<Ingredient> getIngredients(){
         return myCookedFood.ingredients;
     } 
-
-    public static Map<CookedFood, List<Ingredient>> getCookedFoodList(){
-        return cookedFoodList;
-    }
-    
-    public static void printListCookedFood() {
-        for (Map.Entry<CookedFood,List<Ingredient>> entry : cookedFoodList.entrySet()) {
-            System.out.println("Key = " + entry.getKey().getName() +
-                             ", Value = " + ((Ingredient)entry.getValue()));
-        }
-    }
 }

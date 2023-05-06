@@ -35,7 +35,7 @@ public class FoodFactory {
     }
 
     public Food createFood(String type) throws MissingFoodTypeException {
-        String typeC = type.toLowerCase();
+        String typeC = type.toUpperCase();
 
         if (ingredientMenu.containsKey(typeC)) {
             return new Ingredient(typeC, foodMenu.get(typeC), ingredientMenu.get(typeC));
@@ -95,6 +95,13 @@ public class FoodFactory {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public void printCookableMenu(){
+        for (Map.Entry<String,Set<String>> entry : cookableMenu.entrySet()) {
+            System.out.println("Key = " + entry.getKey() +
+                                ", Value = " + (entry.getValue()));
         }
     }
 }
